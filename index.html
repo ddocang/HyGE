@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HyGE - Login</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="background-image"></div>
+      <div class="login-box">
+        <div class="login-title">
+          <h1>HyGE</h1>
+        </div>
+        <p class="subtitle">관리자 서비스 이용을 위해 로그인해 주세요.</p>
+
+        <form class="login-form" onsubmit="handleLogin(event)">
+          <div class="input-group">
+            <input type="email" placeholder="felix.park@gtc-eng.com" />
+          </div>
+          <div class="input-group">
+            <input type="password" placeholder="••••••••••" />
+            <div class="password-toggle">
+              <input type="checkbox" id="showPassword" />
+            </div>
+          </div>
+          <button
+            type="button"
+            class="login-btn"
+            onclick="window.location.href='main.html'"
+          >
+            로그인
+          </button>
+          <button
+            type="button"
+            class="guest-btn"
+            onclick="window.location.href='main.html'"
+          >
+            비로그인
+          </button>
+        </form>
+      </div>
+
+      <div class="welcome-section">
+        <h1>WELCOME !</h1>
+        <div class="logo">
+          <img src="image/hyge-logo.png" alt="HyGE" />
+          <h2>HyGE</h2>
+        </div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+    <script>
+      function handleLogin(event) {
+        event.preventDefault(); // 폼 기본 제출 동작 방지
+        window.location.href = 'main.html'; // main.html로 페이지 이동
+      }
+    </script>
+  </body>
+</html>

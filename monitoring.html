@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HyGE - 수소충전생산</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
+    />
+    <link rel="stylesheet" href="main.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      .search-box {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .search-button {
+        background-color: #2196f3;
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 10px 20px;
+        height: 40px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease;
+      }
+
+      .search-button:hover {
+        background-color: #1976d2;
+      }
+
+      .search-button i {
+        font-size: 16px;
+      }
+
+      .test-button {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 10px 20px;
+        height: 40px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        font-family: 'Pretendard';
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .test-button:hover {
+        background-color: #388e3c;
+        transform: translateY(-1px);
+      }
+
+      .test-button:active {
+        transform: translateY(0);
+      }
+
+      .test-button i {
+        margin-right: 6px;
+      }
+
+      .header-divider {
+        border: 0;
+        height: 1px;
+        background: #eee;
+        margin: -7px 0 20px 0;
+        width: 100%;
+        opacity: 1;
+      }
+
+      .back-btn {
+        margin-top: auto;
+        padding: 14px;
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        width: 100%;
+        font-family: 'Pretendard';
+        font-size: 14px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+      }
+
+      .back-btn i {
+        font-size: 16px;
+      }
+
+      .back-btn:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .back-btn:active {
+        transform: translateY(0);
+        box-shadow: none;
+      }
+
+      .menu {
+        width: 100%;
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .menu-item {
+        display: flex;
+        align-items: center;
+        padding: 14px;
+        color: white;
+        background-color: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        width: 100%;
+        font-family: 'Pretendard';
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        gap: 12px;
+      }
+
+      .menu-item i {
+        font-size: 16px;
+        min-width: 20px;
+        text-align: center;
+      }
+
+      .menu-item:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .menu-item:active {
+        transform: translateY(0);
+        box-shadow: none;
+      }
+
+      .menu-item.active {
+        background-color: rgba(255, 255, 255, 0.2);
+        font-weight: 600;
+      }
+
+      .bottom-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 30px;
+        background-color: white;
+        border-top: 1px solid #eee;
+        font-family: Pretendard;
+        margin-top: 30px;
+      }
+
+      .main-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 10px;
+        margin-bottom: 20px;
+        border: none;
+        background: none;
+        box-shadow: none;
+      }
+
+      .main-header h1 {
+        font-family: 'Pretendard';
+        font-size: 28px;
+        font-weight: 800;
+        color: #1a1a1a;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        padding: 12px 0;
+        border: none;
+        background: none;
+        box-shadow: none;
+      }
+
+      .main-header h1::before {
+        display: none;
+      }
+
+      .main-header h1:hover {
+        transform: none;
+        text-shadow: none;
+      }
+
+      .main-header h1:active {
+        transform: none;
+        text-shadow: none;
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 24px;
+        margin: 20px;
+        border-radius: 16px;
+        position: relative;
+        transition: all 0.3s ease;
+      }
+
+      .logo-container:hover {
+        transform: translateY(-2px);
+      }
+
+      .logo-container img {
+        width: 45px;
+        height: 45px;
+        object-fit: contain;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+      }
+
+      .logo-container h2 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        background: linear-gradient(
+          135deg,
+          #ffffff 20%,
+          rgba(255, 255, 255, 0.85) 100%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .map-container {
+        width: 880px;
+        height: 650px;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid rgba(33, 150, 243, 0.1);
+        background-color: white;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .map-container #map {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f5f5f5;
+      }
+
+      .map-container #map img[alt='지도'] {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transform: none;
+      }
+
+      .price-table-container {
+        width: 590px;
+        height: 650px;
+        padding: 24px 24px 12px 24px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        display: flex;
+        flex-direction: column;
+        margin-top: 95px;
+        margin-right: 20px;
+        border: 1px solid rgba(33, 150, 243, 0.1);
+      }
+
+      .price-table-container h2 {
+        margin: 0;
+        padding-bottom: 16px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        color: #1a1a1a;
+        font-size: 18px;
+        font-weight: 600;
+        border-bottom: 1px solid #f0f0f0;
+        margin-bottom: 16px;
+      }
+
+      .price-table-container h2 i {
+        color: #2196f3;
+        font-size: 22px;
+      }
+
+      .table-container {
+        height: 506px;
+        overflow-y: auto;
+        margin-top: 5px;
+        padding-right: 4px;
+        padding-bottom: 0;
+        position: relative;
+        scroll-snap-type: y mandatory;
+      }
+
+      .info-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-family: 'Pretendard';
+      }
+
+      .info-table th,
+      .info-table td {
+        padding: 12px;
+        text-align: center;
+        border-bottom: 1px solid #eee;
+      }
+
+      .info-table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        color: #1a1a1a;
+      }
+
+      .info-table td {
+        color: #333;
+      }
+
+      .info-table tr:hover {
+        background-color: #f5f5f5;
+      }
+
+      .status-normal {
+        color: #2196f3;
+        font-weight: 600;
+      }
+
+      .status-warning {
+        color: #ff9800;
+        font-weight: 600;
+      }
+
+      .status-danger {
+        color: #f44336;
+        font-weight: 600;
+      }
+
+      .signal-connected {
+        color: #4caf50;
+        font-weight: 600;
+      }
+
+      .signal-disconnected {
+        color: #9e9e9e;
+        font-weight: 600;
+      }
+
+      /* 가스감지기 효과 */
+      @keyframes gasDetectorEffect {
+        0% {
+          filter: brightness(1.3) drop-shadow(0 0 12px rgba(33, 150, 243, 0.8))
+            drop-shadow(0 0 20px rgba(0, 191, 255, 0.6));
+        }
+        25% {
+          filter: brightness(1.1) drop-shadow(0 0 15px rgba(0, 191, 255, 0.7))
+            drop-shadow(0 0 25px rgba(33, 150, 243, 0.5));
+        }
+        50% {
+          filter: brightness(0.95) drop-shadow(0 0 10px rgba(0, 150, 255, 0.6))
+            drop-shadow(0 0 18px rgba(33, 150, 243, 0.4));
+        }
+        75% {
+          filter: brightness(1.1) drop-shadow(0 0 15px rgba(33, 150, 243, 0.7))
+            drop-shadow(0 0 25px rgba(0, 191, 255, 0.5));
+        }
+        100% {
+          filter: brightness(1.3) drop-shadow(0 0 12px rgba(33, 150, 243, 0.8))
+            drop-shadow(0 0 20px rgba(0, 191, 255, 0.6));
+        }
+      }
+
+      /* 가스감지기 공통 스타일 */
+      #gas-box1,
+      #gas-box2,
+      #gas-box3,
+      #gas-box4,
+      #gas-box5,
+      #gas-box6,
+      #gas-box7,
+      #gas-box8,
+      #gas-box9,
+      #gas-box10,
+      #gas-box11,
+      #gas-box12,
+      #gas-box13,
+      #gas-box14,
+      #gas-box15 {
+        position: absolute;
+        width: 70px;
+        height: auto;
+        z-index: 5;
+        left: 50%;
+        animation: gasDetectorEffect 2.5s ease-in-out infinite;
+      }
+
+      /* 개별 가스감지기 위치 */
+      #gas-box1 {
+        top: calc(50% - 200px);
+        transform: translate(calc(-50% - 143px), -50%);
+      }
+
+      #gas-box2 {
+        top: calc(50% - 200px);
+        transform: translate(calc(-50% + 17px), -50%);
+      }
+
+      #gas-box3 {
+        top: calc(50% - 205px);
+        transform: translate(calc(-50% + 83px), -50%) scale(0.7);
+      }
+
+      #gas-box4 {
+        top: calc(50% - 138px);
+        transform: translate(calc(-50% + 205px), -50%);
+      }
+
+      #gas-box5 {
+        top: calc(50% - 165px);
+        transform: translate(calc(-50% - 260px), -50%);
+      }
+
+      #gas-box6 {
+        top: calc(50% + 5px);
+        transform: translate(calc(-50% - 80px), -50%);
+      }
+
+      #gas-box7 {
+        top: calc(50% - 200px);
+        transform: translate(calc(-50% - 80px), -50%);
+      }
+
+      #gas-box8 {
+        top: calc(50% - 70px);
+        transform: translate(calc(-50% - 143px), -50%);
+      }
+
+      #gas-box9 {
+        top: calc(50% - 70px);
+        transform: translate(calc(-50% + 17px), -50%);
+      }
+
+      #gas-box10 {
+        top: calc(50% - 70px);
+        transform: translate(calc(-50% - 80px), -50%);
+      }
+
+      #gas-box11 {
+        top: calc(50% + 5px);
+        transform: translate(calc(-50% + 30px), -50%);
+      }
+
+      #gas-box12 {
+        top: calc(50% - 138px);
+        transform: translate(calc(-50% + 162px), -50%);
+      }
+
+      /* 새로운 가스감지기 추가 */
+      #gas-box13 {
+        top: calc(50% - 80px);
+        transform: translate(calc(-50% + 83px), -50%) scale(0.7);
+      }
+
+      /* 새로운 가스감지기 추가 */
+      #gas-box14 {
+        top: calc(50% - 100px);
+        transform: translate(calc(-50% + 115px), -50%) scale(0.7);
+      }
+
+      /* 새로운 가스감지기 추가 */
+      #gas-box15 {
+        top: calc(50% - 180px);
+        transform: translate(calc(-50% + 115px), -50%) scale(0.7);
+      }
+
+      /* 화재감지기 펄스 효과 */
+      @keyframes firePulse {
+        0% {
+          filter: brightness(1.4) drop-shadow(0 0 15px rgba(255, 0, 0, 0.8))
+            drop-shadow(0 0 25px rgba(255, 69, 0, 0.6));
+        }
+        25% {
+          filter: brightness(1.2) drop-shadow(0 0 20px rgba(255, 69, 0, 0.7))
+            drop-shadow(0 0 30px rgba(255, 0, 0, 0.5));
+        }
+        50% {
+          filter: brightness(0.9) drop-shadow(0 0 15px rgba(255, 140, 0, 0.6))
+            drop-shadow(0 0 25px rgba(255, 0, 0, 0.4));
+        }
+        75% {
+          filter: brightness(1.2) drop-shadow(0 0 20px rgba(255, 0, 0, 0.7))
+            drop-shadow(0 0 30px rgba(255, 69, 0, 0.5));
+        }
+        100% {
+          filter: brightness(1.4) drop-shadow(0 0 15px rgba(255, 0, 0, 0.8))
+            drop-shadow(0 0 25px rgba(255, 69, 0, 0.6));
+        }
+      }
+
+      #fire-box,
+      #fire-box2,
+      #fire-box3,
+      #fire-box4,
+      #fire-box5,
+      #fire-box6 {
+        position: absolute;
+        width: 70px;
+        height: auto;
+        z-index: 5;
+        left: 50%;
+        animation: firePulse 2s ease-in-out infinite;
+      }
+
+      #fire-box {
+        top: calc(50% - 210px);
+        transform: translate(calc(-50% + 150px), -50%);
+      }
+
+      #fire-box2 {
+        top: calc(50% - 55px);
+        transform: translate(calc(-50% - 185px), -50%);
+      }
+
+      #fire-box3 {
+        top: calc(50% + 40px);
+        transform: translate(calc(-50% - 185px), -50%);
+      }
+
+      #fire-box4 {
+        top: calc(50% - 210px);
+        transform: translate(calc(-50% + 45px), -50%);
+      }
+
+      #fire-box5 {
+        top: calc(50% - 55px);
+        transform: translate(calc(-50% + 50px), -50%);
+      }
+
+      #fire-box6 {
+        top: calc(50% - 67px);
+        transform: translate(calc(-50% + 125px), -50%);
+      }
+
+      @keyframes vBoxPulse {
+        0% {
+          filter: brightness(1.2);
+          transform: translate(var(--translate-x), -50%) scale(var(--scale, 1));
+        }
+        50% {
+          filter: brightness(0.9);
+          transform: translate(var(--translate-x), -50%)
+            scale(calc(var(--scale, 1) * 0.8));
+        }
+        100% {
+          filter: brightness(1.2);
+          transform: translate(var(--translate-x), -50%) scale(var(--scale, 1));
+        }
+      }
+
+      /* 진동감지기 스타일 */
+      #v-box,
+      #v-box2,
+      #v-box3,
+      #v-box4,
+      #v-box5,
+      #v-box6,
+      #v-box7,
+      #v-box8,
+      #v-box9 {
+        position: absolute;
+        width: 70px;
+        height: auto;
+        z-index: 5;
+        animation: vBoxPulse 0.8s ease-in-out infinite;
+        left: 50%;
+      }
+
+      #v-box {
+        --translate-x: calc(-50% - 15px);
+        top: calc(50% + 28px);
+      }
+
+      #v-box2 {
+        --translate-x: calc(-50% - 130px);
+        top: calc(50% + 28px);
+      }
+
+      /* 새로운 진동감지기 추가 */
+      #v-box3 {
+        --translate-x: calc(-50% - 45px);
+        top: calc(50% - 22px);
+      }
+
+      #v-box4 {
+        --translate-x: calc(-50% - 160px);
+        top: calc(50% - 22px);
+      }
+
+      #v-box5 {
+        --translate-x: calc(-50% + 5px);
+        top: calc(50% - 22px);
+      }
+
+      #v-box6 {
+        --translate-x: calc(-50% - 110px);
+        top: calc(50% - 22px);
+      }
+
+      /* 새로운 진동감지기 추가 */
+      #v-box7 {
+        --translate-x: calc(-50% + 115px);
+        --scale: 0.8;
+        top: calc(50% - 203px);
+      }
+
+      /* 새로운 진동감지기 추가 */
+      #v-box8 {
+        --translate-x: calc(-50% + 83px);
+        --scale: 0.8;
+        top: calc(50% - 155px);
+      }
+
+      /* 새로운 진동감지기 추가 */
+      #v-box9 {
+        --translate-x: calc(-50% + 83px);
+        --scale: 0.8;
+        top: calc(50% - 130px);
+      }
+
+      /* comp 이미지 펄스 효과 */
+      @keyframes comp-pulse {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.05);
+          opacity: 0.8;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .comp-image {
+        position: absolute;
+        height: 50px;
+        width: auto;
+        object-fit: contain;
+        z-index: 5;
+        animation: comp-pulse 2s ease-in-out infinite;
+        filter: drop-shadow(0 0 8px rgba(52, 58, 38, 0.4));
+      }
+
+      /* 말풍선 스타일 수정 */
+      .tooltip {
+        position: absolute;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: 'Pretendard';
+        z-index: 1000;
+        display: none;
+        pointer-events: none;
+        white-space: nowrap;
+      }
+
+      .tooltip::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 5px;
+        border-style: solid;
+        border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+      }
+
+      .info-table tbody tr {
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+
+      .info-table tbody tr:hover {
+        background-color: rgba(33, 150, 243, 0.1);
+      }
+
+      .highlight {
+        animation: highlight-pulse 2s ease-in-out infinite;
+      }
+
+      @keyframes highlight-pulse {
+        0% {
+          filter: brightness(1) drop-shadow(0 0 15px rgba(33, 150, 243, 0.8));
+        }
+        50% {
+          filter: brightness(1.3) drop-shadow(0 0 25px rgba(33, 150, 243, 0.6));
+        }
+        100% {
+          filter: brightness(1) drop-shadow(0 0 15px rgba(33, 150, 243, 0.8));
+        }
+      }
+
+      @keyframes emergencyPulse {
+        0%,
+        100% {
+          transform: translate(-50%, 0) scale(1.1);
+          background-color: rgba(255, 0, 0, 0.9);
+          box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
+        }
+        50% {
+          transform: translate(-50%, 0) scale(1);
+          background-color: rgba(255, 0, 0, 0.7);
+          box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+        }
+      }
+
+      @keyframes dangerHighlight {
+        0% {
+          filter: brightness(1.5) drop-shadow(0 0 20px rgba(255, 0, 0, 0.8));
+        }
+        50% {
+          filter: brightness(1.2) drop-shadow(0 0 15px rgba(255, 0, 0, 0.6));
+        }
+        100% {
+          filter: brightness(1.5) drop-shadow(0 0 20px rgba(255, 0, 0, 0.8));
+        }
+      }
+
+      .highlight.danger {
+        animation: dangerHighlight 1s ease-in-out infinite !important;
+        z-index: 1000;
+      }
+
+      .emergency-text {
+        color: #fff;
+        font-weight: bold;
+        text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+      }
+
+      /* 일반 말풍선에서의 상태 색상 */
+      .status-normal-tooltip {
+        color: #fff !important;
+      }
+
+      .status-warning-tooltip {
+        color: #ffd700 !important;
+      }
+
+      .status-danger-tooltip {
+        color: #ff4444 !important;
+      }
+
+      /* 위험 말풍선에서의 상태 색상 */
+      .status-danger-emergency {
+        color: #000 !important;
+        font-weight: bold;
+      }
+
+      .tooltip.danger .emergency-text {
+        color: #fff;
+        font-weight: bold;
+        text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+      }
+
+      /* 스타일 수정 */
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes dangerHighlight {
+          0% {
+            filter: brightness(1.5) drop-shadow(0 0 20px rgba(255, 0, 0, 0.8));
+          }
+          50% {
+            filter: brightness(1.2) drop-shadow(0 0 15px rgba(255, 0, 0, 0.6));
+          }
+          100% {
+            filter: brightness(1.5) drop-shadow(0 0 20px rgba(255, 0, 0, 0.8));
+          }
+        }
+
+        .highlight.danger {
+          animation: dangerHighlight 1s ease-in-out infinite !important;
+          z-index: 1000;
+        }
+
+        /* 가스감지기 공통 스타일 수정 */
+        #gas-box1.danger,
+        #gas-box2.danger,
+        #gas-box3.danger,
+        #gas-box4.danger,
+        #gas-box5.danger,
+        #gas-box6.danger,
+        #gas-box7.danger,
+        #gas-box8.danger,
+        #gas-box9.danger,
+        #gas-box10.danger,
+        #gas-box11.danger,
+        #gas-box12.danger,
+        #gas-box13.danger,
+        #gas-box14.danger,
+        #gas-box15.danger {
+          animation: dangerHighlight 1s ease-in-out infinite !important;
+          z-index: 1000;
+        }
+
+        .tooltip.danger {
+          background-color: rgba(255, 0, 0, 0.9);
+          animation: emergencyPulse 1s ease-in-out infinite;
+          padding: 15px 20px;
+          font-size: 16px;
+          font-weight: bold;
+          border: 2px solid #fff;
+          box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
+          z-index: 1001;
+          position: absolute;
+          pointer-events: none;
+        }
+
+        @keyframes emergencyPulse {
+          0%, 100% {
+            transform: translate(-50%, 0) scale(1.1);
+            background-color: rgba(255, 0, 0, 0.9);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
+          }
+          50% {
+            transform: translate(-50%, 0) scale(1);
+            background-color: rgba(255, 0, 0, 0.7);
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+          }
+        }
+
+        .tooltip.danger::after {
+          content: '';
+          position: absolute;
+          bottom: -20px;
+          left: 50%;
+          transform: translateX(-50%);
+          border-width: 10px;
+          border-style: solid;
+          border-color: rgba(255, 0, 0, 0.9) transparent transparent transparent;
+        }
+      `;
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- 왼쪽 사이드바 -->
+      <div class="sidebar">
+        <div class="logo-container">
+          <img src="image/hyge-logo.png" alt="HyGE" />
+          <h2>HyGE</h2>
+        </div>
+        <ul class="menu">
+          <li class="menu-item">
+            <i class="fas fa-gas-pump"></i>
+            삼척교동수소복합스테이션
+          </li>
+          <li class="menu-item">
+            <i class="fas fa-gas-pump"></i>
+            삼척 오분동 수소 충전소
+          </li>
+          <li class="menu-item">
+            <i class="fas fa-gas-pump"></i>
+            속초 수소 충전소 (예정)
+          </li>
+          <li class="menu-item">
+            <i class="fas fa-gas-pump"></i>
+            원주 수소 충전소 (예정)
+          </li>
+        </ul>
+        <button class="back-btn" onclick="location.href='./main.html'">
+          <i class="fas fa-home"></i>
+          MAIN
+        </button>
+      </div>
+
+      <!-- 메인 컨텐츠 영역 -->
+      <div class="main-content">
+        <!-- 헤더 추가 -->
+        <div class="main-header">
+          <h1>삼척교동 수소충전 복합스테이션</h1>
+          <div class="header-right">
+            <div class="search-box">
+              <button id="testButton" class="test-button">
+                <i class="fas fa-play"></i>
+                테스트
+              </button>
+              <input
+                type="text"
+                id="menuSearch"
+                placeholder="검색어를 입력하세요"
+              />
+              <button id="searchButton" class="search-button">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="header-divider-container">
+          <hr class="header-divider" />
+        </div>
+        <!-- 메인 컨텐츠 영역 -->
+        <div class="content-wrapper">
+          <!-- 지도 영역 -->
+          <div class="map-container">
+            <div id="map">
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기1"
+                id="gas-box1"
+                data-sensor="GD 1"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기2"
+                id="gas-box2"
+                data-sensor="GD 2"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기3"
+                id="gas-box3"
+                data-sensor="GD 3"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기4"
+                id="gas-box4"
+                data-sensor="GD 4"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기5"
+                id="gas-box5"
+                data-sensor="GD 5"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기6"
+                id="gas-box6"
+                data-sensor="GD 6"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기7"
+                id="gas-box7"
+                data-sensor="GD 7"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기8"
+                id="gas-box8"
+                data-sensor="GD 8"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기9"
+                id="gas-box9"
+                data-sensor="GD 9"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기10"
+                id="gas-box10"
+                data-sensor="GD 10"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기11"
+                id="gas-box11"
+                data-sensor="GD 11"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기12"
+                id="gas-box12"
+                data-sensor="GD 12"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기13"
+                id="gas-box13"
+                data-sensor="GD 13"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기14"
+                id="gas-box14"
+                data-sensor="GD 14"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기15"
+                id="gas-box15"
+                data-sensor="GD 15"
+              />
+              <img
+                src="image/fire_box.png"
+                alt="화재감지기1"
+                id="fire-box"
+                data-sensor="FD 1"
+              />
+              <img
+                src="image/fire_box.png"
+                alt="화재감지기4"
+                id="fire-box4"
+                data-sensor="FD 4"
+              />
+              <img
+                src="image/fire_box.png"
+                alt="화재감지기2"
+                id="fire-box2"
+                data-sensor="FD 2"
+              />
+              <img
+                src="image/fire_box.png"
+                alt="화재감지기3"
+                id="fire-box3"
+                data-sensor="FD 3"
+              />
+              <img
+                src="image/fire_box.png"
+                alt="화재감지기5"
+                id="fire-box5"
+                data-sensor="FD 5"
+              />
+              <img
+                src="image/fire_box.png"
+                alt="화재감지기6"
+                id="fire-box6"
+                data-sensor="FD 6"
+              />
+              <img
+                src="image/v_box.png"
+                alt="진동감지기1"
+                id="v-box"
+                data-sensor="VD 1"
+              />
+              <img
+                src="image/v_box.png"
+                alt="진동감지기2"
+                id="v-box2"
+                data-sensor="VD 2"
+              />
+              <img
+                src="image/v_box.png"
+                alt="진동감지기3"
+                id="v-box3"
+                data-sensor="VD 3"
+              />
+              <img
+                src="image/v_box.png"
+                alt="진동감지기4"
+                id="v-box4"
+                data-sensor="VD 4"
+              />
+              <img
+                src="image/v_box.png"
+                alt="진동감지기5"
+                id="v-box5"
+                data-sensor="VD 5"
+              />
+              <img
+                src="image/v_box.png"
+                alt="진동감지기6"
+                id="v-box6"
+                data-sensor="VD 6"
+              />
+              <img
+                src="image/v_box.png"
+                alt="진동감지기7"
+                id="v-box7"
+                data-sensor="VD 7"
+              />
+              <img
+                src="image/v_box.png"
+                alt="진동감지기8"
+                id="v-box8"
+                data-sensor="VD 8"
+              />
+              <img
+                src="image/v_box.png"
+                alt="진동감지기9"
+                id="v-box9"
+                data-sensor="VD 9"
+              />
+              <img src="image/map.png" alt="지도" />
+            </div>
+          </div>
+
+          <!-- 수소 가격 정보 테이블 -->
+          <div class="price-table-container">
+            <h2><i class="fas fa-shield-alt"></i>안전감지기</h2>
+            <div>
+              <div class="table-container">
+                <table class="info-table">
+                  <thead>
+                    <tr>
+                      <th>분류</th>
+                      <th>종류</th>
+                      <th>신호</th>
+                      <th>상태</th>
+                      <th>값</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>GD 1</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.2 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 2</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.1 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 3</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-disconnected">끊김</span></td>
+                      <td><span class="status-warning">주의</span></td>
+                      <td>6.8 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 4</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.3 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 5</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.2 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 6</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.1 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 7</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.2 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 8</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.3 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 9</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.1 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 10</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.2 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 11</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.1 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 12</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.2 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 13</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.3 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 14</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.2 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 15</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.1 mA</td>
+                    </tr>
+                    <tr>
+                      <td>FD 1</td>
+                      <td>화재감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.5 mA</td>
+                    </tr>
+                    <tr>
+                      <td>FD 2</td>
+                      <td>화재감지기</td>
+                      <td><span class="signal-disconnected">끊김</span></td>
+                      <td><span class="status-danger">위험</span></td>
+                      <td>19.8 mA</td>
+                    </tr>
+                    <tr>
+                      <td>FD 3</td>
+                      <td>화재감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.3 mA</td>
+                    </tr>
+                    <tr>
+                      <td>FD 4</td>
+                      <td>화재감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.2 mA</td>
+                    </tr>
+                    <tr>
+                      <td>FD 5</td>
+                      <td>화재감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.4 mA</td>
+                    </tr>
+                    <tr>
+                      <td>FD 6</td>
+                      <td>화재감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.3 mA</td>
+                    </tr>
+                    <tr>
+                      <td>VD 1</td>
+                      <td>진동감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>0.25g</td>
+                    </tr>
+                    <tr>
+                      <td>VD 2</td>
+                      <td>진동감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>0.28g</td>
+                    </tr>
+                    <tr>
+                      <td>VD 3</td>
+                      <td>진동감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>0.22g</td>
+                    </tr>
+                    <tr>
+                      <td>VD 4</td>
+                      <td>진동감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>0.24g</td>
+                    </tr>
+                    <tr>
+                      <td>VD 5</td>
+                      <td>진동감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>0.27g</td>
+                    </tr>
+                    <tr>
+                      <td>VD 6</td>
+                      <td>진동감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>0.26g</td>
+                    </tr>
+                    <tr>
+                      <td>VD 7</td>
+                      <td>진동감지기</td>
+                      <td><span class="signal-disconnected">끊김</span></td>
+                      <td><span class="status-warning">주의</span></td>
+                      <td>0.82g</td>
+                    </tr>
+                    <tr>
+                      <td>VD 8</td>
+                      <td>진동감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>0.23g</td>
+                    </tr>
+                    <tr>
+                      <td>VD 9</td>
+                      <td>진동감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>0.21g</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 하단 정보 -->
+        <div class="bottom-info">
+          <div class="location-info">
+            <i class="fas fa-map-marker-alt"></i>
+            <span id="current-location">위치 확인 중...</span>
+          </div>
+          <div class="weather-info">
+            <i class="fas fa-temperature-high"></i>
+            <span id="current-weather">날씨 확인 중...</span>
+          </div>
+          <div class="time-info">
+            <i class="fas fa-clock"></i>
+            <span id="current-time"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // 현재 시간 업데이트
+      function updateCurrentTime() {
+        const now = new Date();
+        const options = {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false,
+        };
+        document.getElementById('current-time').textContent =
+          now.toLocaleTimeString('ko-KR', options);
+      }
+
+      // 초기화 및 주기적 업데이트
+      document.addEventListener('DOMContentLoaded', () => {
+        updateCurrentTime(); // 초기 시간 표시
+        setInterval(updateCurrentTime, 1000); // 1초마다 시간 업데이트
+      });
+
+      // 검색 기능 수정
+      document
+        .getElementById('searchButton')
+        .addEventListener('click', function () {
+          searchSensor();
+        });
+
+      // 엔터키 검색 지원
+      document
+        .getElementById('menuSearch')
+        .addEventListener('keypress', function (e) {
+          if (e.key === 'Enter') {
+            searchSensor();
+          }
+        });
+
+      function searchSensor() {
+        const searchInput = document.getElementById('menuSearch');
+        // 검색어에서 띄어쓰기를 제거하고 대문자로 변환
+        const searchText = searchInput.value
+          .trim()
+          .replace(/\s+/g, '')
+          .toUpperCase();
+
+        // 메뉴 검색
+        const menuItems = document.querySelectorAll('.sidebar .menu-item');
+        let found = false;
+
+        // 먼저 감지기 검색 (띄어쓰기 무시)
+        const sensorImages = document.querySelectorAll('[data-sensor]');
+        const matchingSensor = Array.from(sensorImages).find((img) => {
+          const sensorId = img.dataset.sensor.replace(/\s+/g, '').toUpperCase();
+          return sensorId === searchText;
+        });
+
+        if (matchingSensor) {
+          // 감지기를 찾았을 경우 말풍선 표시
+          const event = new Event('click');
+          matchingSensor.dispatchEvent(event);
+          searchInput.value = '';
+          searchInput.blur();
+          found = true;
+        } else {
+          // 기존 메뉴 검색 로직 (띄어쓰기, 대소문자 무시)
+          menuItems.forEach((item) => {
+            const menuText = item.textContent
+              .trim()
+              .replace(/\s+/g, '')
+              .toUpperCase();
+            if (menuText.includes(searchText)) {
+              found = true;
+              const link = item.querySelector('a');
+              if (link) {
+                link.click();
+              } else {
+                item.click();
+              }
+              searchInput.value = '';
+              searchInput.blur();
+            }
+          });
+        }
+
+        if (!found) {
+          alert('검색 결과가 없습니다.');
+        }
+      }
+
+      // 말풍선 및 하이라이트 기능은 유지
+      document.addEventListener('DOMContentLoaded', () => {
+        const tableRows = document.querySelectorAll('.info-table tbody tr');
+        const sensorImages = document.querySelectorAll('[data-sensor]');
+        let activeTooltip = null;
+        let activeHighlight = null;
+        let isTestMode = false;
+        let alarmSound = null;
+        let alarmInterval = null;
+        let isEmergencyState = false;
+
+        // 경고음 생성
+        function createAlarmSound() {
+          const audioContext = new (window.AudioContext ||
+            window.webkitAudioContext)();
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+
+          oscillator.type = 'square';
+          oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+          gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+
+          return {
+            context: audioContext,
+            oscillator: oscillator,
+            gainNode: gainNode,
+            start: () => {
+              oscillator.start();
+              // 경고음 패턴 설정
+              alarmInterval = setInterval(() => {
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime + 0.2);
+              }, 400);
+            },
+            stop: () => {
+              if (alarmInterval) {
+                clearInterval(alarmInterval);
+                alarmInterval = null;
+              }
+              oscillator.stop();
+              audioContext.close();
+            },
+          };
+        }
+
+        // 이전 말풍선과 하이라이트 제거
+        function clearPrevious() {
+          if (!isEmergencyState) {
+            if (activeTooltip) {
+              activeTooltip.remove();
+              activeTooltip = null;
+            }
+            if (activeHighlight) {
+              activeHighlight.classList.remove('highlight', 'danger');
+              activeHighlight = null;
+            }
+          }
+        }
+
+        // 말풍선 생성 함수
+        function createTooltip(sensorId, element, isEmergency = false) {
+          if (isEmergencyState && !isEmergency) return;
+
+          clearPrevious();
+
+          const row = Array.from(tableRows).find(
+            (row) => row.cells[0].textContent.trim() === sensorId
+          );
+
+          if (row) {
+            let sensorType = row.cells[1].textContent.trim();
+            let status = isEmergency ? '위험' : row.cells[3].textContent.trim();
+            let value = isEmergency
+              ? '20.5 mA'
+              : row.cells[4].textContent.trim();
+
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tooltip';
+
+            // 상태에 따른 색상 클래스 결정
+            let statusColorClass = '';
+            if (isTestMode && sensorId === 'GD 4') {
+              tooltip.classList.add('danger');
+              status = '위험';
+              value = '20.5 mA';
+              element.classList.add('danger');
+              statusColorClass = 'status-danger-emergency';
+
+              // 위험 상태 활성화 및 경고음 시작
+              isEmergencyState = true;
+              if (!alarmSound) {
+                alarmSound = createAlarmSound();
+                alarmSound.start();
+              }
+            } else {
+              switch (status) {
+                case '정상':
+                  statusColorClass = 'status-normal-tooltip';
+                  break;
+                case '주의':
+                  statusColorClass = 'status-warning-tooltip';
+                  break;
+                case '위험':
+                  statusColorClass = 'status-danger-tooltip';
+                  break;
+              }
+            }
+
+            tooltip.innerHTML = `
+              <div class="emergency-text">${sensorId} - ${sensorType}</div>
+              <div class="emergency-text">상태: <span class="${statusColorClass}">${status}</span></div>
+              <div class="emergency-text">측정값: ${value}</div>
+              ${
+                isEmergency
+                  ? '<div class="emergency-text" style="color: #ff0; margin-top: 5px;">⚠️ 위험 상황 감지!</div>'
+                  : ''
+              }
+            `;
+
+            const mapContainer = document.querySelector('#map');
+            const mapRect = mapContainer.getBoundingClientRect();
+            const elementRect = element.getBoundingClientRect();
+
+            // 감지기의 실제 위치 계산
+            const sensorLeft = elementRect.left - mapRect.left;
+            const sensorTop = elementRect.top - mapRect.top;
+
+            // 말풍선 위치 설정 - 위험 상황일 때는 더 위로 올림
+            tooltip.style.position = 'absolute';
+            tooltip.style.left = `${sensorLeft + elementRect.width / 2}px`;
+            tooltip.style.top = `${sensorTop - (isEmergency ? 120 : 80)}px`;
+            tooltip.style.transform = 'translateX(-50%)';
+
+            mapContainer.appendChild(tooltip);
+            tooltip.style.display = 'block';
+            activeTooltip = tooltip;
+
+            element.classList.add('highlight');
+            activeHighlight = element;
+          }
+        }
+
+        // 감지기 이미지 클릭 이벤트
+        sensorImages.forEach((img) => {
+          img.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const sensorId = img.dataset.sensor;
+            createTooltip(sensorId, img);
+          });
+        });
+
+        // 테이블 행 클릭 이벤트
+        tableRows.forEach((row) => {
+          row.addEventListener('click', () => {
+            const sensorId = row.cells[0].textContent.trim();
+            const sensorImg = document.querySelector(
+              `[data-sensor="${sensorId}"]`
+            );
+            if (sensorImg) {
+              createTooltip(sensorId, sensorImg);
+            }
+          });
+        });
+
+        // 지도 영역 클릭 이벤트
+        document.querySelector('#map').addEventListener('click', (e) => {
+          if (
+            (e.target.id === 'map' || e.target.alt === '지도') &&
+            !isEmergencyState
+          ) {
+            clearPrevious();
+          }
+        });
+
+        // 테스트 버튼 이벤트 수정
+        const testButton = document.getElementById('testButton');
+        const testIcon = testButton.querySelector('i');
+        let isTestRunning = false;
+        let currentTestTimeout = null;
+
+        const testCases = ['GD1', 'GD 2', 'GD 3', 'GD 4'];
+        let currentIndex = 0;
+
+        function runNextTest() {
+          if (!isTestRunning) return;
+
+          if (currentIndex < testCases.length) {
+            const sensorId = testCases[currentIndex]
+              .toUpperCase()
+              .replace(/\s+/g, ' ');
+            const sensorImg = document.querySelector(
+              `[data-sensor="${sensorId}"]`
+            );
+
+            if (sensorImg) {
+              if (sensorId === 'GD 4') {
+                createTooltip(sensorId, sensorImg, true);
+                // GD 4에서 테스트 중단 (위험 상황 유지)
+                isTestRunning = false;
+                testButton.style.backgroundColor = '#f44336';
+                testIcon.className = 'fas fa-exclamation-triangle';
+                return;
+              } else {
+                createTooltip(sensorId, sensorImg);
+              }
+            }
+
+            currentIndex++;
+            currentTestTimeout = setTimeout(runNextTest, 2000);
+          } else {
+            stopTest();
+          }
+        }
+
+        function startTest() {
+          isTestRunning = true;
+          isTestMode = true;
+          isEmergencyState = false;
+          testButton.style.backgroundColor = '#f44336';
+          testIcon.className = 'fas fa-pause';
+          currentIndex = 0;
+          if (alarmSound) {
+            alarmSound.stop();
+            alarmSound = null;
+          }
+          runNextTest();
+        }
+
+        function stopTest() {
+          isTestRunning = false;
+          isTestMode = false;
+          isEmergencyState = false;
+          testButton.style.backgroundColor = '#4caf50';
+          testIcon.className = 'fas fa-play';
+          if (currentTestTimeout) {
+            clearTimeout(currentTestTimeout);
+            currentTestTimeout = null;
+          }
+          if (alarmSound) {
+            alarmSound.stop();
+            alarmSound = null;
+          }
+          currentIndex = 0;
+          const searchInput = document.getElementById('menuSearch');
+          searchInput.value = '';
+          clearPrevious();
+        }
+
+        testButton.addEventListener('click', function () {
+          if (!isTestRunning && !isEmergencyState) {
+            startTest();
+          } else if (isEmergencyState) {
+            stopTest();
+          } else {
+            stopTest();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

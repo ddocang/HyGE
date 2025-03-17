@@ -864,42 +864,23 @@
       /* 말풍선 스타일 */
       .tooltip {
         position: fixed;
-        background: rgba(30, 30, 30, 0.95);
-        border: 1px solid #444;
+        padding: 10px 14px;
         border-radius: 8px;
-        padding: 12px;
         font-family: 'Pretendard', sans-serif;
-        font-size: 14px;
-        color: #fff;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        z-index: 1000;
-        display: none;
-        min-width: 200px;
-        transition: all 0.3s ease;
-      }
-
-      .tooltip.normal {
-        background: rgba(30, 30, 30, 0.95);
-        border-color: #2196f3;
-        box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
-      }
-
-      .tooltip.warning {
-        background: rgba(30, 30, 30, 0.95);
-        border-color: #ffc107;
-        box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
-      }
-
-      .tooltip.danger {
-        background: rgba(30, 30, 30, 0.95);
-        border-color: #f44336;
-        box-shadow: 0 4px 12px rgba(244, 67, 54, 0.2);
+        font-size: 12px;
+        backdrop-filter: blur(8px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        z-index: 9999;
+        min-width: 180px;
+        max-width: 220px;
+        transform-origin: center bottom;
+        animation: tooltipAppear 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
       }
 
       .tooltip-content {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 6px;
       }
 
       .tooltip-item {
@@ -907,121 +888,69 @@
         justify-content: space-between;
         align-items: center;
         padding: 4px 0;
+        font-size: 12px;
       }
 
       .tooltip-label {
-        color: #888;
-        margin-right: 12px;
-        font-size: 13px;
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 500;
       }
 
       .tooltip-value {
+        font-size: 12px;
+        font-weight: 600;
         color: #fff;
-        font-weight: 500;
-        font-size: 13px;
-      }
-
-      .tooltip-value.status-normal {
-        color: #2196f3;
-        font-weight: 600;
-      }
-
-      .tooltip-value.status-warning {
-        color: #ffc107;
-        font-weight: 600;
-      }
-
-      .tooltip-value.status-danger {
-        color: #f44336;
-        font-weight: 600;
       }
 
       .tooltip::after {
         content: '';
         position: absolute;
-        bottom: -8px;
+        bottom: -6px;
         left: 50%;
         transform: translateX(-50%);
-        border-left: 8px solid transparent;
-        border-right: 8px solid transparent;
-        border-top: 8px solid #444;
-        transition: all 0.3s ease;
+        border-style: solid;
+        border-width: 6px 6px 0 6px;
+      }
+
+      .tooltip.normal {
+        background: rgba(30, 136, 229, 0.95);
+        border: 1px solid rgba(30, 136, 229, 0.2);
+      }
+
+      .tooltip.warning {
+        background: rgba(251, 140, 0, 0.95);
+        border: 1px solid rgba(251, 140, 0, 0.2);
+      }
+
+      .tooltip.danger {
+        background: rgba(229, 57, 53, 0.95);
+        border: 1px solid rgba(229, 57, 53, 0.2);
       }
 
       .tooltip.normal::after {
-        border-top-color: #2196f3;
+        border-color: rgba(30, 136, 229, 0.95) transparent transparent
+          transparent;
       }
 
       .tooltip.warning::after {
-        border-top-color: #ffc107;
+        border-color: rgba(251, 140, 0, 0.95) transparent transparent
+          transparent;
       }
 
       .tooltip.danger::after {
-        border-top-color: #f44336;
+        border-color: rgba(229, 57, 53, 0.95) transparent transparent
+          transparent;
       }
 
-      /* 말풍선이 위에 표시될 때의 화살표 스타일 */
-      .tooltip.top::after {
-        top: -8px;
-        bottom: auto;
-        border-top: none;
-        border-bottom: 8px solid #444;
-      }
-
-      .tooltip.top.normal::after {
-        border-bottom-color: #2196f3;
-      }
-
-      .tooltip.top.warning::after {
-        border-bottom-color: #ffc107;
-      }
-
-      .tooltip.top.danger::after {
-        border-bottom-color: #f44336;
-      }
-
-      /* 상태 아이콘 스타일 */
-      .status-icon {
-        margin-right: 6px;
-        font-size: 14px;
-      }
-
-      .status-icon.normal {
-        color: #2196f3;
-      }
-
-      .status-icon.warning {
-        color: #ffc107;
-      }
-
-      .status-icon.danger {
-        color: #f44336;
-      }
-
-      /* 상태 배지 스타일 */
-      .status-badge {
-        display: inline-flex;
-        align-items: center;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 12px;
-        font-weight: 600;
-        margin-left: 8px;
-      }
-
-      .status-badge.normal {
-        background: rgba(33, 150, 243, 0.1);
-        color: #2196f3;
-      }
-
-      .status-badge.warning {
-        background: rgba(255, 193, 7, 0.1);
-        color: #ffc107;
-      }
-
-      .status-badge.danger {
-        background: rgba(244, 67, 54, 0.1);
-        color: #f44336;
+      @keyframes tooltipAppear {
+        0% {
+          opacity: 0;
+          transform: translateY(10px) scale(0.95);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
       }
 
       .monitoring-header {
@@ -1834,67 +1763,6 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1"></script>
-    <script src="script.js" defer></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        // 1초 후에 차트 업데이트 시작
-        setTimeout(() => {
-          initializeCharts(); // script.js의 차트 초기화 함수 호출
-          setInterval(updateChartTimes, 1000);
-        }, 1000);
-      });
-
-      // 차트 시간 업데이트 함수
-      function updateChartTimes() {
-        try {
-          // 진동 감지기 차트 시간 업데이트
-          for (let i = 1; i <= 9; i++) {
-            const chartId = `vibrationChart${i}`;
-            const chart = Chart.getChart(chartId);
-            if (chart) {
-              const labels = Array.from({ length: 10 }, (_, i) => {
-                const date = new Date();
-                date.setMinutes(date.getMinutes() - (9 - i));
-                return date.toLocaleTimeString('ko-KR', {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                  hour12: false,
-                });
-              });
-
-              chart.data.labels = labels;
-              chart.data.datasets[0].data = Array.from(
-                { length: 10 },
-                () => 0.25 + Math.random() * 0.1
-              );
-              chart.update('none');
-            }
-          }
-
-          // 하단 차트 시간 업데이트
-          const bottomChart = Chart.getChart('bottomChart');
-          if (bottomChart) {
-            const bottomLabels = Array.from({ length: 360 }, (_, i) => {
-              const date = new Date();
-              date.setMinutes(date.getMinutes() - (359 - i));
-              return date.toLocaleTimeString('ko-KR', {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false,
-              });
-            });
-
-            bottomChart.data.labels = bottomLabels;
-            bottomChart.data.datasets[0].data = Array.from(
-              { length: 360 },
-              () => 0.25 + Math.random() * 0.1
-            );
-            bottomChart.update('none');
-          }
-        } catch (error) {
-          console.error('차트 업데이트 중 오류 발생:', error);
-        }
-      }
-    </script>
+    <script src="monitoring.js"></script>
   </body>
 </html>

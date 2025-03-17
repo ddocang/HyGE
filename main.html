@@ -22,6 +22,11 @@
     />
     <!-- Mapbox GL JS JavaScript -->
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
+    <!-- 네이버 지도 API -->
+    <script
+      type="text/javascript"
+      src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=9biw41sxac"
+    ></script>
     <!-- script.js -->
     <script src="script.js"></script>
     <style>
@@ -158,8 +163,8 @@
       }
 
       .map-container {
-        width: 500px;
-        height: 250px;
+        width: 100%;
+        height: 600px;
         border-radius: 10px;
         overflow: hidden;
         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -587,6 +592,66 @@
         margin-top: auto;
         color: #e0e0e0;
       }
+
+      /* 자동완성 관련 스타일 추가 */
+      .autocomplete-items {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        z-index: 99;
+        background-color: #1e1e1e;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        margin-top: 4px;
+        max-height: 200px;
+        overflow-y: auto;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .autocomplete-item {
+        padding: 10px 16px;
+        cursor: pointer;
+        color: #e0e0e0;
+        font-family: 'Pretendard';
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+      }
+
+      .autocomplete-item i {
+        color: #2196f3;
+        font-size: 14px;
+      }
+
+      .autocomplete-item:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .autocomplete-active {
+        background-color: rgba(33, 150, 243, 0.2) !important;
+      }
+
+      /* 스크롤바 스타일 */
+      .autocomplete-items::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .autocomplete-items::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+      }
+
+      .autocomplete-items::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 3px;
+      }
+
+      .autocomplete-items::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
     </style>
   </head>
   <body>
@@ -598,19 +663,19 @@
           <h2>HyGE</h2>
         </div>
         <ul class="menu">
-          <li class="menu-item">
+          <li class="menu-item" data-station="삼척교동수소충전복합스테이션">
             <i class="fas fa-gas-pump"></i>
-            삼척교동수소복합스테이션
+            삼척교동수소충전복합스테이션
           </li>
-          <li class="menu-item">
+          <li class="menu-item" data-station="삼척 오분동 수소 충전소">
             <i class="fas fa-gas-pump"></i>
             삼척 오분동 수소 충전소
           </li>
-          <li class="menu-item">
+          <li class="menu-item" data-station="속초 수소 충전소">
             <i class="fas fa-gas-pump"></i>
             속초 수소 충전소 (예정)
           </li>
-          <li class="menu-item">
+          <li class="menu-item" data-station="원주 수소 충전소">
             <i class="fas fa-gas-pump"></i>
             원주 수소 충전소 (예정)
           </li>
@@ -668,470 +733,13 @@
       </div>
     </div>
 
-    <!-- 네이버 지도 스크립트 -->
-    <script
-      type="text/javascript"
-      src="/map-api/openapi/v3/maps.js?ncpClientId=9biw41sxac"
-    ></script>
-
     <!-- 지도 초기화 스크립트 -->
     <script>
-      var map = new naver.maps.Map('map', {
-        center: new naver.maps.LatLng(37.5665, 126.978),
-        zoom: 15,
-        mapTypeId: naver.maps.MapTypeId.NORMAL,
-        mapTypeControl: true,
-        mapTypeControlOptions: {
-          position: naver.maps.Position.TOP_RIGHT,
-          style: naver.maps.MapTypeControlStyle.DROPDOWN,
-        },
-      });
-
-      // 다크모드 상태에 따라 지도 스타일 변경
-      function updateMapStyle(isDarkMode) {
-        if (isDarkMode) {
-          map.setMapTypeId(naver.maps.MapTypeId.HYBRID);
-          map.setOptions({
-            styles: [
-              {
-                featureType: 'all',
-                elementType: 'labels.text.fill',
-                stylers: [{ color: '#ffffff' }],
-              },
-              {
-                featureType: 'all',
-                elementType: 'labels.text.stroke',
-                stylers: [{ color: '#000000' }],
-              },
-              {
-                featureType: 'all',
-                elementType: 'geometry',
-                stylers: [{ color: '#242f3e' }],
-              },
-              {
-                featureType: 'all',
-                elementType: 'geometry.stroke',
-                stylers: [{ color: '#2c3e50' }],
-              },
-              {
-                featureType: 'all',
-                elementType: 'labels.text.stroke',
-                stylers: [{ color: '#2c3e50' }],
-              },
-              {
-                featureType: 'administrative.locality',
-                elementType: 'labels.text.fill',
-                stylers: [{ color: '#d59563' }],
-              },
-              {
-                featureType: 'poi',
-                elementType: 'labels.text.fill',
-                stylers: [{ color: '#d59563' }],
-              },
-              {
-                featureType: 'poi.park',
-                elementType: 'geometry',
-                stylers: [{ color: '#263c3f' }],
-              },
-              {
-                featureType: 'poi.park',
-                elementType: 'labels.text.fill',
-                stylers: [{ color: '#6b9a76' }],
-              },
-              {
-                featureType: 'road',
-                elementType: 'geometry',
-                stylers: [{ color: '#38414e' }],
-              },
-              {
-                featureType: 'road',
-                elementType: 'geometry.stroke',
-                stylers: [{ color: '#212a37' }],
-              },
-              {
-                featureType: 'road',
-                elementType: 'labels.text.fill',
-                stylers: [{ color: '#9ca5b3' }],
-              },
-              {
-                featureType: 'road.highway',
-                elementType: 'geometry',
-                stylers: [{ color: '#746855' }],
-              },
-              {
-                featureType: 'road.highway',
-                elementType: 'geometry.stroke',
-                stylers: [{ color: '#1f2835' }],
-              },
-              {
-                featureType: 'road.highway',
-                elementType: 'labels.text.fill',
-                stylers: [{ color: '#f3d19c' }],
-              },
-              {
-                featureType: 'water',
-                elementType: 'geometry',
-                stylers: [{ color: '#17263c' }],
-              },
-              {
-                featureType: 'water',
-                elementType: 'labels.text.fill',
-                stylers: [{ color: '#515c6d' }],
-              },
-              {
-                featureType: 'water',
-                elementType: 'labels.text.stroke',
-                stylers: [{ color: '#17263c' }],
-              },
-            ],
-          });
-        } else {
-          map.setMapTypeId(naver.maps.MapTypeId.NORMAL);
-          map.setOptions({ styles: [] });
-        }
-      }
-
-      // 다크모드 상태 감지 및 지도 스타일 업데이트
-      const darkModeObserver = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-          if (mutation.attributeName === 'class') {
-            const isDarkMode = document.body.classList.contains('dark-mode');
-            updateMapStyle(isDarkMode);
-
-            // 현재 열려있는 정보창이 있다면 업데이트
-            if (currentInfowindow) {
-              const currentMarker = Object.keys(markers).find((key) =>
-                markers[key]
-                  .getPosition()
-                  .equals(currentInfowindow.getPosition())
-              );
-              if (currentMarker) {
-                const station = stations.find((s) => s.title === currentMarker);
-                if (station) {
-                  currentInfowindow.close();
-                  infowindows[station.title].open(map, markers[station.title]);
-                  currentInfowindow = infowindows[station.title];
-                }
-              }
-            }
-          }
-        });
-      });
-
-      darkModeObserver.observe(document.body, {
-        attributes: true,
-        attributeFilter: ['class'],
-      });
-
-      // 초기 다크모드 상태 확인 및 적용
-      const isDarkMode = document.body.classList.contains('dark-mode');
-      updateMapStyle(isDarkMode);
-
-      // 지도 크기 확인
-      setTimeout(() => {
-        const mapElement = document.getElementById('map');
-        const mapSize = {
-          width: mapElement.offsetWidth,
-          height: mapElement.offsetHeight,
-          clientWidth: mapElement.clientWidth,
-          clientHeight: mapElement.clientHeight,
-          scrollWidth: mapElement.scrollWidth,
-          scrollHeight: mapElement.scrollHeight,
-        };
-        console.log('지도 실제 크기:', mapSize);
-      }, 1000);
-
-      // 충전소 상세 정보
-      const stations = [
-        {
-          title: '삼척교동수소충전복합스테이션',
-          tel: '033-570-3114',
-          address: '강원특별자치도 삼척시 교동 720-1',
-          position: new naver.maps.LatLng(37.458921, 129.173047),
-          image: 'image/station1.png',
-        },
-        {
-          title: '삼척수소충전소',
-          tel: '033-570-3115',
-          address: '강원특별자치도 삼척시 오분동 142',
-          position: new naver.maps.LatLng(37.429574, 129.18289),
-          image: 'image/station2.png',
-        },
-        {
-          title: '속초수소충전소',
-          tel: '033-631-1114',
-          address: '강원특별자치도 속초시 대포동 978-1',
-          position: new naver.maps.LatLng(38.207014, 128.591931),
-          image: 'image/station3.png',
-        },
-        {
-          title: '원주수소충전소',
-          tel: '033-731-1114',
-          address: '강원특별자치도 원주시 태장동 1720-1',
-          position: new naver.maps.LatLng(37.342697, 127.959319),
-          image: 'image/station4.png',
-        },
-      ];
-
-      // 전역 변수로 마커와 정보창 저장을 위한 객체
+      let map;
+      let stations = [];
       let markers = {};
       let infowindows = {};
       let currentInfowindow = null;
-
-      // 사이드바 메뉴 클릭 이벤트 추가
-      function addMenuClickEvent() {
-        const menuItems = document.querySelectorAll('.menu-item');
-        menuItems.forEach((item, index) => {
-          item.addEventListener('click', () => {
-            const station = stations[index];
-
-            // 이전 정보창 닫기
-            if (currentInfowindow) {
-              currentInfowindow.close();
-            }
-
-            // 해당 마커로 지도 이동
-            map.setCenter(station.position);
-            map.setZoom(12); // 줌 레벨 조정 (1~20 사이 값, 숫자가 클수록 더 가깝게 줌인)
-            // 예: 14 = 멀리서 보기, 16 = 중간, 18 = 가깝게, 20 = 아주 가깝게
-
-            // 해당 마커의 정보창 열기
-            const infowindow = infowindows[station.title];
-            infowindow.open(map, markers[station.title]);
-            currentInfowindow = infowindow;
-          });
-        });
-      }
-
-      // 마커와 정보창 생성 부분 수정
-      stations.forEach((station) => {
-        // 마커 생성
-        const marker = new naver.maps.Marker({
-          position: station.position,
-          map: map,
-          title: station.title,
-          animation: naver.maps.Animation.DROP,
-        });
-
-        // 정보창 생성
-        const infowindow = new naver.maps.InfoWindow({
-          content: `
-            <div class="info-window" style="
-              background-color: ${
-                document.body.classList.contains('dark-mode')
-                  ? '#1a1a1a'
-                  : 'white'
-              };
-              border-radius: 16px;
-              padding: 24px;
-              min-width: 420px;
-              height: 300px;
-              font-family: Pretendard;
-              position: relative;
-              box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-              margin: -10px;
-              overflow-y: auto;
-              color: ${
-                document.body.classList.contains('dark-mode')
-                  ? '#ffffff'
-                  : '#333333'
-              };
-            ">
-              <!-- 이미지 컨테이너 -->
-              <div style="
-                position: absolute;
-                top: 24px;
-                right: 24px;
-                display: flex;
-                flex-direction: column;
-                gap: 12px;
-                align-items: center;
-              ">
-                <div style="
-                  width: 120px;
-                  height: 120px;
-                  border-radius: 12px;
-                  overflow: hidden;
-                  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-                ">
-                  <img src="${station.image}" alt="${station.title}" 
-                       style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <button onclick="getCurrentPositionAndNavigate(${station.position.lat()}, ${station.position.lng()}, '${
-            station.title
-          }')" style="
-                  background: linear-gradient(135deg, #2196F3, #1976D2);
-                  border: none;
-                  border-radius: 8px;
-                  color: white;
-                  padding: 8px 16px;
-                  font-family: Pretendard;
-                  font-size: 13px;
-                  font-weight: 600;
-                  cursor: pointer;
-                  display: flex;
-                  align-items: center;
-                  gap: 6px;
-                  width: 120px;
-                  justify-content: center;
-                  transition: all 0.2s ease;
-                  box-shadow: 0 2px 6px rgba(33, 150, 243, 0.3);
-                ">
-                  <i class="fas fa-location-arrow"></i>
-                  길찾기
-                </button>
-                <button onclick="location.href='./monitoring.html?station=${encodeURIComponent(
-                  station.title
-                )}'" style="
-                  background: linear-gradient(135deg, #4CAF50, #388E3C);
-                  border: none;
-                  border-radius: 8px;
-                  color: white;
-                  padding: 8px 16px;
-                  font-family: Pretendard;
-                  font-size: 13px;
-                  font-weight: 600;
-                  cursor: pointer;
-                  display: flex;
-                  align-items: center;
-                  gap: 6px;
-                  width: 120px;
-                  justify-content: center;
-                  transition: all 0.2s ease;
-                  box-shadow: 0 2px 6px rgba(76, 175, 80, 0.3);
-                ">
-                  <i class="fas fa-external-link-alt"></i>
-                  모니터링
-                </button>
-              </div>
-              
-              <!-- 텍스트 정보 -->
-              <div style="width: calc(100% - 140px);">
-                <h3 style="
-                  margin: 0 0 20px 0;
-                  font-size: 20px;
-                  color: ${
-                    document.body.classList.contains('dark-mode')
-                      ? '#ffffff'
-                      : '#333333'
-                  };
-                  font-weight: 600;
-                  white-space: nowrap;
-                  overflow: hidden;
-                  text-overflow: ellipsis;
-                ">${station.title}</h3>
-                
-                <div style="margin: 16px 0;">
-                  <div style="
-                    display: flex;
-                    align-items: center;
-                    margin-bottom: 12px;
-                  ">
-                    <i class="fas fa-phone" style="
-                      color: #2196F3;
-                      margin-right: 12px;
-                      font-size: 16px;
-                      flex-shrink: 0;
-                    "></i>
-                    <div style="width: 100%;">
-                      <div class="info-label" style="
-                        color: ${
-                          document.body.classList.contains('dark-mode')
-                            ? '#999999'
-                            : '#666666'
-                        };
-                        font-size: 13px;
-                        margin-bottom: 4px;
-                      ">연락처</div>
-                      <div class="info-value" style="
-                        color: ${
-                          document.body.classList.contains('dark-mode')
-                            ? '#ffffff'
-                            : '#333333'
-                        };
-                        font-size: 15px;
-                        font-weight: 500;
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                      ">${station.tel}</div>
-                    </div>
-                  </div>
-                  
-                  <div style="
-                    display: flex;
-                    align-items: center;
-                  ">
-                    <i class="fas fa-map-marker-alt" style="
-                      color: #2196F3;
-                      margin-right: 12px;
-                      font-size: 16px;
-                      flex-shrink: 0;
-                    "></i>
-                    <div style="width: 100%;">
-                      <div class="info-label" style="
-                        color: ${
-                          document.body.classList.contains('dark-mode')
-                            ? '#999999'
-                            : '#666666'
-                        };
-                        font-size: 13px;
-                        margin-bottom: 4px;
-                      ">주소</div>
-                      <div class="info-value" style="
-                        color: ${
-                          document.body.classList.contains('dark-mode')
-                            ? '#ffffff'
-                            : '#333333'
-                        };
-                        font-size: 15px;
-                        font-weight: 500;
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                      ">${station.address}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          `,
-          disableAnchor: true,
-          borderWidth: 0,
-          backgroundColor: 'transparent',
-        });
-
-        // 마커 클릭 이벤트
-        naver.maps.Event.addListener(marker, 'click', function () {
-          if (currentInfowindow) {
-            currentInfowindow.close();
-          }
-          infowindow.open(map, marker);
-          currentInfowindow = infowindow;
-        });
-
-        // 마커와 정보창을 객체에 저장
-        markers[station.title] = marker;
-        infowindows[station.title] = infowindow;
-      });
-
-      // 지도 클릭 시 정보창 닫기
-      naver.maps.Event.addListener(map, 'click', function (e) {
-        if (currentInfowindow) {
-          currentInfowindow.close();
-          currentInfowindow = null;
-        }
-      });
-
-      // 메뉴 클릭 이벤트 초기화
-      addMenuClickEvent();
-
-      // 모든 마커가 보이도록 지도 영역 자동 조정
-      const bounds = stations.reduce((bounds, station) => {
-        return bounds.extend(station.position);
-      }, new naver.maps.LatLngBounds());
-
-      map.fitBounds(bounds);
 
       // 브라우저의 위치 정보 가져오기
       async function getCurrentLocation() {
@@ -1176,8 +784,11 @@
       async function getCurrentWeather(latitude, longitude) {
         try {
           const response = await fetch(
-            `/api/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=4488b4dc99859632928a243349446319&units=metric&lang=kr`
+            `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=4488b4dc99859632928a243349446319&units=metric&lang=kr`
           );
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
           const data = await response.json();
           const temp = Math.round(data.main.temp);
           const humidity = data.main.humidity;
@@ -1204,48 +815,91 @@
           now.toLocaleTimeString('ko-KR', options);
       }
 
+      // 충전소 정보를 가져오는 함수
+      function fetchStationInfo() {
+        console.log('충전소 정보 가져오기 시작');
+
+        // 정적 데이터 사용
+        stations = [
+          {
+            title: '삼척교동수소충전복합스테이션',
+            tel: '033-570-3114',
+            address: '강원특별자치도 삼척시 교동 720-1',
+            position: new naver.maps.LatLng(37.458921, 129.173047),
+            image: 'image/station1.png',
+            price: '8,800원/kg',
+            pressure: '70MPa',
+            status: '운영중',
+          },
+          {
+            title: '삼척 오분동 수소 충전소',
+            tel: '033-570-3114',
+            address: '강원특별자치도 삼척시 오분동 123',
+            position: new naver.maps.LatLng(37.445692, 129.165203),
+            image: 'image/station1.png',
+            price: '8,800원/kg',
+            pressure: '70MPa',
+            status: '운영중',
+          },
+          {
+            title: '속초 수소 충전소',
+            tel: '033-570-3114',
+            address: '강원특별자치도 속초시 조양동 1451',
+            position: new naver.maps.LatLng(38.207002, 128.591932),
+            image: 'image/station1.png',
+            price: '8,800원/kg',
+            pressure: '70MPa',
+            status: '예정',
+          },
+          {
+            title: '원주 수소 충전소',
+            tel: '033-570-3114',
+            address: '강원특별자치도 원주시 무실동 1721-2',
+            position: new naver.maps.LatLng(37.342196, 127.920259),
+            image: 'image/station1.png',
+            price: '8,800원/kg',
+            pressure: '70MPa',
+            status: '예정',
+          },
+        ];
+
+        console.log('충전소 데이터 로드 완료:', stations);
+        initializeMarkers();
+      }
+
+      function initMap() {
+        map = new naver.maps.Map('map', {
+          center: new naver.maps.LatLng(37.5665, 126.978),
+          zoom: 7,
+          mapTypeId: naver.maps.MapTypeId.HYBRID,
+          mapTypeControl: true,
+          mapTypeControlOptions: {
+            position: naver.maps.Position.TOP_RIGHT,
+            style: naver.maps.MapTypeControlStyle.DROPDOWN,
+          },
+          zoomControl: true,
+          zoomControlOptions: {
+            position: naver.maps.Position.RIGHT,
+          },
+        });
+
+        naver.maps.Event.once(map, 'init', function () {
+          console.log('지도 초기화 완료');
+          fetchStationInfo();
+        });
+      }
+
       // 초기화 및 주기적 업데이트
       document.addEventListener('DOMContentLoaded', () => {
-        updateAllInfo(); // 초기 정보 가져오기
-        updateCurrentTime(); // 초기 시간 표시
-        setInterval(updateCurrentTime, 1000); // 1초마다 시간 업데이트
-        setInterval(updateAllInfo, 300000); // 5분마다 위치/날씨 업데이트
+        console.log('페이지 로드됨');
+        initMap();
+        updateAllInfo();
+        updateCurrentTime();
+        setInterval(updateCurrentTime, 1000);
+        setInterval(updateAllInfo, 300000);
       });
 
-      // 하단 정보 표시 영역 스타일 수정
-      const bottomInfoStyle = `
-      .bottom-info {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 15px 30px;
-          background-color: white;
-          border-top: 1px solid #eee;
-          font-family: Pretendard;
-          margin-top: 280px;
-      }
-
-      .location-info, .weather-info, .time-info {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          color: #666;
-          font-size: 14px;
-          white-space: nowrap;
-      }
-
-      .bottom-info i {
-          color: #2196F3;
-          font-size: 16px;
-      }
-      `;
-
-      // 스타일 추가
-      const styleSheet = document.createElement('style');
-      styleSheet.innerText = bottomInfoStyle;
-      document.head.appendChild(styleSheet);
-
-      // 현재 위치를 가져와서 길찾기 URL을 생성하는 함수 추가
+      // 현재 위치를 가져와서 길찾기 URL을 생성하는 함수
       function getCurrentPositionAndNavigate(destLat, destLng, destName) {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
@@ -1259,7 +913,6 @@
             },
             (error) => {
               console.error('위치 정보를 가져올 수 없습니다:', error);
-              // 위치 정보를 가져올 수 없는 경우 목적지만 설정
               const url = `https://map.kakao.com/link/to/${encodeURIComponent(
                 destName
               )},${destLat},${destLng}`;
@@ -1267,49 +920,547 @@
             }
           );
         } else {
-          // 지오로케이션이 지원되지 않는 경우 목적지만 설정
           const url = `https://map.kakao.com/link/to/${encodeURIComponent(
             destName
           )},${destLat},${destLng}`;
           window.open(url);
         }
       }
+
+      // 마커와 정보창 초기화 함수
+      function initializeMarkers() {
+        // 기존 마커와 정보창 제거
+        Object.values(markers).forEach((marker) => marker.setMap(null));
+        markers = {};
+        infowindows = {};
+
+        // 새로운 마커와 정보창 생성
+        stations.forEach((station) => {
+          // 마커 생성
+          const marker = new naver.maps.Marker({
+            position: station.position,
+            map: map,
+            title: station.title,
+            animation: naver.maps.Animation.DROP,
+          });
+
+          // 정보창 생성
+          const infowindow = new naver.maps.InfoWindow({
+            content: `
+              <div class="info-window" style="
+                background-color: ${
+                  document.body.classList.contains('dark-mode')
+                    ? '#1a1a1a'
+                    : 'white'
+                };
+                border-radius: 12px;
+                padding: 20px;
+                min-width: 360px;
+                height: auto;
+                font-family: Pretendard;
+                position: relative;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+                margin: -10px;
+                overflow: hidden;
+                color: ${
+                  document.body.classList.contains('dark-mode')
+                    ? '#ffffff'
+                    : '#333333'
+                };
+              ">
+                <!-- 이미지 컨테이너 -->
+                <div style="
+                  position: absolute;
+                  top: 20px;
+                  right: 20px;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 8px;
+                  align-items: center;
+                ">
+                  <div style="
+                    width: 100px;
+                    height: 100px;
+                    border-radius: 8px;
+                    overflow: hidden;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                  ">
+                    <img src="${station.image}" alt="${station.title}"
+                         style="width: 100%; height: 100%; object-fit: cover;">
+                  </div>
+                  <button onclick="getCurrentPositionAndNavigate(${station.position.lat()}, ${station.position.lng()}, '${
+              station.title
+            }')" style="
+                    background: linear-gradient(135deg, #2196F3, #1976D2);
+                    border: none;
+                    border-radius: 6px;
+                    color: white;
+                    padding: 6px 12px;
+                    font-family: Pretendard;
+                    font-size: 12px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+                    width: 100px;
+                    justify-content: center;
+                    transition: all 0.2s ease;
+                    box-shadow: 0 2px 6px rgba(33, 150, 243, 0.3);
+                  ">
+                    <i class="fas fa-location-arrow"></i>
+                    길찾기
+                  </button>
+                  <button onclick="${
+                    station.status === '예정'
+                      ? 'showPreparingAlert()'
+                      : `location.href='./monitoring.html?station=${encodeURIComponent(
+                          station.title
+                        )}'`
+                  }" style="
+                    background: linear-gradient(135deg, #4CAF50, #388E3C);
+                    border: none;
+                    border-radius: 6px;
+                    color: white;
+                    padding: 6px 12px;
+                    font-family: Pretendard;
+                    font-size: 12px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+                    width: 100px;
+                    justify-content: center;
+                    transition: all 0.2s ease;
+                    box-shadow: 0 2px 6px rgba(76, 175, 80, 0.3);
+                  ">
+                    <i class="fas fa-external-link-alt"></i>
+                    모니터링
+                  </button>
+                </div>
+
+                <!-- 텍스트 정보 -->
+                <div style="width: calc(100% - 120px);">
+                  <h3 style="
+                    margin: 0 0 16px 0;
+                    font-size: 18px;
+                    color: ${
+                      document.body.classList.contains('dark-mode')
+                        ? '#ffffff'
+                        : '#333333'
+                    };
+                    font-weight: 600;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                  ">${station.title}</h3>
+
+                  <div style="margin: 12px 0;">
+                    <div style="
+                      display: flex;
+                      align-items: center;
+                      margin-bottom: 8px;
+                    ">
+                      <i class="fas fa-phone" style="
+                        color: #2196F3;
+                        margin-right: 8px;
+                        font-size: 14px;
+                        flex-shrink: 0;
+                      "></i>
+                      <div style="width: 100%;">
+                        <div class="info-label" style="
+                          color: ${
+                            document.body.classList.contains('dark-mode')
+                              ? '#999999'
+                              : '#666666'
+                          };
+                          font-size: 12px;
+                          margin-bottom: 2px;
+                        ">연락처</div>
+                        <div class="info-value" style="
+                          color: ${
+                            document.body.classList.contains('dark-mode')
+                              ? '#ffffff'
+                              : '#333333'
+                          };
+                          font-size: 13px;
+                          font-weight: 500;
+                          white-space: nowrap;
+                          overflow: hidden;
+                          text-overflow: ellipsis;
+                        ">${station.tel}</div>
+                      </div>
+                    </div>
+
+                    <div style="
+                      display: flex;
+                      align-items: center;
+                      margin-bottom: 8px;
+                    ">
+                      <i class="fas fa-map-marker-alt" style="
+                        color: #2196F3;
+                        margin-right: 8px;
+                        font-size: 14px;
+                        flex-shrink: 0;
+                      "></i>
+                      <div style="width: 100%;">
+                        <div class="info-label" style="
+                          color: ${
+                            document.body.classList.contains('dark-mode')
+                              ? '#999999'
+                              : '#666666'
+                          };
+                          font-size: 12px;
+                          margin-bottom: 2px;
+                        ">주소</div>
+                        <div class="info-value" style="
+                          color: ${
+                            document.body.classList.contains('dark-mode')
+                              ? '#ffffff'
+                              : '#333333'
+                          };
+                          font-size: 13px;
+                          font-weight: 500;
+                          white-space: nowrap;
+                          overflow: hidden;
+                          text-overflow: ellipsis;
+                        ">${station.address}</div>
+                      </div>
+                    </div>
+
+                    <div style="
+                      display: flex;
+                      align-items: center;
+                      margin-bottom: 8px;
+                    ">
+                      <i class="fas fa-tag" style="
+                        color: #2196F3;
+                        margin-right: 8px;
+                        font-size: 14px;
+                        flex-shrink: 0;
+                      "></i>
+                      <div style="width: 100%;">
+                        <div class="info-label" style="
+                          color: ${
+                            document.body.classList.contains('dark-mode')
+                              ? '#999999'
+                              : '#666666'
+                          };
+                          font-size: 12px;
+                          margin-bottom: 2px;
+                        ">충전 단가</div>
+                        <div class="info-value" style="
+                          color: ${
+                            document.body.classList.contains('dark-mode')
+                              ? '#ffffff'
+                              : '#333333'
+                          };
+                          font-size: 13px;
+                          font-weight: 500;
+                          white-space: nowrap;
+                          overflow: hidden;
+                          text-overflow: ellipsis;
+                        ">${station.price}</div>
+                      </div>
+                    </div>
+
+                    <div style="
+                      display: flex;
+                      align-items: center;
+                    ">
+                      <i class="fas fa-tachometer-alt" style="
+                        color: #2196F3;
+                        margin-right: 8px;
+                        font-size: 14px;
+                        flex-shrink: 0;
+                      "></i>
+                      <div style="width: 100%;">
+                        <div class="info-label" style="
+                          color: ${
+                            document.body.classList.contains('dark-mode')
+                              ? '#999999'
+                              : '#666666'
+                          };
+                          font-size: 12px;
+                          margin-bottom: 2px;
+                        ">충전 압력</div>
+                        <div class="info-value" style="
+                          color: ${
+                            document.body.classList.contains('dark-mode')
+                              ? '#ffffff'
+                              : '#333333'
+                          };
+                          font-size: 13px;
+                          font-weight: 500;
+                          white-space: nowrap;
+                          overflow: hidden;
+                          text-overflow: ellipsis;
+                        ">${station.pressure}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `,
+            disableAnchor: true,
+            borderWidth: 0,
+            backgroundColor: 'transparent',
+          });
+
+          // 마커 클릭 이벤트
+          naver.maps.Event.addListener(marker, 'click', function () {
+            if (currentInfowindow) {
+              currentInfowindow.close();
+            }
+            infowindow.open(map, marker);
+            currentInfowindow = infowindow;
+          });
+
+          // 마커와 정보창을 객체에 저장
+          markers[station.title] = marker;
+          infowindows[station.title] = infowindow;
+        });
+
+        // 지도 클릭 시 정보창 닫기
+        naver.maps.Event.addListener(map, 'click', function (e) {
+          if (currentInfowindow) {
+            currentInfowindow.close();
+            currentInfowindow = null;
+          }
+        });
+
+        // 사이드바 메뉴 클릭 이벤트 초기화
+        initializeMenuClickEvents();
+
+        // 모든 마커가 보이도록 지도 영역 자동 조정
+        const bounds = stations.reduce((bounds, station) => {
+          return bounds.extend(station.position);
+        }, new naver.maps.LatLngBounds());
+
+        map.fitBounds(bounds);
+      }
+
+      // 사이드바 메뉴 클릭 이벤트 초기화 함수
+      function initializeMenuClickEvents() {
+        const menuItems = document.querySelectorAll('.menu-item');
+        menuItems.forEach((item) => {
+          item.addEventListener('click', function () {
+            // 이전 활성 메뉴 아이템에서 active 클래스 제거
+            menuItems.forEach((mi) => mi.classList.remove('active'));
+
+            // 현재 클릭된 메뉴 아이템에 active 클래스 추가
+            this.classList.add('active');
+
+            // data-station 속성에서 충전소 이름 가져오기
+            const stationTitle = this.getAttribute('data-station');
+            const marker = markers[stationTitle];
+            const infowindow = infowindows[stationTitle];
+
+            if (marker && infowindow) {
+              // 현재 열려있는 정보창 닫기
+              if (currentInfowindow) {
+                currentInfowindow.close();
+              }
+
+              // 지도 중심 이동 및 확대
+              map.setCenter(marker.getPosition());
+              map.setZoom(14);
+
+              // 새 정보창 열기
+              infowindow.open(map, marker);
+              currentInfowindow = infowindow;
+            }
+          });
+        });
+      }
+
+      // 준비 중 알림 함수
+      function showPreparingAlert() {
+        const alertBanner = document.createElement('div');
+        alertBanner.style.cssText = `
+          position: fixed;
+          top: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: rgba(0, 0, 0, 0.8);
+          color: white;
+          padding: 12px 24px;
+          border-radius: 8px;
+          font-family: Pretendard;
+          font-size: 14px;
+          font-weight: 500;
+          z-index: 9999;
+          animation: fadeInOut 2s ease-in-out forwards;
+        `;
+        alertBanner.textContent = '준비 중입니다';
+        document.body.appendChild(alertBanner);
+
+        // 애니메이션 스타일 추가
+        const style = document.createElement('style');
+        style.textContent = `
+          @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, -20px); }
+            15% { opacity: 1; transform: translate(-50%, 0); }
+            85% { opacity: 1; transform: translate(-50%, 0); }
+            100% { opacity: 0; transform: translate(-50%, -20px); }
+          }
+        `;
+        document.head.appendChild(style);
+
+        // 2초 후 배너 제거
+        setTimeout(() => {
+          alertBanner.remove();
+          style.remove();
+        }, 2000);
+      }
     </script>
 
     <script>
-      document
-        .getElementById('searchButton')
-        .addEventListener('click', function () {
-          const searchInput = document.getElementById('menuSearch');
+      document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('menuSearch');
+        const searchButton = document.getElementById('searchButton');
+        let currentFocus = -1;
+
+        // 자동완성 목록 생성 함수
+        function createAutocomplete(value) {
+          // 이전 자동완성 목록 제거
+          closeAllLists();
+
+          if (!value) return false;
+
+          const searchText = value.toLowerCase().replace(/\s+/g, '');
+          const autocompleteDiv = document.createElement('div');
+          autocompleteDiv.setAttribute('class', 'autocomplete-items');
+          searchInput.parentNode.appendChild(autocompleteDiv);
+
+          // 충전소 목록에서 검색어와 일치하는 항목 찾기
+          stations.forEach((station) => {
+            const stationText = station.title.toLowerCase().replace(/\s+/g, '');
+            if (stationText.includes(searchText)) {
+              const itemDiv = document.createElement('div');
+              itemDiv.setAttribute('class', 'autocomplete-item');
+              itemDiv.innerHTML = `<i class="fas fa-gas-pump"></i>${station.title}`;
+
+              // 항목 클릭 이벤트
+              itemDiv.addEventListener('click', function () {
+                searchInput.value = station.title;
+                closeAllLists();
+                moveToStation(station);
+              });
+
+              autocompleteDiv.appendChild(itemDiv);
+            }
+          });
+        }
+
+        // 모든 자동완성 목록 닫기
+        function closeAllLists(elmnt) {
+          const x = document.getElementsByClassName('autocomplete-items');
+          for (let i = 0; i < x.length; i++) {
+            if (elmnt != x[i] && elmnt != searchInput) {
+              x[i].parentNode.removeChild(x[i]);
+            }
+          }
+        }
+
+        // 충전소로 이동하는 함수
+        function moveToStation(station) {
+          if (currentInfowindow) {
+            currentInfowindow.close();
+          }
+
+          map.setCenter(station.position);
+          map.setZoom(12);
+
+          const infowindow = infowindows[station.title];
+          infowindow.open(map, markers[station.title]);
+          currentInfowindow = infowindow;
+
+          searchInput.value = '';
+          searchInput.blur();
+        }
+
+        // 키보드 이벤트 처리
+        searchInput.addEventListener('keydown', function (e) {
+          let x = document.getElementsByClassName('autocomplete-items')[0];
+          if (!x) return;
+
+          let items = x.getElementsByTagName('div');
+
+          if (e.keyCode == 40) {
+            // 아래 방향키
+            currentFocus++;
+            addActive(items);
+          } else if (e.keyCode == 38) {
+            // 위 방향키
+            currentFocus--;
+            addActive(items);
+          } else if (e.keyCode == 13) {
+            // 엔터
+            e.preventDefault();
+            if (currentFocus > -1) {
+              if (items) items[currentFocus].click();
+            } else {
+              performSearch();
+            }
+          }
+        });
+
+        // 활성 항목 스타일 추가
+        function addActive(items) {
+          if (!items) return false;
+          removeActive(items);
+          if (currentFocus >= items.length) currentFocus = 0;
+          if (currentFocus < 0) currentFocus = items.length - 1;
+          items[currentFocus].classList.add('autocomplete-active');
+        }
+
+        // 활성 항목 스타일 제거
+        function removeActive(items) {
+          for (let i = 0; i < items.length; i++) {
+            items[i].classList.remove('autocomplete-active');
+          }
+        }
+
+        // 입력 이벤트
+        searchInput.addEventListener('input', function () {
+          createAutocomplete(this.value);
+        });
+
+        // 문서 클릭 시 자동완성 목록 닫기
+        document.addEventListener('click', function (e) {
+          closeAllLists(e.target);
+        });
+
+        // 검색 함수
+        function performSearch() {
           const searchText = searchInput.value
             .trim()
             .toLowerCase()
             .replace(/\s+/g, '');
-          const menuItems = document.querySelectorAll('.sidebar .menu-item');
-          let found = false;
+          if (!searchText) {
+            alert('검색어를 입력해주세요.');
+            return;
+          }
 
-          menuItems.forEach((item) => {
-            const menuText = item.textContent
-              .trim()
-              .toLowerCase()
-              .replace(/\s+/g, '');
-            if (menuText.includes(searchText)) {
+          let found = false;
+          stations.forEach((station) => {
+            const stationText = station.title.toLowerCase().replace(/\s+/g, '');
+            if (stationText.includes(searchText)) {
               found = true;
-              const link = item.querySelector('a');
-              if (link) {
-                link.click();
-              } else {
-                item.click();
-              }
-              searchInput.value = '';
-              searchInput.blur();
+              moveToStation(station);
             }
           });
 
           if (!found) {
-            alert('일치하는 메뉴가 없습니다.');
+            alert('검색 결과가 없습니다.');
           }
-        });
+        }
+
+        // 검색 버튼 클릭 이벤트
+        searchButton.addEventListener('click', performSearch);
+      });
     </script>
   </body>
 </html>

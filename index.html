@@ -9,10 +9,56 @@
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
     />
     <link rel="stylesheet" href="style.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      body {
+        background: url('./image/background.png') no-repeat center center fixed;
+        background-size: cover;
+        font-family: 'Pretendard', sans-serif;
+      }
+
+      .container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        z-index: 1;
+        flex-direction: row;
+        gap: 500px;
+        padding: 20px;
+      }
+
+      .welcome-section,
+      .login-box {
+        max-height: 100%;
+        overflow-y: auto;
+      }
+    </style>
   </head>
   <body>
     <div class="container">
-      <div class="background-image"></div>
+      <div class="welcome-section">
+        <h1>WELCOME !</h1>
+        <div class="logo">
+          <img src="image/hyge-logo.png" alt="HyGE" />
+          <h2>HyGE</h2>
+        </div>
+      </div>
+
       <div class="login-box">
         <div class="login-title">
           <h1>HyGE</h1>
@@ -41,17 +87,9 @@
             class="guest-btn"
             onclick="window.location.href='main.html'"
           >
-            비로그인
+            안전모니터링
           </button>
         </form>
-      </div>
-
-      <div class="welcome-section">
-        <h1>WELCOME !</h1>
-        <div class="logo">
-          <img src="image/hyge-logo.png" alt="HyGE" />
-          <h2>HyGE</h2>
-        </div>
       </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

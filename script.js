@@ -849,368 +849,146 @@ document.addEventListener('click', (e) => {
 function initializeCharts() {
   console.log('차트 초기화 시작');
 
-  // 기존 차트 제거
-  Chart.helpers.each(Chart.instances, (instance) => {
-    instance.destroy();
-  });
+  // 차트 설정 옵션
+  const commonOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: false,
+    scales: {
+      x: {
+        display: true,
+        grid: {
+          color: 'rgba(255, 255, 255, 0.1)',
+        },
+        ticks: {
+          color: '#888',
+        },
+      },
+      y: {
+        display: true,
+        grid: {
+          color: 'rgba(255, 255, 255, 0.1)',
+        },
+        ticks: {
+          color: '#888',
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+  };
 
-  // 진동 감지기 차트 (9개)
+  // 진동 감지기 차트 초기화
   for (let i = 1; i <= 9; i++) {
-    const vibrationCtx = document.getElementById(`vibrationChart${i}`);
-    if (!vibrationCtx) {
-      console.log(`vibrationChart${i} 캔버스를 찾을 수 없습니다.`);
+    const chartId = `vibrationChart${i}`;
+    const canvas = document.getElementById(chartId);
+
+    if (!canvas) {
+      console.error(`${chartId} 캔버스를 찾을 수 없습니다.`);
       continue;
     }
 
-    // 기존 차트가 있다면 제거
-    const existingChart = Chart.getChart(vibrationCtx);
-    if (existingChart) {
-      existingChart.destroy();
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      console.error(`${chartId}의 컨텍스트를 가져올 수 없습니다.`);
+      continue;
     }
 
-    // 데이터 생성
-    const data = Array.from({ length: 10 }, () => 0.25 + Math.random() * 0.1);
-    const maxValue = Math.max(...data);
-    const yAxisMax = maxValue * 1.1; // 최대값보다 10% 더 큰 값으로 설정
-
-    const chart = new Chart(vibrationCtx.getContext('2d'), {
-      type: 'line',
-      data: {
-        labels: Array.from({ length: 10 }, (_, i) => `${10 - i}분 전`),
-        datasets: [
-          {
-            label: `진동 감지기 ${i} 평균값`,
-            data: data,
-            borderColor: '#2196F3',
-            backgroundColor: 'rgba(33, 150, 243, 0.1)',
-            tension: 0.4,
-            fill: true,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        onClick: (event, elements) => {
-          console.log('진동 감지기 차트 클릭됨:', i);
-          updateBottomChart(i);
+    try {
+      const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: Array(10).fill(''),
+          datasets: [
+            {
+              data: Array(10).fill(0),
+              borderColor: '#2196f3',
+              borderWidth: 2,
+              pointRadius: 0,
+              fill: false,
+              tension: 0.4,
+            },
+          ],
         },
-        plugins: {
-          title: {
-            display: true,
-            text: `진동 감지기 ${i}`,
-            color: '#fff',
-            font: {
-              size: 14,
-              weight: '600',
-              family: 'Pretendard',
-            },
-            padding: {
-              top: 0,
-              bottom: 0,
-            },
-          },
-          legend: {
-            display: false,
-          },
-          tooltip: {
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            titleColor: '#fff',
-            bodyColor: '#fff',
-            titleFont: {
-              size: 13,
-              family: 'Pretendard',
-            },
-            bodyFont: {
-              size: 12,
-              family: 'Pretendard',
-            },
-            padding: 8,
-            callbacks: {
-              label: function (context) {
-                return `진동값: ${context.parsed.y.toFixed(2)}g`;
-              },
-            },
-          },
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            min: 0,
-            max: yAxisMax,
-            grid: {
-              color: 'rgba(255, 255, 255, 0.05)',
-              drawBorder: false,
-            },
-            ticks: {
-              color: '#888',
-              font: {
-                size: 11,
-                family: 'Pretendard',
-              },
-              padding: 5,
-            },
-            border: {
-              display: false,
-            },
-          },
-          x: {
-            grid: {
-              display: false,
-            },
-            ticks: {
-              color: '#888',
-              font: {
-                size: 11,
-                family: 'Pretendard',
-              },
-              padding: 5,
-            },
-            border: {
-              display: false,
-            },
-          },
-        },
-      },
-    });
-    console.log(`vibrationChart${i} 초기화 완료`);
+        options: commonOptions,
+      });
+      console.log(`${chartId} 차트가 성공적으로 초기화되었습니다.`);
+    } catch (error) {
+      console.error(`${chartId} 차트 생성 중 오류 발생:`, error);
+    }
   }
 
   // 하단 차트 초기화
-  const bottomCtx = document.getElementById('bottomChart');
-  if (bottomCtx) {
-    // 기존 차트가 있다면 제거
-    const existingChart = Chart.getChart(bottomCtx);
-    if (existingChart) {
-      existingChart.destroy();
+  const bottomCanvas = document.getElementById('bottomChart');
+  if (!bottomCanvas) {
+    console.error('하단 차트 캔버스를 찾을 수 없습니다.');
+    return;
+  }
+
+  try {
+    const bottomCtx = bottomCanvas.getContext('2d');
+    if (!bottomCtx) {
+      console.error('하단 차트 컨텍스트를 가져올 수 없습니다.');
+      return;
     }
 
-    // 데이터 생성
-    const data = Array.from({ length: 360 }, () => 0.25 + Math.random() * 0.1);
-    const maxValue = Math.max(...data);
-    const yAxisMax = maxValue * 1.1; // 최대값보다 10% 더 큰 값으로 설정
-
-    const bottomChart = new Chart(bottomCtx.getContext('2d'), {
+    const bottomChart = new Chart(bottomCtx, {
       type: 'line',
       data: {
-        labels: Array.from({ length: 360 }, (_, i) => {
-          const date = new Date();
-          date.setMinutes(date.getMinutes() - (359 - i));
-          return date.toLocaleTimeString('ko-KR', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false,
-          });
-        }),
+        labels: Array(360).fill(''),
         datasets: [
           {
-            data: data,
-            borderColor: '#2196F3',
-            backgroundColor: 'rgba(33, 150, 243, 0.1)',
-            borderWidth: 2.5,
+            data: Array(360).fill(0),
+            borderColor: '#2196f3',
+            borderWidth: 2,
             pointRadius: 0,
-            pointHoverRadius: 6,
+            fill: false,
             tension: 0.4,
-            fill: true,
           },
         ],
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: {
-          mode: 'index',
-          intersect: false,
-        },
+        ...commonOptions,
         plugins: {
-          title: {
-            display: true,
-            text: '진동 감지기',
-            color: '#fff',
-            font: {
-              size: 18,
-              weight: '600',
-              family: 'Pretendard',
-            },
-            padding: {
-              top: 0,
-              bottom: 0,
-            },
-          },
-          legend: {
-            display: false,
-          },
-          tooltip: {
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            titleColor: '#fff',
-            bodyColor: '#fff',
-            titleFont: {
-              size: 14,
-              family: 'Pretendard',
-            },
-            bodyFont: {
-              size: 13,
-              family: 'Pretendard',
-            },
-            padding: 10,
-            callbacks: {
-              label: function (context) {
-                return `진동값: ${context.parsed.y.toFixed(2)}g`;
-              },
-            },
-          },
+          ...commonOptions.plugins,
           zoom: {
-            pan: {
-              enabled: true,
-              mode: 'x',
-              modifierKey: 'ctrl',
-            },
             zoom: {
               wheel: {
                 enabled: true,
-                modifierKey: 'ctrl',
-                mode: 'x',
               },
               pinch: {
                 enabled: true,
-                mode: 'x',
               },
+              mode: 'x',
             },
-          },
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            min: 0,
-            grid: {
-              color: 'rgba(255, 255, 255, 0.05)',
-              drawBorder: false,
-            },
-            ticks: {
-              color: '#888',
-              font: {
-                size: 12,
-                family: 'Pretendard',
-              },
-              padding: 8,
-              callback: function (value) {
-                return value.toFixed(2) + 'g';
-              },
-            },
-            border: {
-              display: false,
-            },
-            adapters: {
-              type: 'linear',
-            },
-          },
-          x: {
-            grid: {
-              display: false,
-            },
-            ticks: {
-              color: '#888',
-              font: {
-                size: 12,
-                family: 'Pretendard',
-              },
-              padding: 8,
-              maxRotation: 0,
-              autoSkip: true,
-              maxTicksLimit: 10,
-            },
-            border: {
-              display: false,
+            pan: {
+              enabled: true,
+              mode: 'x',
             },
           },
         },
       },
     });
-
-    // 더블 클릭 이벤트 리스너 추가
-    bottomCtx.addEventListener('dblclick', (event) => {
-      const chart = Chart.getChart(bottomCtx);
-      if (chart) {
-        const data = chart.data.datasets[0].data;
-        const maxValue = Math.max(...data);
-        const minValue = Math.min(...data);
-        const padding = (maxValue - minValue) * 0.1; // 10% 여백
-
-        chart.options.scales.y.min = Math.max(0, minValue - padding);
-        chart.options.scales.y.max = maxValue + padding;
-        chart.update();
-      }
-    });
-
-    console.log('하단 차트 초기화 완료');
-  } else {
-    console.log('하단 차트 캔버스를 찾을 수 없습니다.');
+    console.log('하단 차트가 성공적으로 초기화되었습니다.');
+  } catch (error) {
+    console.error('하단 차트 생성 중 오류 발생:', error);
   }
-}
-
-// 하단 차트 업데이트 함수 수정
-function updateBottomChart(sensorIndex) {
-  const bottomChart = Chart.getChart('bottomChart');
-  if (!bottomChart) {
-    console.log('하단 차트를 찾을 수 없습니다.');
-    return;
-  }
-
-  console.log('하단 차트 업데이트 시작:', sensorIndex);
-
-  // 현재 시간부터 6시간 전까지의 레이블 생성
-  const labels = Array.from({ length: 360 }, (_, i) => {
-    const date = new Date();
-    date.setMinutes(date.getMinutes() - (359 - i));
-    return date.toLocaleTimeString('ko-KR', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-    });
-  });
-
-  // 새로운 데이터 생성 (실제로는 API에서 가져와야 함)
-  const data = Array.from({ length: 360 }, () => 0.25 + Math.random() * 0.1);
-  const maxValue = Math.max(...data);
-  const yAxisMax = maxValue * 1.1; // 최대값보다 10% 더 큰 값으로 설정
-
-  // 차트 업데이트
-  bottomChart.data.labels = labels;
-  bottomChart.data.datasets[0].data = data;
-  bottomChart.options.plugins.title.text = `진동 감지기 ${sensorIndex} 상세 데이터`;
-  bottomChart.options.scales.y.max = yAxisMax;
-  bottomChart.update();
-  console.log('하단 차트 업데이트 완료');
 }
 
 // 페이지 로드 시 초기화
 document.addEventListener('DOMContentLoaded', () => {
-  try {
-    console.log('페이지 로드됨');
-    initDarkMode();
-    initSearch();
-    initializeSensorData();
+  console.log('페이지 로드됨');
+  initDarkMode();
+  initializeSensorData();
+  initSearch();
 
-    // Chart.js zoom 플러그인 등록
-    Chart.register(ChartZoom);
-
-    // 차트 초기화 실행
+  // 차트 초기화는 HTML이 완전히 로드된 후 실행
+  setTimeout(() => {
     initializeCharts();
-
-    getSensorList();
-    setInterval(getSensorList, 300000); // 5분마다 감지기 목록 갱신
-
-    // 테이블 클릭 이벤트 리스너 추가
-    const tableBody = document.querySelector('.info-table tbody');
-    if (tableBody) {
-      tableBody.addEventListener('click', handleTableRowClick);
-      console.log('테이블 클릭 이벤트 리스너가 추가되었습니다.');
-    } else {
-      console.error('테이블 본문을 찾을 수 없습니다.');
-    }
-  } catch (error) {
-    console.error('초기화 중 오류가 발생했습니다:', error);
-  }
+  }, 500);
 });
 
 // 페이지 언로드 시 정리

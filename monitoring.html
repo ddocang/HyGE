@@ -1,0 +1,1893 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HyGE - 수소충전생산</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
+    />
+    <link rel="stylesheet" href="monitoring.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1"></script>
+    <style>
+      .container {
+        display: flex;
+        height: 100vh;
+        width: 100%;
+        overflow: hidden;
+        background-color: #1e1e1e;
+        gap: 20px;
+        position: relative;
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      .main-content {
+        flex: 1;
+        padding: 0 20px 0 20px;
+        overflow-y: auto;
+        width: 100%;
+        background-color: #1e1e1e;
+      }
+
+      .content-wrapper {
+        display: flex;
+        gap: 20px;
+        padding: 0;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+
+      .map-container {
+        width: 880px;
+        height: 650px;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid #3c3c3c;
+        background-color: #252526;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .price-table-container {
+        width: 413px;
+        height: 650px;
+        padding: 10px;
+        background: #252526;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        margin-top: 0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        will-change: transform;
+        transform: translateZ(0);
+        box-sizing: border-box;
+      }
+
+      .search-box {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .search-box input {
+        padding: 8px 16px;
+        border: 1px solid #3c3c3c;
+        border-radius: 20px;
+        font-family: 'Pretendard';
+        font-size: 14px;
+        width: 200px;
+        background-color: #252526;
+        color: #d4d4d4;
+        transition: all 0.3s ease;
+      }
+
+      .search-box input:focus {
+        outline: none;
+        border-color: #2196f3;
+        box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+      }
+
+      .search-box input::placeholder {
+        color: #666666;
+      }
+
+      .search-button {
+        background-color: #004ba8;
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 10px 20px;
+        height: 40px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .search-button:hover {
+        background-color: #003d8f;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 75, 168, 0.3);
+      }
+
+      .search-button i {
+        font-size: 16px;
+      }
+
+      .test-button {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 10px 20px;
+        height: 40px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        font-family: 'Pretendard';
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .test-button:hover {
+        background-color: #388e3c;
+        transform: translateY(-1px);
+      }
+
+      .test-button:active {
+        transform: translateY(0);
+      }
+
+      .test-button i {
+        margin-right: 6px;
+      }
+
+      .header-divider {
+        border: 0;
+        height: 1px;
+        background: #3c3c3c;
+        margin: -12px 0 20px 0;
+        width: 100%;
+        opacity: 1;
+      }
+
+      .back-btn {
+        margin-top: auto;
+        padding: 14px;
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        width: 100%;
+        font-family: 'Pretendard';
+        font-size: 14px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+      }
+
+      .back-btn i {
+        font-size: 16px;
+      }
+
+      .back-btn:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .back-btn:active {
+        transform: translateY(0);
+        box-shadow: none;
+      }
+
+      .menu {
+        width: 100%;
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .menu-item {
+        display: flex;
+        align-items: center;
+        padding: 14px;
+        color: white;
+        background-color: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        width: 100%;
+        font-family: 'Pretendard';
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        gap: 12px;
+      }
+
+      .menu-item i {
+        font-size: 16px;
+        min-width: 20px;
+        text-align: center;
+      }
+
+      .menu-item:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .menu-item:active {
+        transform: translateY(0);
+        box-shadow: none;
+      }
+
+      .menu-item.active {
+        background-color: rgba(255, 255, 255, 0.2);
+        font-weight: 600;
+      }
+
+      .bottom-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 30px;
+        background-color: #252526;
+        border-top: 1px solid #3c3c3c;
+        font-family: Pretendard;
+        margin-top: 30px;
+      }
+
+      .main-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 10px;
+        margin-bottom: 30px;
+      }
+
+      .main-header h1 {
+        font-family: 'Pretendard';
+        font-size: 28px;
+        font-weight: 800;
+        color: #d4d4d4;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        padding: 12px 0;
+        border: none;
+        background: none;
+        box-shadow: none;
+      }
+
+      .main-header h1::before {
+        display: none;
+      }
+
+      .main-header h1:hover {
+        transform: none;
+        text-shadow: none;
+      }
+
+      .main-header h1:active {
+        transform: none;
+        text-shadow: none;
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 24px;
+        margin: 20px;
+        border-radius: 16px;
+        position: relative;
+        transition: all 0.3s ease;
+      }
+
+      .logo-container:hover {
+        transform: translateY(-2px);
+      }
+
+      .logo-container img {
+        width: 45px;
+        height: 45px;
+        object-fit: contain;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+      }
+
+      .logo-container h2 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        color: #d4d4d4;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .map-container #map {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #131313;
+      }
+
+      .map-container #map img[alt='지도'] {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transform: none;
+      }
+
+      .price-table-container h2 {
+        margin: 0;
+        padding-bottom: 20px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        color: #d4d4d4;
+        font-size: 20px;
+        font-weight: 600;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .price-table-container h2 i {
+        color: #2196f3;
+        font-size: 24px;
+        text-shadow: 0 0 10px rgba(33, 150, 243, 0.3);
+        background: linear-gradient(135deg, #2196f3, #64b5f6);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: rotateLight 1s linear infinite;
+        position: relative;
+        display: inline-block;
+      }
+
+      @keyframes rotateLight {
+        0% {
+          transform: rotate(0deg);
+          filter: hue-rotate(0deg) brightness(1.2);
+        }
+        50% {
+          transform: rotate(180deg);
+          filter: hue-rotate(180deg) brightness(1.5);
+        }
+        100% {
+          transform: rotate(360deg);
+          filter: hue-rotate(360deg) brightness(1.2);
+        }
+      }
+
+      .price-table-container h2 i::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 40px;
+        height: 40px;
+        background: rgba(33, 150, 243, 0.1);
+        border-radius: 50%;
+        z-index: -1;
+        animation: glowPulse 1s ease-in-out infinite;
+      }
+
+      @keyframes glowPulse {
+        0% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 0.5;
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(1.2);
+          opacity: 0.8;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 0.5;
+        }
+      }
+
+      .table-container {
+        height: 570px;
+        overflow-y: auto;
+        margin-top: -5px;
+        padding-right: 4px;
+        padding-bottom: 0;
+        position: relative;
+        scroll-snap-type: y mandatory;
+        border-radius: 16px;
+        background: #1a1a1a;
+        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
+        will-change: transform;
+        transform: translateZ(0);
+      }
+
+      .table-container::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .table-container::-webkit-scrollbar-track {
+        background: #1a1a1a;
+        border-radius: 3px;
+      }
+
+      .table-container::-webkit-scrollbar-thumb {
+        background: #3c3c3c;
+        border-radius: 3px;
+        border: 1px solid #1a1a1a;
+      }
+
+      .table-container::-webkit-scrollbar-thumb:hover {
+        background: #4c4c4c;
+      }
+
+      .info-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-top: 10px;
+        font-family: 'Pretendard';
+        background: #1a1a1a;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        will-change: transform;
+        transform: translateZ(0);
+      }
+
+      .info-table th,
+      .info-table td {
+        padding: 12px 8px;
+        text-align: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .info-table th {
+        background-color: #252526;
+        font-weight: 600;
+        color: #d4d4d4;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        will-change: transform;
+        transform: translateZ(0);
+      }
+
+      .info-table td {
+        color: #d4d4d4;
+        font-size: 13px;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .info-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .info-table tr:hover td {
+        background-color: rgba(33, 150, 243, 0.1);
+      }
+
+      .status-normal {
+        color: #3e78b2;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 20px;
+        background-color: rgba(62, 120, 178, 0.15);
+        box-shadow: 0 2px 8px rgba(62, 120, 178, 0.2);
+        display: inline-block;
+        min-width: 60px;
+        font-size: 12px;
+      }
+
+      .status-warning {
+        color: #ff9800;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 20px;
+        background-color: rgba(255, 152, 0, 0.15);
+        box-shadow: 0 2px 8px rgba(255, 152, 0, 0.2);
+        display: inline-block;
+        min-width: 60px;
+        font-size: 12px;
+      }
+
+      .status-danger {
+        color: #f44336;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 20px;
+        background-color: rgba(244, 67, 54, 0.15);
+        box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+        display: inline-block;
+        min-width: 60px;
+        font-size: 12px;
+      }
+
+      .signal-connected {
+        color: #3e78b2;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 20px;
+        background-color: rgba(62, 120, 178, 0.15);
+        box-shadow: 0 2px 8px rgba(62, 120, 178, 0.2);
+        display: inline-block;
+        min-width: 60px;
+        font-size: 12px;
+      }
+
+      .signal-disconnected {
+        color: #9e9e9e;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 20px;
+        background-color: rgba(158, 158, 158, 0.15);
+        box-shadow: 0 2px 8px rgba(158, 158, 158, 0.2);
+        display: inline-block;
+        min-width: 60px;
+        font-size: 12px;
+      }
+
+      /* 가스감지기 효과 */
+      @keyframes gasDetectorEffect {
+        0% {
+          filter: brightness(1.1) drop-shadow(0 0 3px rgba(33, 150, 243, 0.5));
+        }
+        50% {
+          filter: brightness(1.3) drop-shadow(0 0 6px rgba(33, 150, 243, 0.7));
+        }
+        100% {
+          filter: brightness(1.1) drop-shadow(0 0 3px rgba(33, 150, 243, 0.5));
+        }
+      }
+
+      /* 가스감지기 공통 스타일 */
+      #gas-box1,
+      #gas-box2,
+      #gas-box3,
+      #gas-box4,
+      #gas-box5,
+      #gas-box6,
+      #gas-box7,
+      #gas-box8,
+      #gas-box9,
+      #gas-box10,
+      #gas-box11,
+      #gas-box12,
+      #gas-box13,
+      #gas-box14,
+      #gas-box15 {
+        position: absolute;
+        width: 70px;
+        height: auto;
+        z-index: 5;
+        left: 50%;
+        animation: gasDetectorEffect 2s ease-in-out infinite;
+      }
+
+      /* 개별 가스감지기 위치 */
+      #gas-box1 {
+        top: calc(50% - 200px);
+        transform: translate(calc(-50% - 143px), -50%);
+      }
+
+      #gas-box2 {
+        top: calc(50% - 200px);
+        transform: translate(calc(-50% + 17px), -50%);
+      }
+
+      #gas-box3 {
+        top: calc(50% - 205px);
+        transform: translate(calc(-50% + 83px), -50%) scale(0.7);
+      }
+
+      #gas-box4 {
+        top: calc(50% - 138px);
+        transform: translate(calc(-50% + 205px), -50%);
+      }
+
+      #gas-box5 {
+        top: calc(50% - 165px);
+        transform: translate(calc(-50% - 260px), -50%);
+      }
+
+      #gas-box6 {
+        top: calc(50% + 5px);
+        transform: translate(calc(-50% - 80px), -50%);
+      }
+
+      #gas-box7 {
+        top: calc(50% - 200px);
+        transform: translate(calc(-50% - 80px), -50%);
+      }
+
+      #gas-box8 {
+        top: calc(50% - 70px);
+        transform: translate(calc(-50% - 143px), -50%);
+      }
+
+      #gas-box9 {
+        top: calc(50% - 70px);
+        transform: translate(calc(-50% + 17px), -50%);
+      }
+
+      #gas-box10 {
+        top: calc(50% - 70px);
+        transform: translate(calc(-50% - 80px), -50%);
+      }
+
+      #gas-box11 {
+        top: calc(50% + 5px);
+        transform: translate(calc(-50% + 30px), -50%);
+      }
+
+      #gas-box12 {
+        top: calc(50% - 138px);
+        transform: translate(calc(-50% + 162px), -50%);
+      }
+
+      #gas-box13 {
+        top: calc(50% - 80px);
+        transform: translate(calc(-50% + 83px), -50%) scale(0.7);
+      }
+
+      #gas-box14 {
+        top: calc(50% - 100px);
+        transform: translate(calc(-50% + 115px), -50%) scale(0.7);
+      }
+
+      #gas-box15 {
+        top: calc(50% - 180px);
+        transform: translate(calc(-50% + 115px), -50%) scale(0.7);
+      }
+
+      /* 화재감지기 펄스 효과 */
+      @keyframes firePulse {
+        0% {
+          filter: brightness(1.1) drop-shadow(0 0 3px rgba(255, 87, 34, 0.5));
+        }
+        50% {
+          filter: brightness(1.3) drop-shadow(0 0 6px rgba(255, 87, 34, 0.7));
+        }
+        100% {
+          filter: brightness(1.1) drop-shadow(0 0 3px rgba(255, 87, 34, 0.5));
+        }
+      }
+
+      /* 화재감지기 스타일 */
+      #fire-box,
+      #fire-box2,
+      #fire-box3,
+      #fire-box4,
+      #fire-box5,
+      #fire-box6 {
+        position: absolute;
+        width: 70px;
+        height: auto;
+        z-index: 5;
+        left: 50%;
+        animation: firePulse 2s ease-in-out infinite;
+      }
+
+      #fire-box {
+        top: calc(50% - 210px);
+        transform: translate(calc(-50% + 150px), -50%);
+      }
+
+      #fire-box2 {
+        top: calc(50% - 55px);
+        transform: translate(calc(-50% - 185px), -50%);
+      }
+
+      #fire-box3 {
+        top: calc(50% + 40px);
+        transform: translate(calc(-50% - 185px), -50%);
+      }
+
+      #fire-box4 {
+        top: calc(50% - 210px);
+        transform: translate(calc(-50% + 45px), -50%);
+      }
+
+      #fire-box5 {
+        top: calc(50% - 55px);
+        transform: translate(calc(-50% + 50px), -50%);
+      }
+
+      #fire-box6 {
+        top: calc(50% - 67px);
+        transform: translate(calc(-50% + 125px), -50%);
+      }
+
+      /* 진동감지기 효과 */
+      @keyframes vBoxPulse {
+        0% {
+          filter: brightness(1.1) drop-shadow(0 0 3px rgba(76, 175, 80, 0.5));
+          transform: translate(var(--translate-x), -50%) scale(var(--scale, 1));
+        }
+        50% {
+          filter: brightness(1.3) drop-shadow(0 0 6px rgba(76, 175, 80, 0.7));
+          transform: translate(var(--translate-x), -50%)
+            scale(calc(var(--scale, 1) * 0.95));
+        }
+        100% {
+          filter: brightness(1.1) drop-shadow(0 0 3px rgba(76, 175, 80, 0.5));
+          transform: translate(var(--translate-x), -50%) scale(var(--scale, 1));
+        }
+      }
+
+      /* 진동감지기 스타일 */
+      #v-box,
+      #v-box2,
+      #v-box3,
+      #v-box4,
+      #v-box5,
+      #v-box6,
+      #v-box7,
+      #v-box8,
+      #v-box9 {
+        position: absolute;
+        width: 70px;
+        height: auto;
+        z-index: 5;
+        left: 50%;
+        animation: vBoxPulse 2s ease-in-out infinite;
+      }
+
+      #v-box {
+        --translate-x: calc(-50% - 15px);
+        top: calc(50% + 33px);
+        transform: translate(var(--translate-x), -50%);
+      }
+
+      #v-box2 {
+        --translate-x: calc(-50% - 130px);
+        top: calc(50% + 33px);
+        transform: translate(var(--translate-x), -50%);
+      }
+
+      #v-box3 {
+        --translate-x: calc(-50% - 37px);
+        top: calc(50% - 17px);
+        transform: translate(var(--translate-x), -50%);
+      }
+
+      #v-box4 {
+        --translate-x: calc(-50% - 152px);
+        top: calc(50% - 17px);
+        transform: translate(var(--translate-x), -50%);
+      }
+
+      #v-box5 {
+        --translate-x: calc(-50% + 5px);
+        top: calc(50% - 17px);
+        transform: translate(var(--translate-x), -50%);
+      }
+
+      #v-box6 {
+        --translate-x: calc(-50% - 110px);
+        top: calc(50% - 17px);
+        transform: translate(var(--translate-x), -50%);
+      }
+
+      #v-box7 {
+        --translate-x: calc(-50% + 115px);
+        --scale: 0.7;
+        top: calc(50% - 203px);
+        transform: translate(var(--translate-x), -50%) scale(var(--scale));
+      }
+
+      #v-box8 {
+        --translate-x: calc(-50% + 83px);
+        --scale: 0.7;
+        top: calc(50% - 155px);
+        transform: translate(var(--translate-x), -50%) scale(var(--scale));
+      }
+
+      #v-box9 {
+        --translate-x: calc(-50% + 83px);
+        --scale: 0.7;
+        top: calc(50% - 130px);
+        transform: translate(var(--translate-x), -50%) scale(var(--scale));
+      }
+
+      /* comp 이미지 펄스 효과 */
+      @keyframes comp-pulse {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.05);
+          opacity: 0.8;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .comp-image {
+        position: absolute;
+        height: 50px;
+        width: auto;
+        object-fit: contain;
+        z-index: 5;
+        animation: comp-pulse 2s ease-in-out infinite;
+        filter: drop-shadow(0 0 8px rgba(52, 58, 38, 0.4));
+      }
+
+      /* 말풍선 스타일 */
+      .tooltip {
+        position: fixed;
+        background: rgba(30, 30, 30, 0.95);
+        border: 1px solid #444;
+        border-radius: 8px;
+        padding: 12px;
+        font-family: 'Pretendard', sans-serif;
+        font-size: 14px;
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        display: none;
+        min-width: 200px;
+        transition: all 0.3s ease;
+      }
+
+      .tooltip.normal {
+        background: rgba(30, 30, 30, 0.95);
+        border-color: #2196f3;
+        box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
+      }
+
+      .tooltip.warning {
+        background: rgba(30, 30, 30, 0.95);
+        border-color: #ffc107;
+        box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
+      }
+
+      .tooltip.danger {
+        background: rgba(30, 30, 30, 0.95);
+        border-color: #f44336;
+        box-shadow: 0 4px 12px rgba(244, 67, 54, 0.2);
+      }
+
+      .tooltip-content {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .tooltip-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px 0;
+      }
+
+      .tooltip-label {
+        color: #888;
+        margin-right: 12px;
+        font-size: 13px;
+      }
+
+      .tooltip-value {
+        color: #fff;
+        font-weight: 500;
+        font-size: 13px;
+      }
+
+      .tooltip-value.status-normal {
+        color: #2196f3;
+        font-weight: 600;
+      }
+
+      .tooltip-value.status-warning {
+        color: #ffc107;
+        font-weight: 600;
+      }
+
+      .tooltip-value.status-danger {
+        color: #f44336;
+        font-weight: 600;
+      }
+
+      .tooltip::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+        border-top: 8px solid #444;
+        transition: all 0.3s ease;
+      }
+
+      .tooltip.normal::after {
+        border-top-color: #2196f3;
+      }
+
+      .tooltip.warning::after {
+        border-top-color: #ffc107;
+      }
+
+      .tooltip.danger::after {
+        border-top-color: #f44336;
+      }
+
+      /* 말풍선이 위에 표시될 때의 화살표 스타일 */
+      .tooltip.top::after {
+        top: -8px;
+        bottom: auto;
+        border-top: none;
+        border-bottom: 8px solid #444;
+      }
+
+      .tooltip.top.normal::after {
+        border-bottom-color: #2196f3;
+      }
+
+      .tooltip.top.warning::after {
+        border-bottom-color: #ffc107;
+      }
+
+      .tooltip.top.danger::after {
+        border-bottom-color: #f44336;
+      }
+
+      /* 상태 아이콘 스타일 */
+      .status-icon {
+        margin-right: 6px;
+        font-size: 14px;
+      }
+
+      .status-icon.normal {
+        color: #2196f3;
+      }
+
+      .status-icon.warning {
+        color: #ffc107;
+      }
+
+      .status-icon.danger {
+        color: #f44336;
+      }
+
+      /* 상태 배지 스타일 */
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-left: 8px;
+      }
+
+      .status-badge.normal {
+        background: rgba(33, 150, 243, 0.1);
+        color: #2196f3;
+      }
+
+      .status-badge.warning {
+        background: rgba(255, 193, 7, 0.1);
+        color: #ffc107;
+      }
+
+      .status-badge.danger {
+        background: rgba(244, 67, 54, 0.1);
+        color: #f44336;
+      }
+
+      .monitoring-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 10px;
+        margin-bottom: 30px;
+      }
+
+      .header-title {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .header-logo {
+        width: 45px;
+        height: 45px;
+        object-fit: contain;
+      }
+
+      .monitoring-title {
+        font-family: 'Pretendard';
+        font-size: 28px;
+        font-weight: 800;
+        color: #d4d4d4;
+        margin: 0;
+        padding: 12px 0;
+      }
+
+      .monitoring-controls {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .main-button {
+        background: #004ba8;
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 10px 20px;
+        height: 40px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: 'Pretendard';
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .main-button:hover {
+        background: #003d8f;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 75, 168, 0.3);
+      }
+
+      .main-button i {
+        font-size: 16px;
+      }
+
+      .dark-mode-toggle {
+        background: none;
+        border: none;
+        color: #d4d4d4;
+        cursor: pointer;
+        padding: 8px;
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .dark-mode-toggle:hover {
+        transform: scale(1.1);
+      }
+
+      .search-box {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .search-box input {
+        padding: 8px 16px;
+        border: 1px solid #3c3c3c;
+        border-radius: 20px;
+        font-family: 'Pretendard';
+        font-size: 14px;
+        width: 200px;
+        background-color: #252526;
+        color: #d4d4d4;
+        transition: all 0.3s ease;
+      }
+
+      .search-box input:focus {
+        outline: none;
+        border-color: #2196f3;
+        box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+      }
+
+      .search-box input::placeholder {
+        color: #666666;
+      }
+
+      /* 상세정보 상자 스타일 */
+      .detail-box {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #252526;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        width: 400px;
+        display: none;
+        border: 1px solid #3c3c3c;
+      }
+
+      .detail-box.dark-mode {
+        background-color: #252526;
+        border-color: #3c3c3c;
+      }
+
+      .detail-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .detail-header.dark-mode {
+        border-bottom-color: #3c3c3c;
+      }
+
+      .detail-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin: 0;
+      }
+
+      .detail-title.dark-mode {
+        color: #d4d4d4;
+      }
+
+      .close-button {
+        background: none;
+        border: none;
+        font-size: 20px;
+        color: #666;
+        cursor: pointer;
+        padding: 4px;
+        transition: color 0.3s ease;
+      }
+
+      .close-button.dark-mode {
+        color: #888;
+      }
+
+      .close-button:hover {
+        color: #333;
+      }
+
+      .close-button.dark-mode:hover {
+        color: #d4d4d4;
+      }
+
+      .detail-content {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+
+      .detail-item {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .detail-label {
+        font-size: 14px;
+        color: #666;
+        font-weight: 500;
+      }
+
+      .detail-label.dark-mode {
+        color: #888;
+      }
+
+      .detail-value {
+        font-size: 16px;
+        color: #1a1a1a;
+        font-weight: 600;
+      }
+
+      .detail-value.dark-mode {
+        color: #d4d4d4;
+      }
+
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        display: none;
+      }
+
+      .overlay.dark-mode {
+        background-color: rgba(0, 0, 0, 0.7);
+      }
+
+      .price-table {
+        width: 70%;
+        margin: 20px auto;
+        border-collapse: collapse;
+        background: #1a1a1a;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .charts-container {
+        width: 540px;
+        height: 650px;
+        padding: 10px;
+        background: #252526;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin: 0;
+        margin-top: 0;
+        margin-left: 0;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        will-change: transform;
+        transform: translateZ(0);
+        overflow-y: auto;
+        scroll-snap-type: y proximity;
+        scroll-behavior: smooth;
+        box-sizing: border-box;
+      }
+
+      .charts-container::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .charts-container::-webkit-scrollbar-track {
+        background: #1a1a1a;
+        border-radius: 3px;
+      }
+
+      .charts-container::-webkit-scrollbar-thumb {
+        background: #3c3c3c;
+        border-radius: 3px;
+        border: 1px solid #1a1a1a;
+      }
+
+      .charts-container::-webkit-scrollbar-thumb:hover {
+        background: #4c4c4c;
+      }
+
+      .chart-wrapper {
+        flex: 1;
+        background: #1a1a1a;
+        border-radius: 16px;
+        padding: 10px;
+        height: 185px;
+        position: relative;
+        min-height: 185px;
+        scroll-snap-align: end;
+        scroll-snap-stop: always;
+      }
+
+      .chart-wrapper:last-child {
+        margin-bottom: 0;
+      }
+
+      .bottom-chart-container {
+        margin-top: 17px;
+        background: #252526;
+        border-radius: 16px;
+        padding: 7px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        will-change: transform;
+        transform: translateZ(0);
+      }
+
+      .bottom-chart-container .chart-wrapper {
+        height: 229px;
+        min-height: 229px;
+        background: #1a1a1a;
+        border-radius: 16px;
+        padding: 10px 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- 메인 컨텐츠 영역 -->
+      <div class="main-content">
+        <!-- 헤더 추가 -->
+        <div class="monitoring-header">
+          <div class="header-title">
+            <img
+              src="image/hyge-logo.png"
+              alt="HyGE 로고"
+              class="header-logo"
+            />
+            <h1 class="monitoring-title">HyGE&nbsp; 모니터링 대시보드</h1>
+          </div>
+          <div class="monitoring-controls">
+            <button onclick="location.href='./main.html'" class="main-button">
+              <i class="fas fa-home"></i>
+              메인
+            </button>
+            <div class="search-box">
+              <input
+                type="text"
+                id="menuSearch"
+                placeholder="검색어를 입력하세요"
+              />
+              <button id="searchButton" class="search-button">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="header-divider-container">
+          <hr class="header-divider" />
+        </div>
+        <!-- 메인 컨텐츠 영역 -->
+        <div class="content-wrapper">
+          <!-- 지도 영역 -->
+          <div class="map-container">
+            <div id="map">
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기1"
+                id="gas-box1"
+                data-sensor="GD 1"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기2"
+                id="gas-box2"
+                data-sensor="GD 2"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기3"
+                id="gas-box3"
+                data-sensor="GD 3"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기4"
+                id="gas-box4"
+                data-sensor="GD 4"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기5"
+                id="gas-box5"
+                data-sensor="GD 5"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기6"
+                id="gas-box6"
+                data-sensor="GD 6"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기7"
+                id="gas-box7"
+                data-sensor="GD 7"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기8"
+                id="gas-box8"
+                data-sensor="GD 8"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기9"
+                id="gas-box9"
+                data-sensor="GD 9"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기10"
+                id="gas-box10"
+                data-sensor="GD 10"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기11"
+                id="gas-box11"
+                data-sensor="GD 11"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기12"
+                id="gas-box12"
+                data-sensor="GD 12"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기13"
+                id="gas-box13"
+                data-sensor="GD 13"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기14"
+                id="gas-box14"
+                data-sensor="GD 14"
+              />
+              <img
+                src="image/gas_box.png"
+                alt="가스감지기15"
+                id="gas-box15"
+                data-sensor="GD 15"
+              />
+              <img
+                src="image/fire_box.png"
+                alt="화재감지기1"
+                id="fire-box"
+                data-sensor="FD 1"
+              />
+              <img
+                src="image/fire_box.png"
+                alt="화재감지기4"
+                id="fire-box4"
+                data-sensor="FD 4"
+              />
+              <img
+                src="image/fire_box.png"
+                alt="화재감지기2"
+                id="fire-box2"
+                data-sensor="FD 2"
+              />
+              <img
+                src="image/fire_box.png"
+                alt="화재감지기3"
+                id="fire-box3"
+                data-sensor="FD 3"
+              />
+              <img
+                src="image/fire_box.png"
+                alt="화재감지기5"
+                id="fire-box5"
+                data-sensor="FD 5"
+              />
+              <img
+                src="image/fire_box.png"
+                alt="화재감지기6"
+                id="fire-box6"
+                data-sensor="FD 6"
+              />
+              <img
+                src="image/v_box.png"
+                alt="진동감지기1"
+                id="v-box"
+                data-sensor="VD 1"
+              />
+              <img
+                src="image/v_box.png"
+                alt="진동감지기2"
+                id="v-box2"
+                data-sensor="VD 2"
+              />
+              <img
+                src="image/v_box.png"
+                alt="진동감지기3"
+                id="v-box3"
+                data-sensor="VD 3"
+              />
+              <img
+                src="image/v_box.png"
+                alt="진동감지기4"
+                id="v-box4"
+                data-sensor="VD 4"
+              />
+              <img
+                src="image/v_box.png"
+                alt="진동감지기5"
+                id="v-box5"
+                data-sensor="VD 5"
+              />
+              <img
+                src="image/v_box.png"
+                alt="진동감지기6"
+                id="v-box6"
+                data-sensor="VD 6"
+              />
+              <img
+                src="image/v_box.png"
+                alt="진동감지기7"
+                id="v-box7"
+                data-sensor="VD 7"
+              />
+              <img
+                src="image/v_box.png"
+                alt="진동감지기8"
+                id="v-box8"
+                data-sensor="VD 8"
+              />
+              <img
+                src="image/v_box.png"
+                alt="진동감지기9"
+                id="v-box9"
+                data-sensor="VD 9"
+              />
+              <img src="image/map-dark.png" alt="지도" />
+            </div>
+          </div>
+
+          <!-- 차트 컨테이너 -->
+          <div class="charts-container">
+            <div class="chart-wrapper">
+              <canvas id="vibrationChart1"></canvas>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="vibrationChart2"></canvas>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="vibrationChart3"></canvas>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="vibrationChart4"></canvas>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="vibrationChart5"></canvas>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="vibrationChart6"></canvas>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="vibrationChart7"></canvas>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="vibrationChart8"></canvas>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="vibrationChart9"></canvas>
+            </div>
+          </div>
+
+          <!-- 수소 가격 정보 테이블 -->
+          <div class="price-table-container">
+            <h2>안전감지기 목록</h2>
+            <div>
+              <div class="table-container">
+                <table class="info-table">
+                  <thead>
+                    <tr>
+                      <th>분류</th>
+                      <th>종류</th>
+                      <th>신호</th>
+                      <th>상태</th>
+                      <th>값</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>GD 1</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.2 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 2</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.1 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 3</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-disconnected">끊김</span></td>
+                      <td><span class="status-warning">주의</span></td>
+                      <td>6.8 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 4</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.3 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 5</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.2 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 6</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.1 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 7</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.2 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 8</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.3 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 9</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.1 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 10</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.2 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 11</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.1 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 12</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.2 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 13</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.3 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 14</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.2 mA</td>
+                    </tr>
+                    <tr>
+                      <td>GD 15</td>
+                      <td>가스감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.1 mA</td>
+                    </tr>
+                    <tr>
+                      <td>FD 1</td>
+                      <td>화재감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.5 mA</td>
+                    </tr>
+                    <tr>
+                      <td>FD 2</td>
+                      <td>화재감지기</td>
+                      <td><span class="signal-disconnected">끊김</span></td>
+                      <td><span class="status-danger">위험</span></td>
+                      <td>19.8 mA</td>
+                    </tr>
+                    <tr>
+                      <td>FD 3</td>
+                      <td>화재감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.3 mA</td>
+                    </tr>
+                    <tr>
+                      <td>FD 4</td>
+                      <td>화재감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.2 mA</td>
+                    </tr>
+                    <tr>
+                      <td>FD 5</td>
+                      <td>화재감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.4 mA</td>
+                    </tr>
+                    <tr>
+                      <td>FD 6</td>
+                      <td>화재감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>4.3 mA</td>
+                    </tr>
+                    <tr>
+                      <td>VD 1</td>
+                      <td>진동감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>0.25g</td>
+                    </tr>
+                    <tr>
+                      <td>VD 2</td>
+                      <td>진동감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>0.28g</td>
+                    </tr>
+                    <tr>
+                      <td>VD 3</td>
+                      <td>진동감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>0.22g</td>
+                    </tr>
+                    <tr>
+                      <td>VD 4</td>
+                      <td>진동감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>0.24g</td>
+                    </tr>
+                    <tr>
+                      <td>VD 5</td>
+                      <td>진동감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>0.27g</td>
+                    </tr>
+                    <tr>
+                      <td>VD 6</td>
+                      <td>진동감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>0.26g</td>
+                    </tr>
+                    <tr>
+                      <td>VD 7</td>
+                      <td>진동감지기</td>
+                      <td><span class="signal-disconnected">끊김</span></td>
+                      <td><span class="status-warning">주의</span></td>
+                      <td>0.82g</td>
+                    </tr>
+                    <tr>
+                      <td>VD 8</td>
+                      <td>진동감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>0.23g</td>
+                    </tr>
+                    <tr>
+                      <td>VD 9</td>
+                      <td>진동감지기</td>
+                      <td><span class="signal-connected">연결</span></td>
+                      <td><span class="status-normal">정상</span></td>
+                      <td>0.21g</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 하단 차트 -->
+        <div class="bottom-chart-container">
+          <div class="chart-wrapper">
+            <canvas id="bottomChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+      // 차트 초기화는 script.js에서 처리됩니다.
+      document.addEventListener('DOMContentLoaded', () => {
+        // 차트 초기화 후 1초마다 차트 시간 업데이트
+        setTimeout(() => {
+          setInterval(updateChartTimes, 1000);
+        }, 1000);
+      });
+
+      // 차트 시간 업데이트 함수
+      function updateChartTimes() {
+        // 진동 감지기 차트 시간 업데이트
+        for (let i = 1; i <= 9; i++) {
+          const chartId = `vibrationChart${i}`;
+          const chart = Chart.getChart(chartId);
+          if (chart) {
+            const labels = Array.from({ length: 10 }, (_, i) => {
+              const date = new Date();
+              date.setMinutes(date.getMinutes() - (9 - i));
+              return date.toLocaleTimeString('ko-KR', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+              });
+            });
+
+            chart.data.labels = labels;
+            chart.data.datasets[0].data = Array.from(
+              { length: 10 },
+              () => 0.25 + Math.random() * 0.1
+            );
+            chart.update('none');
+          }
+        }
+
+        // 하단 차트 시간 업데이트
+        const bottomChart = Chart.getChart('bottomChart');
+        if (bottomChart) {
+          const bottomLabels = Array.from({ length: 360 }, (_, i) => {
+            const date = new Date();
+            date.setMinutes(date.getMinutes() - (359 - i));
+            return date.toLocaleTimeString('ko-KR', {
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: false,
+            });
+          });
+
+          bottomChart.data.labels = bottomLabels;
+          bottomChart.data.datasets[0].data = Array.from(
+            { length: 360 },
+            () => 0.25 + Math.random() * 0.1
+          );
+          bottomChart.update('none');
+        }
+      }
+    </script>
+  </body>
+</html>

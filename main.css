@@ -1,0 +1,338 @@
+/* 공통 스타일 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto,
+    'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR',
+    'Malgun Gothic', sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #1e1e1e;
+}
+
+/* 메인 페이지 레이아웃 */
+.main-page {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  padding: 20px;
+  gap: 20px;
+  position: relative;
+}
+
+/* 사이드바 스타일 */
+.main-page .sidebar {
+  width: 280px;
+  background-color: #1e1e1e;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 10px;
+  z-index: 2;
+}
+
+.main-page .logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px;
+  margin: 0 20px 20px 20px;
+  border-radius: 16px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.main-page .logo-container:hover {
+  transform: translateY(-2px);
+}
+
+.main-page .logo-container img {
+  width: 54px;
+  height: 54px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+}
+
+.main-page .logo-container h2 {
+  margin: 0;
+  font-size: 31px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(
+    135deg,
+    #ffffff 20%,
+    rgba(255, 255, 255, 0.85) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 메뉴 스타일 */
+.main-page .menu {
+  width: 100%;
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.main-page .menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  gap: 12px;
+  text-align: center;
+}
+
+.main-page .menu-item i {
+  font-size: 16px;
+  min-width: 20px;
+  text-align: center;
+  color: #2196f3;
+}
+
+.main-page .menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.main-page .menu-item.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  font-weight: 600;
+}
+
+/* 메인 컨텐츠 영역 */
+.main-page .main-content {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #131313;
+  padding: 40px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 헤더 영역 */
+.main-page .main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+  margin-bottom: 20px;
+}
+
+.main-page .main-header h1 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  padding: 12px 0;
+}
+
+.main-page .header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* 검색 영역 */
+.main-page .search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.main-page #menuSearch {
+  width: 200px;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.main-page #menuSearch::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.main-page #menuSearch:focus {
+  border-color: #2196f3;
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
+}
+
+/* 지도 컨테이너 */
+.main-page .map-container {
+  width: 100%;
+  height: 650px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #eee;
+  background-color: white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-page .map-container #map {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+}
+
+/* 가격 정보 테이블 */
+.main-page .price-table-container {
+  width: 440px;
+  height: 650px;
+  padding: 24px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  margin-right: 20px;
+  border: 1px solid rgba(33, 150, 243, 0.1);
+}
+
+.main-page .price-table-container h2 {
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.main-page .price-table-container h2 i {
+  color: #2196f3;
+  font-size: 22px;
+}
+
+/* 하단 정보 */
+.main-page .bottom-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background-color: #1a1a1a;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 30px;
+  color: #ffffff;
+}
+
+.main-page .location-info,
+.main-page .weather-info,
+.main-page .time-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+}
+
+.main-page .bottom-info i {
+  color: #2196f3;
+  font-size: 16px;
+}
+
+/* 로그아웃 버튼 */
+.main-page .back-btn {
+  margin-top: auto;
+  padding: 14px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.main-page .back-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.main-page .back-btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* 다크모드 토글 버튼 */
+.main-page .dark-mode-toggle {
+  background: none;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 8px;
+  transition: all 0.3s ease;
+}
+
+.main-page .dark-mode-toggle:hover {
+  transform: scale(1.1);
+}
+
+/* 검색 버튼 */
+.main-page .search-button {
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  height: 40px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.main-page .search-button:hover {
+  background-color: #1976d2;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+}

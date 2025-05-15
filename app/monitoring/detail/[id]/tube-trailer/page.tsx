@@ -86,6 +86,7 @@ const TubeTrailerBottomContainer = styled.div`
   overflow: hidden;
   font-family: 'Pretendard', sans-serif;
   flex-shrink: 0;
+  position: relative;
   @media (max-width: 768px) {
     height: auto;
     min-height: 120px;
@@ -239,12 +240,12 @@ const TubeTrailerPage = () => {
           <TubeTrailerBottomContainer>
             <div
               style={{
+                position: 'relative',
                 width: '100%',
                 height: '100%',
                 display: 'flex',
-                alignItems: 'center',
                 justifyContent: 'center',
-                position: 'relative', // 아이콘 절대좌표 배치용
+                alignItems: 'center',
               }}
             >
               <img
@@ -547,8 +548,96 @@ const TubeTrailerPage = () => {
               <div
                 style={{
                   position: 'absolute',
-                  left: `${(544 / 828) * 100}%`, // 50%
-                  top: `${(486 / 672) * 100}%`, // 50%
+                  left: `${(544 / 828) * 100}%`,
+                  top: `${(486 / 672) * 100}%`,
+                  transform: 'translate(-50%, -50%)',
+                  width: 120,
+                  height: 120,
+                  pointerEvents: 'none',
+                  zIndex: 10,
+                }}
+              >
+                <svg
+                  width="120"
+                  height="120"
+                  viewBox="0 0 120 120"
+                  style={{ position: 'absolute', left: 0, top: 0 }}
+                >
+                  {/* 퍼지는 원형 파동 */}
+                  <circle
+                    cx="60"
+                    cy="60"
+                    r="24"
+                    fill="none"
+                    stroke="#ff6f00"
+                    strokeWidth="2"
+                    opacity="0.7"
+                  >
+                    <animate
+                      attributeName="r"
+                      from="24"
+                      to="56"
+                      dur="1.5s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="opacity"
+                      from="0.7"
+                      to="0"
+                      dur="1.5s"
+                      repeatCount="indefinite"
+                    />
+                  </circle>
+                  <circle
+                    cx="60"
+                    cy="60"
+                    r="36"
+                    fill="none"
+                    stroke="#ff6f00"
+                    strokeWidth="2"
+                    opacity="0.5"
+                  >
+                    <animate
+                      attributeName="r"
+                      from="36"
+                      to="70"
+                      dur="1.5s"
+                      begin="0.5s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="opacity"
+                      from="0.5"
+                      to="0"
+                      dur="1.5s"
+                      begin="0.5s"
+                      repeatCount="indefinite"
+                    />
+                  </circle>
+                  {/* WiFi 아이콘 */}
+                  <g>
+                    <path
+                      d="M45 70 Q60 55 75 70"
+                      stroke="#ff6f00"
+                      strokeWidth="3"
+                      fill="none"
+                    />
+                    <path
+                      d="M50 75 Q60 65 70 75"
+                      stroke="#ff6f00"
+                      strokeWidth="2"
+                      fill="none"
+                    />
+                    <circle cx="60" cy="80" r="3.5" fill="#ff6f00" />
+                  </g>
+                </svg>
+              </div>
+              {/* 새로운 위치의 와이파이 데이터 전송 효과 */}
+              <div
+                style={{
+                  position: 'absolute',
+                  left: `${(112 / 828) * 100}%`,
+                  top: `${(170 / 672) * 100}%`,
                   transform: 'translate(-50%, -50%)',
                   width: 120,
                   height: 120,

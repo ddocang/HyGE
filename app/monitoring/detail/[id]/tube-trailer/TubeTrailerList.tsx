@@ -141,11 +141,11 @@ const TubeTrailerList: React.FC<TubeTrailerListProps> = ({
               <TubeListItem
                 key={tube.id}
                 onClick={() => onVehicleSelect(tube.id)}
-                isSelected={selectedVehicleId === tube.id}
+                $isSelected={selectedVehicleId === tube.id}
               >
                 <div>{idx + 1}</div>
                 <div>
-                  <CarNumberCell backgroundColor={tube.backgroundColor}>
+                  <CarNumberCell $backgroundColor={tube.backgroundColor}>
                     {tube.carNo}
                   </CarNumberCell>
                 </div>
@@ -422,14 +422,14 @@ const TubeListBody = styled.div`
   min-height: 0;
   font-family: 'Pretendard', sans-serif;
 `;
-const CarNumberCell = styled.div<{ backgroundColor: string }>`
-  background-color: ${(props) => props.backgroundColor};
+const CarNumberCell = styled.div<{ $backgroundColor: string }>`
+  background-color: ${(props) => props.$backgroundColor};
   padding: 6px 12px;
   border-radius: 4px;
   color: #000000;
   font-weight: 500;
 `;
-const TubeListItem = styled.div<{ isSelected?: boolean }>`
+const TubeListItem = styled.div<{ $isSelected?: boolean }>`
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   column-gap: 30px;
@@ -438,7 +438,7 @@ const TubeListItem = styled.div<{ isSelected?: boolean }>`
   color: #222;
   padding: 14px 24px;
   border-bottom: 1px solid ${colors.theme.light.border};
-  background: ${(props) => (props.isSelected ? '#f3f6fa' : '#fff')};
+  background: ${(props) => (props.$isSelected ? '#f3f6fa' : '#fff')};
   transition: background 0.15s;
   font-family: 'Pretendard', sans-serif;
   cursor: pointer;

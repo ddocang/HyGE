@@ -10,12 +10,39 @@ import {
   MarkerF,
 } from '@react-google-maps/api';
 import { tubeTrailerMockData } from './tubeTrailerMockData';
+import { Truck, Link2, Anchor, Disc, Gauge, Droplets } from 'lucide-react';
 
 const libraries: Libraries = ['places', 'marker'];
 
 // InfoWindow 닫기 버튼 숨기기 위한 전역 스타일
 const GlobalStyle = createGlobalStyle`
   .gm-ui-hover-effect {
+    display: none !important;
+  }
+  
+  .gm-style-iw {
+    padding: 0 !important;
+    border-radius: 8px !important;
+  }
+  
+  .gm-style-iw-d {
+    overflow: hidden !important;
+    padding: 0 !important;
+    border-radius: 8px !important;
+  }
+  
+  .gm-style-iw-c {
+    padding: 0 !important;
+    border-radius: 8px !important;
+  }
+
+  .gm-style-iw-ch {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* InfoWindow 테두리 스타일 수정 */
+  .gm-style .gm-style-iw-tc {
     display: none !important;
   }
 `;
@@ -40,8 +67,11 @@ const MarkerLabel = styled.div`
 
 const InfoWindowContent = styled.div`
   padding: 0;
-  margin: -8px -12px;
+  margin: 0;
   font-family: 'Pretendard', sans-serif;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 `;
 
 const InfoTitle = styled.div`
@@ -52,32 +82,64 @@ const InfoTitle = styled.div`
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(4px);
+  margin: 0;
 `;
 
 const InfoBody = styled.div`
-  padding: 8px 12px;
+  padding: 0;
+  margin: 0;
   font-size: 13px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-radius: 8px;
+  overflow: hidden;
 `;
 
 const InfoRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 4px;
+  margin: 0;
+  padding: 6px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 
   &:last-child {
-    margin-bottom: 0;
+    margin: 0;
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.02);
   }
 `;
 
-const InfoLabel = styled.span`
+const InfoLabelWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const InfoIcon = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: #666;
-  margin-right: 12px;
+  width: 16px;
+  height: 16px;
+`;
+
+const InfoLabel = styled.span`
+  color: #333333;
+  margin: 0;
+  font-weight: 500;
+  font-size: 12px;
 `;
 
 const InfoValue = styled.span`
-  color: #1a1a1a;
-  font-weight: 500;
+  color: #000000;
+  font-weight: 600;
+  margin: 0;
+  font-size: 13px;
 `;
 
 const containerStyle = {
@@ -221,37 +283,129 @@ const TubeTrailerMap: React.FC<TubeTrailerMapProps> = ({
             options={{
               pixelOffset: new window.google.maps.Size(0, -20),
               disableAutoPan: false,
-              maxWidth: 320,
+              maxWidth: 240,
+              minWidth: 200,
             }}
           >
             <InfoWindowContent>
-              <InfoTitle>차량 정보</InfoTitle>
-              <InfoBody
-                style={{ backgroundColor: selectedTrailer.backgroundColor }}
-              >
+              <InfoBody>
                 <InfoRow>
-                  <InfoLabel>차량 번호</InfoLabel>
-                  <InfoValue>{selectedTrailer.carNo}</InfoValue>
+                  <InfoLabelWrapper>
+                    <InfoIcon>
+                      <Truck size={16} />
+                    </InfoIcon>
+                    <InfoLabel>차량번호</InfoLabel>
+                  </InfoLabelWrapper>
+                  <InfoValue
+                    style={{
+                      background: selectedTrailer.backgroundColor,
+                      padding: '2px 8px',
+                      borderRadius: '4px',
+                      boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                    }}
+                  >
+                    {selectedTrailer.carNo}
+                  </InfoValue>
                 </InfoRow>
                 <InfoRow>
-                  <InfoLabel>커플링</InfoLabel>
-                  <InfoValue>{selectedTrailer.coupling}</InfoValue>
+                  <InfoLabelWrapper>
+                    <InfoIcon>
+                      <Link2 size={16} />
+                    </InfoIcon>
+                    <InfoLabel>커플링</InfoLabel>
+                  </InfoLabelWrapper>
+                  <InfoValue
+                    style={{
+                      color:
+                        selectedTrailer.coupling === '비활성'
+                          ? '#999999'
+                          : '#000000',
+                      fontWeight:
+                        selectedTrailer.coupling === '비활성' ? 400 : 600,
+                    }}
+                  >
+                    {selectedTrailer.coupling}
+                  </InfoValue>
                 </InfoRow>
                 <InfoRow>
-                  <InfoLabel>착지기어(좌)</InfoLabel>
-                  <InfoValue>{selectedTrailer.landingGearL}</InfoValue>
+                  <InfoLabelWrapper>
+                    <InfoIcon>
+                      <Anchor size={16} />
+                    </InfoIcon>
+                    <InfoLabel>랜딩기어(L)</InfoLabel>
+                  </InfoLabelWrapper>
+                  <InfoValue
+                    style={{
+                      color:
+                        selectedTrailer.landingGearL === '비활성'
+                          ? '#999999'
+                          : '#000000',
+                      fontWeight:
+                        selectedTrailer.landingGearL === '비활성' ? 400 : 600,
+                    }}
+                  >
+                    {selectedTrailer.landingGearL}
+                  </InfoValue>
                 </InfoRow>
                 <InfoRow>
-                  <InfoLabel>착지기어(우)</InfoLabel>
-                  <InfoValue>{selectedTrailer.landingGearR}</InfoValue>
+                  <InfoLabelWrapper>
+                    <InfoIcon>
+                      <Anchor size={16} />
+                    </InfoIcon>
+                    <InfoLabel>랜딩기어(R)</InfoLabel>
+                  </InfoLabelWrapper>
+                  <InfoValue
+                    style={{
+                      color:
+                        selectedTrailer.landingGearR === '비활성'
+                          ? '#999999'
+                          : '#000000',
+                      fontWeight:
+                        selectedTrailer.landingGearR === '비활성' ? 400 : 600,
+                    }}
+                  >
+                    {selectedTrailer.landingGearR}
+                  </InfoValue>
                 </InfoRow>
                 <InfoRow>
-                  <InfoLabel>T-브레이크</InfoLabel>
-                  <InfoValue>{selectedTrailer.tBrake}</InfoValue>
+                  <InfoLabelWrapper>
+                    <InfoIcon>
+                      <Disc size={16} />
+                    </InfoIcon>
+                    <InfoLabel>P/Brake</InfoLabel>
+                  </InfoLabelWrapper>
+                  <InfoValue
+                    style={{
+                      color:
+                        selectedTrailer.tBrake === '비활성'
+                          ? '#999999'
+                          : '#000000',
+                      fontWeight:
+                        selectedTrailer.tBrake === '비활성' ? 400 : 600,
+                    }}
+                  >
+                    {selectedTrailer.tBrake}
+                  </InfoValue>
                 </InfoRow>
                 <InfoRow>
-                  <InfoLabel>가스센서</InfoLabel>
-                  <InfoValue>{selectedTrailer.gasSensor}</InfoValue>
+                  <InfoLabelWrapper>
+                    <InfoIcon>
+                      <Droplets size={16} />
+                    </InfoIcon>
+                    <InfoLabel>가스감지기</InfoLabel>
+                  </InfoLabelWrapper>
+                  <InfoValue
+                    style={{
+                      color:
+                        selectedTrailer.gasSensor === '비활성'
+                          ? '#999999'
+                          : '#000000',
+                      fontWeight:
+                        selectedTrailer.gasSensor === '비활성' ? 400 : 600,
+                    }}
+                  >
+                    {selectedTrailer.gasSensor}
+                  </InfoValue>
                 </InfoRow>
               </InfoBody>
             </InfoWindowContent>

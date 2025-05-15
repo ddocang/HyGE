@@ -71,9 +71,13 @@ const TubeTrailerInfoContainer = styled.div`
   overflow: hidden;
   min-height: 0;
   @media (max-width: 768px) {
-    min-height: 220px;
-    height: 220px;
+    min-height: 400px;
+    height: 400px;
     margin-bottom: 8px;
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    min-height: 600px;
   }
 `;
 
@@ -82,18 +86,18 @@ const TubeTrailerBottomContainer = styled.div`
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   border: 1px solid ${colors.theme.light.border};
-  height: auto;
+  height: 350px;
   overflow: hidden;
   font-family: 'Pretendard', sans-serif;
   flex-shrink: 0;
   position: relative;
   @media (max-width: 768px) {
     height: auto;
-    min-height: 120px;
-    img {
-      height: 80px;
-      object-fit: contain;
-    }
+    min-height: 280px;
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    height: 320px;
   }
 `;
 
@@ -124,6 +128,10 @@ const TUBE_TRAILER_SENSORS = [
     name: '브레이크',
     width: 60,
     height: 60,
+    mobileX: 85, // 모바일용 좌표 (%)
+    mobileY: 60, // 모바일용 좌표 (%)
+    mobileWidth: 40, // 모바일용 크기
+    mobileHeight: 40, // 모바일용 크기
   },
   {
     id: 'gear',
@@ -132,6 +140,10 @@ const TUBE_TRAILER_SENSORS = [
     name: '기어',
     width: 28,
     height: 28,
+    mobileX: 30,
+    mobileY: 70,
+    mobileWidth: 20,
+    mobileHeight: 20,
   },
   {
     id: 'gear2',
@@ -140,6 +152,10 @@ const TUBE_TRAILER_SENSORS = [
     name: '기어2',
     width: 28,
     height: 28,
+    mobileX: 45,
+    mobileY: 85,
+    mobileWidth: 20,
+    mobileHeight: 20,
   },
   {
     id: 'h2',
@@ -148,38 +164,58 @@ const TUBE_TRAILER_SENSORS = [
     name: '수소',
     width: 60,
     height: 60,
+    mobileX: 85,
+    mobileY: 35,
+    mobileWidth: 40,
+    mobileHeight: 40,
   },
   {
     id: 'line1',
-    x: (260 / 828) * 100,
-    y: (460 / 672) * 100,
+    x: (387 / 828) * 100,
+    y: (500 / 672) * 100,
     name: '라인1',
     width: 285,
     height: 40,
+    mobileX: (387 / 828) * 100,
+    mobileY: (500 / 672) * 100,
+    mobileWidth: 200,
+    mobileHeight: 30,
   },
   {
     id: 'line2',
-    x: (378 / 828) * 100,
-    y: (495 / 672) * 100,
+    x: (444 / 828) * 100,
+    y: (535 / 672) * 100,
     name: '라인2',
     width: 150,
     height: 40,
+    mobileX: (444 / 828) * 100,
+    mobileY: (535 / 672) * 100,
+    mobileWidth: 100,
+    mobileHeight: 30,
   },
   {
     id: 'line3',
-    x: (564 / 828) * 100,
-    y: (423 / 672) * 100,
+    x: (682 / 828) * 100,
+    y: (473 / 672) * 100,
     name: '라인3',
     width: 265,
     height: 50,
+    mobileX: (682 / 828) * 100,
+    mobileY: (473 / 672) * 100,
+    mobileWidth: 180,
+    mobileHeight: 40,
   },
   {
     id: 'line4',
-    x: (477 / 828) * 100,
-    y: (290 / 672) * 100,
+    x: (689 / 828) * 100,
+    y: (397 / 672) * 100,
     name: '라인4',
     width: 480,
     height: 109,
+    mobileX: (689 / 828) * 100,
+    mobileY: (397 / 672) * 100,
+    mobileWidth: 320,
+    mobileHeight: 80,
   },
 ];
 
@@ -207,6 +243,23 @@ const TubeTrailerPage = () => {
   const [selectedVehicleId, setSelectedVehicleId] = useState<string | null>(
     null
   );
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+
+  // 반응형 디자인을 위한 화면 크기 감지
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+      setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1024);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+
+    return () => {
+      window.removeEventListener('resize', checkScreenSize);
+    };
+  }, []);
 
   useEffect(() => {
     setLastUpdateTime(new Date().toLocaleTimeString());
@@ -217,7 +270,7 @@ const TubeTrailerPage = () => {
       <TopBanner
         params={params}
         pathname={pathname ?? ''}
-        isMobile={false}
+        isMobile={isMobile}
         lastUpdateTime={lastUpdateTime}
         setIsLogOpen={setIsLogOpen}
         router={router}
@@ -246,6 +299,8 @@ const TubeTrailerPage = () => {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
+                padding: 0,
+                overflow: 'hidden',
               }}
             >
               <img
@@ -255,12 +310,21 @@ const TubeTrailerPage = () => {
                   width: '100%',
                   height: 'auto',
                   objectFit: 'contain',
-                  borderRadius: '16px',
                   display: 'block',
                 }}
               />
               {/* 아이콘 오버레이 */}
               {TUBE_TRAILER_SENSORS.map((sensor) => {
+                // 모바일인지 여부에 따라 적절한 위치와 크기 값 사용
+                const sensorX = isMobile ? sensor.mobileX : sensor.x;
+                const sensorY = isMobile ? sensor.mobileY : sensor.y;
+                const sensorWidth = isMobile
+                  ? sensor.mobileWidth
+                  : sensor.width;
+                const sensorHeight = isMobile
+                  ? sensor.mobileHeight
+                  : sensor.height;
+
                 if (sensor.id === 'line1') {
                   // Line 1: 수평 직선 (파랑)
                   return (
@@ -268,16 +332,17 @@ const TubeTrailerPage = () => {
                       key={sensor.id}
                       style={{
                         position: 'absolute',
-                        left: `${sensor.x}%`,
-                        top: `${sensor.y}%`,
-                        width: sensor.width,
-                        height: sensor.height,
+                        left: `${sensorX}%`,
+                        top: `${sensorY}%`,
+                        width: isMobile ? sensorWidth : sensorWidth,
+                        height: isMobile ? sensorHeight : sensorHeight,
                         pointerEvents: 'none',
                         zIndex: 3,
+                        transform: 'translate(-50%, -50%)',
                       }}
                     >
                       <svg
-                        width={404}
+                        width={isMobile ? 200 : 404}
                         height={2}
                         viewBox="0 0 404 2"
                         style={{ width: '100%', height: '100%' }}
@@ -288,7 +353,7 @@ const TubeTrailerPage = () => {
                           x2="404"
                           y2="1"
                           stroke="#00f6ff"
-                          strokeWidth="5"
+                          strokeWidth={isMobile ? 3 : 5}
                           strokeDasharray="30 30"
                           style={{
                             filter: 'drop-shadow(0 0 8px #00f6ff)',
@@ -312,17 +377,18 @@ const TubeTrailerPage = () => {
                       key={sensor.id}
                       style={{
                         position: 'absolute',
-                        left: `${sensor.x}%`,
-                        top: `${sensor.y}%`,
-                        width: sensor.width,
-                        height: sensor.height,
+                        left: `${sensorX}%`,
+                        top: `${sensorY}%`,
+                        width: sensorWidth,
+                        height: sensorHeight,
                         pointerEvents: 'none',
                         zIndex: 3,
+                        transform: 'translate(-50%, -50%)',
                       }}
                     >
                       <svg
-                        width={216}
-                        height={37}
+                        width={isMobile ? 150 : 216}
+                        height={isMobile ? 25 : 37}
                         viewBox="0 0 216 37"
                         style={{ width: '100%', height: '100%' }}
                       >
@@ -332,7 +398,7 @@ const TubeTrailerPage = () => {
                           x2="1"
                           y2="2"
                           stroke="#ffb300"
-                          strokeWidth="10"
+                          strokeWidth={isMobile ? 6 : 10}
                           strokeDasharray="20 20"
                           style={{
                             filter: 'drop-shadow(0 0 8px #ffb300)',
@@ -342,7 +408,7 @@ const TubeTrailerPage = () => {
                         <path
                           d="M0 1H216"
                           stroke="#ffb300"
-                          strokeWidth="5"
+                          strokeWidth={isMobile ? 3 : 5}
                           strokeDasharray="30 30"
                           style={{
                             filter: 'drop-shadow(0 0 8px #ffb300)',
@@ -366,17 +432,18 @@ const TubeTrailerPage = () => {
                       key={sensor.id}
                       style={{
                         position: 'absolute',
-                        left: `${sensor.x}%`,
-                        top: `${sensor.y}%`,
-                        width: sensor.width,
-                        height: sensor.height,
+                        left: `${sensorX}%`,
+                        top: `${sensorY}%`,
+                        width: sensorWidth,
+                        height: sensorHeight,
                         pointerEvents: 'none',
                         zIndex: 3,
+                        transform: 'translate(-50%, -50%)',
                       }}
                     >
                       <svg
-                        width={365}
-                        height={57}
+                        width={isMobile ? 180 : 365}
+                        height={isMobile ? 40 : 57}
                         viewBox="0 0 365 57"
                         style={{ width: '100%', height: '100%' }}
                       >
@@ -386,7 +453,7 @@ const TubeTrailerPage = () => {
                           x2="285"
                           y2="1"
                           stroke="#ff2d55"
-                          strokeWidth="5"
+                          strokeWidth={isMobile ? 3 : 5}
                           strokeDasharray="20 20"
                           style={{
                             filter: 'drop-shadow(0 0 8px #ff2d55)',
@@ -399,7 +466,7 @@ const TubeTrailerPage = () => {
                           x2="286"
                           y2="55"
                           stroke="#ff2d55"
-                          strokeWidth="5"
+                          strokeWidth={isMobile ? 3 : 5}
                           strokeDasharray="20 20"
                           style={{
                             filter: 'drop-shadow(0 0 8px #ff2d55)',
@@ -409,7 +476,7 @@ const TubeTrailerPage = () => {
                         <path
                           d="M287 56L0 56"
                           stroke="#ff2d55"
-                          strokeWidth="5"
+                          strokeWidth={isMobile ? 3 : 5}
                           strokeDasharray="30 30"
                           style={{
                             filter: 'drop-shadow(0 0 8px #ff2d55)',
@@ -433,17 +500,18 @@ const TubeTrailerPage = () => {
                       key={sensor.id}
                       style={{
                         position: 'absolute',
-                        left: `${sensor.x}%`,
-                        top: `${sensor.y}%`,
-                        width: sensor.width,
-                        height: sensor.height,
+                        left: `${sensorX}%`,
+                        top: `${sensorY}%`,
+                        width: sensorWidth,
+                        height: sensorHeight,
                         pointerEvents: 'none',
                         zIndex: 3,
+                        transform: 'translate(-50%, -50%)',
                       }}
                     >
                       <svg
-                        width={381}
-                        height={152}
+                        width={isMobile ? 320 : 381}
+                        height={isMobile ? 80 : 152}
                         viewBox="0 0 381 152"
                         style={{ width: '100%', height: '100%' }}
                       >
@@ -453,7 +521,7 @@ const TubeTrailerPage = () => {
                           y1="0"
                           y2="83"
                           stroke="#00e676"
-                          strokeWidth="5"
+                          strokeWidth={isMobile ? 3 : 5}
                           strokeDasharray="20 20"
                           style={{
                             filter: 'drop-shadow(0 0 8px #00e676)',
@@ -466,7 +534,7 @@ const TubeTrailerPage = () => {
                           x2="261"
                           y2="84"
                           stroke="#00e676"
-                          strokeWidth="5"
+                          strokeWidth={isMobile ? 3 : 5}
                           strokeDasharray="20 20"
                           style={{
                             filter: 'drop-shadow(0 0 8px #00e676)',
@@ -479,7 +547,7 @@ const TubeTrailerPage = () => {
                           x2="262"
                           y2="150"
                           stroke="#00e676"
-                          strokeWidth="5"
+                          strokeWidth={isMobile ? 3 : 5}
                           strokeDasharray="20 20"
                           style={{
                             filter: 'drop-shadow(0 0 8px #00e676)',
@@ -492,7 +560,7 @@ const TubeTrailerPage = () => {
                           x2="0"
                           y2="151"
                           stroke="#00e676"
-                          strokeWidth="8"
+                          strokeWidth={isMobile ? 8 : 8}
                           strokeDasharray="30 30"
                           style={{
                             filter: 'drop-shadow(0 0 8px #00e676)',
@@ -522,10 +590,10 @@ const TubeTrailerPage = () => {
                       title={sensor.name}
                       style={{
                         position: 'absolute',
-                        left: `${sensor.x}%`,
-                        top: `${sensor.y}%`,
-                        width: sensor.width,
-                        height: sensor.height,
+                        left: `${sensorX}%`,
+                        top: `${sensorY}%`,
+                        width: sensorWidth,
+                        height: sensorHeight,
                         pointerEvents: 'auto',
                         zIndex: 2,
                         transform: 'translate(-50%, -50%)',
@@ -548,11 +616,11 @@ const TubeTrailerPage = () => {
               <div
                 style={{
                   position: 'absolute',
-                  left: `${(544 / 828) * 100}%`,
-                  top: `${(486 / 672) * 100}%`,
+                  left: isMobile ? '60%' : `${(544 / 828) * 100}%`,
+                  top: isMobile ? '65%' : `${(486 / 672) * 100}%`,
                   transform: 'translate(-50%, -50%)',
-                  width: 120,
-                  height: 120,
+                  width: isMobile ? 80 : 120,
+                  height: isMobile ? 80 : 120,
                   pointerEvents: 'none',
                   zIndex: 10,
                 }}
@@ -636,11 +704,11 @@ const TubeTrailerPage = () => {
               <div
                 style={{
                   position: 'absolute',
-                  left: `${(112 / 828) * 100}%`,
-                  top: `${(170 / 672) * 100}%`,
+                  left: isMobile ? '20%' : `${(112 / 828) * 100}%`,
+                  top: isMobile ? '30%' : `${(170 / 672) * 100}%`,
                   transform: 'translate(-50%, -50%)',
-                  width: 120,
-                  height: 120,
+                  width: isMobile ? 80 : 120,
+                  height: isMobile ? 80 : 120,
                   pointerEvents: 'none',
                   zIndex: 10,
                 }}

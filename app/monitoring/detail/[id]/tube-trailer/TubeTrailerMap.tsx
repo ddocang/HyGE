@@ -1,6 +1,6 @@
 /// <reference path="../../../../../app/types/global.d.ts" />
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import {
   GoogleMap,
@@ -48,11 +48,17 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const MapContainer = styled.div`
+  position: relative;
   width: 100%;
   height: 100%;
-  border-radius: 12px;
-  overflow: visible;
-  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: 400px;
+  }
 `;
 
 const MarkerLabel = styled.div`
@@ -171,6 +177,36 @@ const TubeTrailerMap: React.FC<TubeTrailerMapProps> = ({
   const [selectedTrailer, setSelectedTrailer] = useState<
     (typeof tubeTrailerMockData)[0] | null
   >(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+
+  // 반응형 디자인을 위한 화면 크기 감지
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+      setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1024);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+
+    return () => {
+      window.removeEventListener('resize', checkScreenSize);
+    };
+  }, []);
+
+  // 화면 크기에 따른 지도 스타일 조정
+  const mapContainerStyle = useMemo(
+    () => ({
+      width: '100%',
+      height: isMobile ? '400px' : isTablet ? '600px' : '100%',
+      borderRadius: '12px',
+    }),
+    [isMobile, isTablet]
+  );
+
+  // 화면 크기에 따른 초기 줌 레벨 조정
+  const initialZoom = useMemo(() => (isMobile ? 16 : 17), [isMobile]);
 
   // 지도 초기화 시 모든 마커가 보이도록 설정
   useEffect(() => {
@@ -183,10 +219,10 @@ const TubeTrailerMap: React.FC<TubeTrailerMapProps> = ({
 
       // 줌 레벨 조정 (약간 줌 아웃)
       setTimeout(() => {
-        map.setZoom(17);
+        map.setZoom(initialZoom);
       }, 100);
     }
-  }, [map]);
+  }, [map, initialZoom]);
 
   // 선택된 차량이 변경될 때 지도 이동
   useEffect(() => {
@@ -196,11 +232,11 @@ const TubeTrailerMap: React.FC<TubeTrailerMapProps> = ({
       );
       if (trailer) {
         map.panTo({ lat: trailer.lat, lng: trailer.lng });
-        map.setZoom(18); // 선택 시에는 좀 더 자세히
+        map.setZoom(isMobile ? 17 : 18); // 화면 크기에 따른 줌 레벨 조정
         setSelectedTrailer(trailer);
       }
     }
-  }, [selectedVehicleId, map]);
+  }, [selectedVehicleId, map, isMobile]);
 
   // 지도 클릭 이벤트 핸들러 추가
   useEffect(() => {
@@ -229,7 +265,7 @@ const TubeTrailerMap: React.FC<TubeTrailerMapProps> = ({
     }
     if (map) {
       map.panTo({ lat: trailer.lat, lng: trailer.lng });
-      map.setZoom(18); // 마커 클릭 시에도 동일한 줌 레벨 유지
+      map.setZoom(isMobile ? 17 : 18); // 화면 크기에 따른 줌 레벨 조정
     }
   };
 
@@ -237,13 +273,14 @@ const TubeTrailerMap: React.FC<TubeTrailerMapProps> = ({
     <MapContainer>
       <GlobalStyle />
       <GoogleMap
-        mapContainerStyle={containerStyle}
+        mapContainerStyle={mapContainerStyle}
         center={defaultCenter}
-        zoom={17} // 초기 줌 레벨도 동일하게 조정
+        zoom={initialZoom}
         onLoad={setMap}
         options={{
           disableDefaultUI: true,
-          zoomControl: true,
+          zoomControl: !isMobile, // 모바일에서는 줌 컨트롤 숨기기
+          scrollwheel: true,
           mapTypeId: 'hybrid',
           styles: [
             {

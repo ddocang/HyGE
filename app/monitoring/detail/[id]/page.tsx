@@ -1572,7 +1572,28 @@ function DetailPageContent({
             </LogoImageWrapper>
             <span>HyGE&nbsp;Safety&nbsp;Monitoring</span>
           </Logo>
-          <BannerTitle>삼척 교동 수소 스테이션</BannerTitle>
+          <BannerTitle>
+            삼척 교동 수소 스테이션
+            {isMobile && (
+              <Link
+                href={`/monitoring/detail/${params.id}/tube-trailer`}
+                style={{
+                  display: 'inline-block',
+                  marginLeft: 10,
+                  padding: '5px 10px',
+                  background: 'rgba(0, 131, 255, 0.8)',
+                  color: '#fff',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  borderRadius: '8px',
+                  textDecoration: 'none',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                }}
+              >
+                튜브트레일러
+              </Link>
+            )}
+          </BannerTitle>
           {!isMobile && (
             <MainMenu>
               <ThemeToggleButton />
@@ -2733,17 +2754,6 @@ function DetailPageContent({
           </button>
         </div>
       )}
-      <div className="flex flex-col gap-4 p-4">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">{FACILITY_DETAIL.name}</h1>
-          <button
-            onClick={resetVibrationThresholds}
-            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-          >
-            임계값 초기화
-          </button>
-        </div>
-      </div>
     </div>
   );
 }

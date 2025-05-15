@@ -1981,3 +1981,12 @@ export const BannerTitle = styled.div`
     }
   }
 `;
+
+export const RegisterPopup = styled(DetailedGraphPopup)`
+  && {
+    width: 600px;
+    height: auto;
+    max-width: 90vw;
+    max-height: 80vh;
+  }
+`;

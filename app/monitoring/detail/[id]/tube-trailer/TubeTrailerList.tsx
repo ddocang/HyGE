@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { colors } from '@/app/styles/colors';
 import { tubeTrailerMockData, getStatusType } from './tubeTrailerMockData';
@@ -9,6 +9,7 @@ import {
   PopupHeader,
   CloseButton,
   PopupButton,
+  RegisterPopup,
 } from '../styles';
 
 // 새로운 튜브트레일러의 기본 좌표 (서울시청)
@@ -45,6 +46,23 @@ const TubeTrailerList: React.FC<TubeTrailerListProps> = ({
     ...tubeTrailerMockData,
   ]);
   const [editId, setEditId] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+
+  // 반응형 디자인을 위한 화면 크기 감지
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+      setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1024);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+
+    return () => {
+      window.removeEventListener('resize', checkScreenSize);
+    };
+  }, []);
 
   // 팝업 열기(추가 모드)
   const handleRegisterClick = () => {
@@ -126,14 +144,14 @@ const TubeTrailerList: React.FC<TubeTrailerListProps> = ({
           </RegisterButton>
         </ListHeaderWrapper>
         <TubeList>
-          <TubeListHeader>
+          <TubeListHeader isMobile={isMobile} isTablet={isTablet}>
             <div>No.</div>
             <div>차량번호</div>
-            <div>커플링</div>
-            <div>랜딩기어(L)</div>
-            <div>랜딩기어(R)</div>
-            <div>P/Brake</div>
-            <div>가스감지기</div>
+            {!isMobile && <div>커플링</div>}
+            {!isMobile && !isTablet && <div>랜딩기어(L)</div>}
+            {!isMobile && !isTablet && <div>랜딩기어(R)</div>}
+            {!isMobile && <div>P/Brake</div>}
+            {!isMobile && <div>가스감지기</div>}
             <div>위치</div>
           </TubeListHeader>
           <TubeListBody>
@@ -142,6 +160,8 @@ const TubeTrailerList: React.FC<TubeTrailerListProps> = ({
                 key={tube.id}
                 onClick={() => onVehicleSelect(tube.id)}
                 $isSelected={selectedVehicleId === tube.id}
+                isMobile={isMobile}
+                isTablet={isTablet}
               >
                 <div>{idx + 1}</div>
                 <div>
@@ -149,38 +169,54 @@ const TubeTrailerList: React.FC<TubeTrailerListProps> = ({
                     {tube.carNo}
                   </CarNumberCell>
                 </div>
-                <StatusWrapper $status={getStatusType(tube.coupling)}>
-                  <StatusIndicator $status={getStatusType(tube.coupling)} />
-                  <StatusLabel $status={getStatusType(tube.coupling)}>
-                    {tube.coupling}
-                  </StatusLabel>
-                </StatusWrapper>
-                <StatusWrapper $status={getStatusType(tube.landingGearL)}>
-                  <StatusIndicator $status={getStatusType(tube.landingGearL)} />
-                  <StatusLabel $status={getStatusType(tube.landingGearL)}>
-                    {tube.landingGearL}
-                  </StatusLabel>
-                </StatusWrapper>
-                <StatusWrapper $status={getStatusType(tube.landingGearR)}>
-                  <StatusIndicator $status={getStatusType(tube.landingGearR)} />
-                  <StatusLabel $status={getStatusType(tube.landingGearR)}>
-                    {tube.landingGearR}
-                  </StatusLabel>
-                </StatusWrapper>
-                <StatusWrapper $status={getStatusType(tube.tBrake)}>
-                  <StatusIndicator $status={getStatusType(tube.tBrake)} />
-                  <StatusLabel $status={getStatusType(tube.tBrake)}>
-                    {tube.tBrake}
-                  </StatusLabel>
-                </StatusWrapper>
-                <StatusWrapper $status={getStatusType(tube.gasSensor)}>
-                  <StatusIndicator $status={getStatusType(tube.gasSensor)} />
-                  <StatusLabel $status={getStatusType(tube.gasSensor)}>
-                    {tube.gasSensor}
-                  </StatusLabel>
-                </StatusWrapper>
+                {!isMobile && (
+                  <StatusWrapper $status={getStatusType(tube.coupling)}>
+                    <StatusIndicator $status={getStatusType(tube.coupling)} />
+                    <StatusLabel $status={getStatusType(tube.coupling)}>
+                      {tube.coupling}
+                    </StatusLabel>
+                  </StatusWrapper>
+                )}
+                {!isMobile && !isTablet && (
+                  <StatusWrapper $status={getStatusType(tube.landingGearL)}>
+                    <StatusIndicator
+                      $status={getStatusType(tube.landingGearL)}
+                    />
+                    <StatusLabel $status={getStatusType(tube.landingGearL)}>
+                      {tube.landingGearL}
+                    </StatusLabel>
+                  </StatusWrapper>
+                )}
+                {!isMobile && !isTablet && (
+                  <StatusWrapper $status={getStatusType(tube.landingGearR)}>
+                    <StatusIndicator
+                      $status={getStatusType(tube.landingGearR)}
+                    />
+                    <StatusLabel $status={getStatusType(tube.landingGearR)}>
+                      {tube.landingGearR}
+                    </StatusLabel>
+                  </StatusWrapper>
+                )}
+                {!isMobile && (
+                  <StatusWrapper $status={getStatusType(tube.tBrake)}>
+                    <StatusIndicator $status={getStatusType(tube.tBrake)} />
+                    <StatusLabel $status={getStatusType(tube.tBrake)}>
+                      {tube.tBrake}
+                    </StatusLabel>
+                  </StatusWrapper>
+                )}
+                {!isMobile && (
+                  <StatusWrapper $status={getStatusType(tube.gasSensor)}>
+                    <StatusIndicator $status={getStatusType(tube.gasSensor)} />
+                    <StatusLabel $status={getStatusType(tube.gasSensor)}>
+                      {tube.gasSensor}
+                    </StatusLabel>
+                  </StatusWrapper>
+                )}
                 <div style={{ fontSize: '0.9em', color: '#64748b' }}>
-                  {tube.lat.toFixed(6)}, {tube.lng.toFixed(6)}
+                  {isMobile ? Number(tube.lat).toFixed(4) : tube.lat.toFixed(6)}
+                  ,
+                  {isMobile ? Number(tube.lng).toFixed(4) : tube.lng.toFixed(6)}
                 </div>
               </TubeListItem>
             ))}
@@ -190,135 +226,101 @@ const TubeTrailerList: React.FC<TubeTrailerListProps> = ({
 
       {/* 팝업(모달) */}
       <PopupOverlay isOpen={isRegisterOpen} onClick={handleClose} />
-      <DetailedGraphPopup isOpen={isRegisterOpen}>
+      <RegisterPopup isOpen={isRegisterOpen}>
         <PopupHeader>
           <h2>튜브트레일러 등록/수정</h2>
           <div className="button-group">
             <CloseButton onClick={handleClose}>×</CloseButton>
           </div>
         </PopupHeader>
-        <div style={{ padding: 32 }}>
+        <ResponsivePopupContent isMobile={isMobile}>
           <div style={{ marginBottom: 24 }}>
             <div style={{ fontWeight: 600, marginBottom: 8 }}>
               현재 등록된 차량번호 목록
             </div>
-            <table
-              style={{
-                width: '100%',
-                borderCollapse: 'collapse',
-                background: '#f9fafb',
-                borderRadius: 8,
-                overflow: 'hidden',
-              }}
-            >
+            <ResponsiveTable isMobile={isMobile}>
               <thead>
                 <tr style={{ background: '#e5e7eb' }}>
-                  <th style={{ padding: '8px', border: '1px solid #e5e7eb' }}>
-                    NO.
-                  </th>
-                  <th style={{ padding: '8px', border: '1px solid #e5e7eb' }}>
-                    차량번호
-                  </th>
-                  <th style={{ padding: '8px', border: '1px solid #e5e7eb' }}>
-                    ID
-                  </th>
-                  <th style={{ padding: '8px', border: '1px solid #e5e7eb' }}>
-                    수정
-                  </th>
-                  <th style={{ padding: '8px', border: '1px solid #e5e7eb' }}>
-                    삭제
-                  </th>
+                  <th>NO.</th>
+                  <th>차량번호</th>
+                  <th>ID</th>
+                  <th>수정</th>
+                  <th>삭제</th>
                 </tr>
               </thead>
               <tbody>
                 {tubeList.map((tube, idx) => (
                   <tr key={tube.id}>
-                    <td
-                      style={{
-                        padding: '8px',
-                        border: '1px solid #e5e7eb',
-                        textAlign: 'center',
-                      }}
-                    >
-                      {idx + 1}
-                    </td>
-                    <td
-                      style={{
-                        padding: '8px',
-                        border: '1px solid #e5e7eb',
-                        textAlign: 'center',
-                      }}
-                    >
-                      {tube.carNo}
-                    </td>
-                    <td
-                      style={{
-                        padding: '8px',
-                        border: '1px solid #e5e7eb',
-                        textAlign: 'center',
-                      }}
-                    >
-                      {tube.id}
-                    </td>
-                    <td
-                      style={{
-                        padding: '8px',
-                        border: '1px solid #e5e7eb',
-                        textAlign: 'center',
-                      }}
-                    >
-                      <button
-                        style={{
-                          padding: '4px 10px',
-                          borderRadius: 6,
-                          border: '1px solid #60a5fa',
-                          background: '#e0f2fe',
-                          color: '#2563eb',
-                          cursor: 'pointer',
-                        }}
-                        onClick={() => handleEdit(tube.id)}
-                      >
+                    <td>{idx + 1}</td>
+                    <td>{tube.carNo}</td>
+                    <td>{tube.id}</td>
+                    <td>
+                      <ActionButton edit onClick={() => handleEdit(tube.id)}>
                         수정
-                      </button>
+                      </ActionButton>
                     </td>
-                    <td
-                      style={{
-                        padding: '8px',
-                        border: '1px solid #e5e7eb',
-                        textAlign: 'center',
-                      }}
-                    >
-                      <button
-                        style={{
-                          padding: '4px 10px',
-                          borderRadius: 6,
-                          border: '1px solid #fca5a5',
-                          background: '#fee2e2',
-                          color: '#ef4444',
-                          cursor: 'pointer',
-                        }}
+                    <td>
+                      <ActionButton
+                        delete
                         onClick={() => handleDelete(tube.id)}
                       >
                         삭제
-                      </button>
+                      </ActionButton>
                     </td>
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </ResponsiveTable>
           </div>
-          <label>
-            차량번호:
-            <input value={carNo} onChange={(e) => setCarNo(e.target.value)} />
-          </label>
-          <div style={{ marginTop: 24, display: 'flex', gap: 12 }}>
-            <PopupButton onClick={handleSave}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: isMobile ? 'column' : 'row',
+              alignItems: isMobile ? 'flex-start' : 'center',
+              gap: isMobile ? '8px' : '12px',
+              marginBottom: '24px',
+            }}
+          >
+            <div style={{ width: isMobile ? 'auto' : '80px', flexShrink: 0 }}>
+              차량번호:
+            </div>
+            <input
+              value={carNo}
+              onChange={(e) => setCarNo(e.target.value)}
+              style={{
+                width: isMobile ? '100%' : 'auto',
+                flex: isMobile ? 'none' : 1,
+                padding: '8px 12px',
+                borderRadius: '6px',
+                border: '1px solid #e5e7eb',
+                fontSize: '14px',
+              }}
+            />
+          </div>
+          <div
+            style={{
+              marginTop: 24,
+              display: 'flex',
+              gap: 12,
+              justifyContent: isMobile ? 'space-between' : 'flex-start',
+              width: isMobile ? '100%' : 'auto',
+            }}
+          >
+            <PopupButton
+              onClick={handleSave}
+              style={{ flex: isMobile ? '1' : 'none' }}
+            >
               {editId !== null ? '수정' : '저장'}
             </PopupButton>
-            <PopupButton onClick={handleClose}>취소</PopupButton>
+            <PopupButton
+              onClick={handleClose}
+              style={{ flex: isMobile ? '1' : 'none' }}
+            >
+              취소
+            </PopupButton>
           </div>
-        </div>
-      </DetailedGraphPopup>
+        </ResponsivePopupContent>
+      </RegisterPopup>
     </>
   );
 };
@@ -380,6 +382,7 @@ const TubeList = styled.div`
   gap: 0;
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   min-height: 0;
   padding: 0 8px;
   font-family: 'Pretendard', sans-serif;
@@ -394,23 +397,37 @@ const TubeList = styled.div`
     background: #cbd5e1;
     border-radius: 3px;
   }
+
+  @media (max-width: 768px) {
+    padding: 0 4px;
+  }
 `;
-const TubeListHeader = styled.div`
+const TubeListHeader = styled.div<{ isMobile?: boolean; isTablet?: boolean }>`
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  column-gap: 30px;
-  font-size: 14px;
+  grid-template-columns: ${(props) =>
+    props.isMobile
+      ? '0.5fr 1.5fr 2fr'
+      : props.isTablet
+      ? 'repeat(5, 1fr)'
+      : 'repeat(8, 1fr)'};
+  column-gap: ${(props) => (props.isMobile ? '10px' : '30px')};
+  font-size: ${(props) => (props.isMobile ? '12px' : '14px')};
   font-weight: 500;
   color: #64748b;
   background: #f3f6fa;
-  padding: 14px 24px;
+  padding: ${(props) => (props.isMobile ? '10px 14px' : '14px 24px')};
   border-bottom: 1px solid ${colors.theme.light.border};
   font-family: 'Pretendard', sans-serif;
+  overflow-x: auto;
+
   & > div {
     text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
+    white-space: nowrap;
+    min-width: ${(props) => (props.isMobile ? '50px' : '80px')};
+
     & > div {
       display: inline-flex;
     }
@@ -419,6 +436,7 @@ const TubeListHeader = styled.div`
 const TubeListBody = styled.div`
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   min-height: 0;
   font-family: 'Pretendard', sans-serif;
 `;
@@ -428,20 +446,40 @@ const CarNumberCell = styled.div<{ $backgroundColor: string }>`
   border-radius: 4px;
   color: #000000;
   font-weight: 500;
-`;
-const TubeListItem = styled.div<{ $isSelected?: boolean }>`
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  column-gap: 30px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  min-width: 60px;
+  display: flex;
+  justify-content: center;
   align-items: center;
-  font-size: 14px;
+
+  @media (max-width: 768px) {
+    padding: 4px 8px;
+    min-width: 40px;
+  }
+`;
+const TubeListItem = styled.div<{
+  $isSelected?: boolean;
+  isMobile?: boolean;
+  isTablet?: boolean;
+}>`
+  display: grid;
+  grid-template-columns: ${(props) =>
+    props.isMobile
+      ? '0.5fr 1.5fr 2fr'
+      : props.isTablet
+      ? 'repeat(5, 1fr)'
+      : 'repeat(8, 1fr)'};
+  column-gap: ${(props) => (props.isMobile ? '10px' : '30px')};
+  align-items: center;
+  font-size: ${(props) => (props.isMobile ? '12px' : '14px')};
   color: #222;
-  padding: 14px 24px;
+  padding: ${(props) => (props.isMobile ? '10px 14px' : '14px 24px')};
   border-bottom: 1px solid ${colors.theme.light.border};
   background: ${(props) => (props.$isSelected ? '#f3f6fa' : '#fff')};
   transition: background 0.15s;
   font-family: 'Pretendard', sans-serif;
   cursor: pointer;
+  overflow-x: auto;
 
   &:hover {
     background: #f3f6fa;
@@ -456,6 +494,9 @@ const TubeListItem = styled.div<{ $isSelected?: boolean }>`
     display: flex;
     justify-content: center;
     align-items: center;
+    white-space: nowrap;
+    min-width: ${(props) => (props.isMobile ? '50px' : '80px')};
+
     & > div {
       display: inline-flex;
     }
@@ -560,6 +601,62 @@ const StatusLabel = styled.span<{ $status: string }>`
   }};
   position: relative;
   z-index: 1;
+`;
+
+// 팝업 내용 반응형 컨테이너
+const ResponsivePopupContent = styled.div<{ isMobile?: boolean }>`
+  padding: ${(props) => (props.isMobile ? '16px' : '32px')};
+  max-height: ${(props) => (props.isMobile ? 'calc(100vh - 120px)' : 'auto')};
+  overflow-y: auto;
+`;
+
+// 반응형 테이블
+const ResponsiveTable = styled.table<{ isMobile?: boolean }>`
+  width: 100%;
+  border-collapse: collapse;
+  background: #f9fafb;
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: ${(props) => (props.isMobile ? '13px' : '14px')};
+
+  th,
+  td {
+    padding: ${(props) => (props.isMobile ? '6px 4px' : '8px')};
+    border: 1px solid #e5e7eb;
+    text-align: center;
+  }
+
+  th {
+    font-weight: 600;
+    color: #4b5563;
+  }
+
+  @media (max-width: 480px) {
+    display: ${(props) => (props.isMobile ? 'block' : 'table')};
+    max-width: 100%;
+    overflow-x: auto;
+  }
+`;
+
+// 액션 버튼 (수정, 삭제)
+const ActionButton = styled.button<{ edit?: boolean; delete?: boolean }>`
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid
+    ${(props) =>
+      props.edit ? '#60a5fa' : props.delete ? '#fca5a5' : '#e5e7eb'};
+  background: ${(props) =>
+    props.edit ? '#e0f2fe' : props.delete ? '#fee2e2' : '#f9fafb'};
+  color: ${(props) =>
+    props.edit ? '#2563eb' : props.delete ? '#ef4444' : '#6b7280'};
+  cursor: pointer;
+  font-size: inherit;
+  white-space: nowrap;
+
+  @media (max-width: 768px) {
+    padding: 3px 6px;
+    font-size: 12px;
+  }
 `;
 
 console.log('TubeTrailerMap:', TubeTrailerList);

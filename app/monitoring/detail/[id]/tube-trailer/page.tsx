@@ -37,8 +37,8 @@ const LayoutContainer = styled.div`
   min-height: 0;
   @media (max-width: 768px) {
     flex-direction: column;
-    gap: 10px;
-    padding: 8px;
+    gap: 12px;
+    padding: 10px;
   }
 `;
 
@@ -51,7 +51,7 @@ const ColumnContainer = styled.div`
   height: 100%;
   overflow: hidden;
   @media (max-width: 768px) {
-    gap: 8px;
+    gap: 12px;
     height: auto;
   }
 `;
@@ -71,8 +71,8 @@ const TubeTrailerInfoContainer = styled.div`
   overflow: hidden;
   min-height: 0;
   @media (max-width: 768px) {
-    min-height: 400px;
-    height: 400px;
+    min-height: 350px;
+    height: 350px;
     margin-bottom: 8px;
   }
 
@@ -93,7 +93,9 @@ const TubeTrailerBottomContainer = styled.div`
   position: relative;
   @media (max-width: 768px) {
     height: auto;
-    min-height: 280px;
+    min-height: 300px;
+    aspect-ratio: 16/9;
+    max-height: 70vh;
   }
 
   @media (min-width: 769px) and (max-width: 1024px) {
@@ -176,10 +178,10 @@ const TUBE_TRAILER_SENSORS = [
     name: '라인1',
     width: 285,
     height: 40,
-    mobileX: 47,
-    mobileY: 74,
-    mobileWidth: 200,
-    mobileHeight: 30,
+    mobileX: 48,
+    mobileY: 83,
+    mobileWidth: 220,
+    mobileHeight: 5,
   },
   {
     id: 'line2',
@@ -188,10 +190,10 @@ const TUBE_TRAILER_SENSORS = [
     name: '라인2',
     width: 150,
     height: 40,
-    mobileX: 53,
-    mobileY: 80,
-    mobileWidth: 100,
-    mobileHeight: 30,
+    mobileX: 55,
+    mobileY: 90,
+    mobileWidth: 110,
+    mobileHeight: 25,
   },
   {
     id: 'line3',
@@ -200,10 +202,10 @@ const TUBE_TRAILER_SENSORS = [
     name: '라인3',
     width: 265,
     height: 50,
-    mobileX: 82,
-    mobileY: 70,
-    mobileWidth: 180,
-    mobileHeight: 40,
+    mobileX: 70,
+    mobileY: 75,
+    mobileWidth: 160,
+    mobileHeight: 35,
   },
   {
     id: 'line4',
@@ -212,10 +214,10 @@ const TUBE_TRAILER_SENSORS = [
     name: '라인4',
     width: 480,
     height: 109,
-    mobileX: 82,
-    mobileY: 60,
-    mobileWidth: 320,
-    mobileHeight: 80,
+    mobileX: 72,
+    mobileY: 65,
+    mobileWidth: 300,
+    mobileHeight: 75,
   },
 ];
 
@@ -308,9 +310,10 @@ const TubeTrailerPage = () => {
                 alt="튜브 트레일러"
                 style={{
                   width: '100%',
-                  height: 'auto',
+                  height: '100%',
                   objectFit: 'contain',
                   display: 'block',
+                  maxHeight: isMobile ? '300px' : 'unset',
                 }}
               />
               {/* 아이콘 오버레이 */}
@@ -334,8 +337,8 @@ const TubeTrailerPage = () => {
                         position: 'absolute',
                         left: `${sensorX}%`,
                         top: `${sensorY}%`,
-                        width: isMobile ? sensorWidth : sensorWidth,
-                        height: isMobile ? sensorHeight : sensorHeight,
+                        width: sensorWidth,
+                        height: sensorHeight,
                         pointerEvents: 'none',
                         zIndex: 3,
                         transform: 'translate(-50%, -50%)',
@@ -616,8 +619,8 @@ const TubeTrailerPage = () => {
               <div
                 style={{
                   position: 'absolute',
-                  left: isMobile ? '60%' : `${(544 / 828) * 100}%`,
-                  top: isMobile ? '65%' : `${(486 / 672) * 100}%`,
+                  left: isMobile ? '58%' : `${(544 / 828) * 100}%`,
+                  top: isMobile ? '62%' : `${(486 / 672) * 100}%`,
                   transform: 'translate(-50%, -50%)',
                   width: isMobile ? 80 : 120,
                   height: isMobile ? 80 : 120,
@@ -704,8 +707,8 @@ const TubeTrailerPage = () => {
               <div
                 style={{
                   position: 'absolute',
-                  left: isMobile ? '20%' : `${(112 / 828) * 100}%`,
-                  top: isMobile ? '30%' : `${(170 / 672) * 100}%`,
+                  left: isMobile ? '25%' : `${(112 / 828) * 100}%`,
+                  top: isMobile ? '35%' : `${(170 / 672) * 100}%`,
                   transform: 'translate(-50%, -50%)',
                   width: isMobile ? 80 : 120,
                   height: isMobile ? 80 : 120,

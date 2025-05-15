@@ -15,6 +15,33 @@ import {
   DarkOverlay,
 } from '../styles';
 import ThemeToggleButton from '@/app/components/ThemeToggleButton';
+import styled from 'styled-components';
+
+// 모바일에서 사용할 바로가기 버튼 스타일
+const MobileShortcutButton = styled.button`
+  background: linear-gradient(90deg, #2563eb 0%, #60a5fa 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 4px 10px;
+  margin-left: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+
+  &:hover {
+    background: linear-gradient(90deg, #1d4ed8 0%, #3b82f6 100%);
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
+  }
+`;
 
 interface TopBannerProps {
   params: { id: string };
@@ -52,7 +79,25 @@ const TopBanner: React.FC<TopBannerProps> = ({
           </LogoImageWrapper>
           <span>HyGE&nbsp;Safety&nbsp;Monitoring</span>
         </Logo>
-        <BannerTitle>튜브 트레일러 모니터링</BannerTitle>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <BannerTitle>튜브 트레일러 모니터링</BannerTitle>
+          {isMobile && (
+            <MobileShortcutButton
+              onClick={() =>
+                router.push(`/monitoring/detail/${params.id}/tube-trailer`)
+              }
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
+              </svg>
+              바로가기
+            </MobileShortcutButton>
+          )}
+        </div>
         {!isMobile && (
           <MainMenu>
             <ThemeToggleButton />

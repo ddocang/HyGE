@@ -144,7 +144,7 @@ const TubeTrailerList: React.FC<TubeTrailerListProps> = ({
           </RegisterButton>
         </ListHeaderWrapper>
         <TubeList>
-          <TubeListHeader isMobile={isMobile} isTablet={isTablet}>
+          <TubeListHeader $isMobile={isMobile} $isTablet={isTablet}>
             <div>No.</div>
             <div>차량번호</div>
             {!isMobile && <div>커플링</div>}
@@ -160,8 +160,8 @@ const TubeTrailerList: React.FC<TubeTrailerListProps> = ({
                 key={tube.id}
                 onClick={() => onVehicleSelect(tube.id)}
                 $isSelected={selectedVehicleId === tube.id}
-                isMobile={isMobile}
-                isTablet={isTablet}
+                $isMobile={isMobile}
+                $isTablet={isTablet}
               >
                 <div>{idx + 1}</div>
                 <div>
@@ -233,12 +233,12 @@ const TubeTrailerList: React.FC<TubeTrailerListProps> = ({
             <CloseButton onClick={handleClose}>×</CloseButton>
           </div>
         </PopupHeader>
-        <ResponsivePopupContent isMobile={isMobile}>
+        <ResponsivePopupContent $isMobile={isMobile}>
           <div style={{ marginBottom: 24 }}>
             <div style={{ fontWeight: 600, marginBottom: 8 }}>
               현재 등록된 차량번호 목록
             </div>
-            <ResponsiveTable isMobile={isMobile}>
+            <ResponsiveTable $isMobile={isMobile}>
               <thead>
                 <tr style={{ background: '#e5e7eb' }}>
                   <th>NO.</th>
@@ -255,13 +255,16 @@ const TubeTrailerList: React.FC<TubeTrailerListProps> = ({
                     <td>{tube.carNo}</td>
                     <td>{tube.id}</td>
                     <td>
-                      <ActionButton edit onClick={() => handleEdit(tube.id)}>
+                      <ActionButton
+                        data-type="edit"
+                        onClick={() => handleEdit(tube.id)}
+                      >
                         수정
                       </ActionButton>
                     </td>
                     <td>
                       <ActionButton
-                        delete
+                        data-type="delete"
                         onClick={() => handleDelete(tube.id)}
                       >
                         삭제
@@ -402,20 +405,20 @@ const TubeList = styled.div`
     padding: 0 4px;
   }
 `;
-const TubeListHeader = styled.div<{ isMobile?: boolean; isTablet?: boolean }>`
+const TubeListHeader = styled.div<{ $isMobile?: boolean; $isTablet?: boolean }>`
   display: grid;
   grid-template-columns: ${(props) =>
-    props.isMobile
+    props.$isMobile
       ? '0.5fr 1.5fr 2fr'
-      : props.isTablet
+      : props.$isTablet
       ? 'repeat(5, 1fr)'
       : 'repeat(8, 1fr)'};
-  column-gap: ${(props) => (props.isMobile ? '10px' : '30px')};
-  font-size: ${(props) => (props.isMobile ? '12px' : '14px')};
+  column-gap: ${(props) => (props.$isMobile ? '10px' : '30px')};
+  font-size: ${(props) => (props.$isMobile ? '12px' : '14px')};
   font-weight: 500;
   color: #64748b;
   background: #f3f6fa;
-  padding: ${(props) => (props.isMobile ? '10px 14px' : '14px 24px')};
+  padding: ${(props) => (props.$isMobile ? '10px 14px' : '14px 24px')};
   border-bottom: 1px solid ${colors.theme.light.border};
   font-family: 'Pretendard', sans-serif;
   overflow-x: auto;
@@ -426,7 +429,7 @@ const TubeListHeader = styled.div<{ isMobile?: boolean; isTablet?: boolean }>`
     justify-content: center;
     align-items: center;
     white-space: nowrap;
-    min-width: ${(props) => (props.isMobile ? '50px' : '80px')};
+    min-width: ${(props) => (props.$isMobile ? '50px' : '80px')};
 
     & > div {
       display: inline-flex;
@@ -459,21 +462,21 @@ const CarNumberCell = styled.div<{ $backgroundColor: string }>`
 `;
 const TubeListItem = styled.div<{
   $isSelected?: boolean;
-  isMobile?: boolean;
-  isTablet?: boolean;
+  $isMobile?: boolean;
+  $isTablet?: boolean;
 }>`
   display: grid;
   grid-template-columns: ${(props) =>
-    props.isMobile
+    props.$isMobile
       ? '0.5fr 1.5fr 2fr'
-      : props.isTablet
+      : props.$isTablet
       ? 'repeat(5, 1fr)'
       : 'repeat(8, 1fr)'};
-  column-gap: ${(props) => (props.isMobile ? '10px' : '30px')};
+  column-gap: ${(props) => (props.$isMobile ? '10px' : '30px')};
   align-items: center;
-  font-size: ${(props) => (props.isMobile ? '12px' : '14px')};
+  font-size: ${(props) => (props.$isMobile ? '12px' : '14px')};
   color: #222;
-  padding: ${(props) => (props.isMobile ? '10px 14px' : '14px 24px')};
+  padding: ${(props) => (props.$isMobile ? '10px 14px' : '14px 24px')};
   border-bottom: 1px solid ${colors.theme.light.border};
   background: ${(props) => (props.$isSelected ? '#f3f6fa' : '#fff')};
   transition: background 0.15s;
@@ -495,7 +498,7 @@ const TubeListItem = styled.div<{
     justify-content: center;
     align-items: center;
     white-space: nowrap;
-    min-width: ${(props) => (props.isMobile ? '50px' : '80px')};
+    min-width: ${(props) => (props.$isMobile ? '50px' : '80px')};
 
     & > div {
       display: inline-flex;
@@ -604,24 +607,24 @@ const StatusLabel = styled.span<{ $status: string }>`
 `;
 
 // 팝업 내용 반응형 컨테이너
-const ResponsivePopupContent = styled.div<{ isMobile?: boolean }>`
-  padding: ${(props) => (props.isMobile ? '16px' : '32px')};
-  max-height: ${(props) => (props.isMobile ? 'calc(100vh - 120px)' : 'auto')};
+const ResponsivePopupContent = styled.div<{ $isMobile?: boolean }>`
+  padding: ${(props) => (props.$isMobile ? '16px' : '32px')};
+  max-height: ${(props) => (props.$isMobile ? 'calc(100vh - 120px)' : 'auto')};
   overflow-y: auto;
 `;
 
 // 반응형 테이블
-const ResponsiveTable = styled.table<{ isMobile?: boolean }>`
+const ResponsiveTable = styled.table<{ $isMobile?: boolean }>`
   width: 100%;
   border-collapse: collapse;
   background: #f9fafb;
   border-radius: 8px;
   overflow: hidden;
-  font-size: ${(props) => (props.isMobile ? '13px' : '14px')};
+  font-size: ${(props) => (props.$isMobile ? '13px' : '14px')};
 
   th,
   td {
-    padding: ${(props) => (props.isMobile ? '6px 4px' : '8px')};
+    padding: ${(props) => (props.$isMobile ? '6px 4px' : '8px')};
     border: 1px solid #e5e7eb;
     text-align: center;
   }
@@ -632,26 +635,34 @@ const ResponsiveTable = styled.table<{ isMobile?: boolean }>`
   }
 
   @media (max-width: 480px) {
-    display: ${(props) => (props.isMobile ? 'block' : 'table')};
+    display: ${(props) => (props.$isMobile ? 'block' : 'table')};
     max-width: 100%;
     overflow-x: auto;
   }
 `;
 
 // 액션 버튼 (수정, 삭제)
-const ActionButton = styled.button<{ edit?: boolean; delete?: boolean }>`
+const ActionButton = styled.button`
   padding: 4px 10px;
   border-radius: 6px;
-  border: 1px solid
-    ${(props) =>
-      props.edit ? '#60a5fa' : props.delete ? '#fca5a5' : '#e5e7eb'};
-  background: ${(props) =>
-    props.edit ? '#e0f2fe' : props.delete ? '#fee2e2' : '#f9fafb'};
-  color: ${(props) =>
-    props.edit ? '#2563eb' : props.delete ? '#ef4444' : '#6b7280'};
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  color: #6b7280;
   cursor: pointer;
   font-size: inherit;
   white-space: nowrap;
+
+  &[data-type='edit'] {
+    border-color: #60a5fa;
+    background: #e0f2fe;
+    color: #2563eb;
+  }
+
+  &[data-type='delete'] {
+    border-color: #fca5a5;
+    background: #fee2e2;
+    color: #ef4444;
+  }
 
   @media (max-width: 768px) {
     padding: 3px 6px;

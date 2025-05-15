@@ -1,0 +1,24 @@
+version: 1
+
+rules:
+  # 브랜치 네이밍 룰
+  branch-naming:
+    pattern: '^(feat|fix|refactor|chore|hotfix)/[a-z0-9-]+$'
+    errorMessage: '브랜치 이름은 feat/, fix/, refactor/, chore/, hotfix/ 중 하나로 시작하고, 소문자와 하이픈으로 작성해주세요.'
+
+  # PR 생성 시 필수 체크
+  pull-request:
+    require:
+      - lint
+      - typecheck
+      - build
+
+  # 파일 규칙 예시 (선택 사항: TypeScript만 허용하고 싶을 때)
+  file:
+    disallow:
+      - '**/*.js' # JavaScript 파일 금지 (TypeScript만 허용)
+
+  # 커밋 메시지 룰 (선택, Conventional Commits 스타일)
+  commit-message:
+    pattern: '^(feat|fix|refactor|chore|docs|test|style|perf|ci|build|revert)(\\(.+\\))?: .+$'
+    errorMessage: '커밋 메시지는 Conventional Commits 형식으로 작성해야 합니다. 예: feat(map): 네이버 지도 추가'

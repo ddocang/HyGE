@@ -101,11 +101,11 @@ const Container = styled.div`
 const ImageContainer = styled.div`
   position: relative;
   width: 100%;
-  height: 358px;
+  height: 220px;
 `;
 
 const InfoContainer = styled.div`
-  padding: 32px;
+  padding: 24px 32px;
 `;
 
 const Type = styled.div`

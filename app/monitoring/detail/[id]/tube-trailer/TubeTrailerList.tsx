@@ -213,10 +213,26 @@ const TubeTrailerList: React.FC<TubeTrailerListProps> = ({
                     </StatusLabel>
                   </StatusWrapper>
                 )}
-                <div style={{ fontSize: '0.9em', color: '#64748b' }}>
-                  {isMobile ? Number(tube.lat).toFixed(4) : tube.lat.toFixed(6)}
-                  ,
-                  {isMobile ? Number(tube.lng).toFixed(4) : tube.lng.toFixed(6)}
+                <div
+                  style={{
+                    fontSize: '0.9em',
+                    color: '#64748b',
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <div>
+                    위도:{' '}
+                    {isMobile
+                      ? Number(tube.lat).toFixed(4)
+                      : tube.lat.toFixed(6)}
+                  </div>
+                  <div>
+                    경도:{' '}
+                    {isMobile
+                      ? Number(tube.lng).toFixed(4)
+                      : tube.lng.toFixed(6)}
+                  </div>
                 </div>
               </TubeListItem>
             ))}

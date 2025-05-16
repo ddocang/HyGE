@@ -86,21 +86,33 @@ const TubeTrailerBottomContainer = styled.div`
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   border: 1px solid ${colors.theme.light.border};
-  height: 350px;
+  height: auto;
+  aspect-ratio: 947 / 350;
   overflow: hidden;
   font-family: 'Pretendard', sans-serif;
   flex-shrink: 0;
   position: relative;
+
   @media (max-width: 768px) {
-    height: auto;
-    min-height: 300px;
-    aspect-ratio: 16/9;
+    min-height: 120px;
+    aspect-ratio: 947 / 350;
     max-height: 70vh;
+    border-radius: 12px;
+    margin-top: 8px;
   }
 
   @media (min-width: 769px) and (max-width: 1024px) {
-    height: 320px;
+    min-height: 150px;
+    aspect-ratio: 947 / 350;
+    max-height: 65vh;
+    border-radius: 14px;
+    margin-top: 10px;
   }
+
+  /* CSS 변수로 컨테이너 크기에 따른 자동 스케일 계산 */
+  --container-width: 947;
+  --container-height: 350;
+  --scale-factor: 100%;
 `;
 
 const ListCard = styled.div`
@@ -125,99 +137,136 @@ const ListCard = styled.div`
 const TUBE_TRAILER_SENSORS = [
   {
     id: 'break',
-    x: (812 / 828) * 100,
-    y: (445 / 672) * 100,
+    x: 97,
+    y: 66,
     name: '브레이크',
     width: 60,
     height: 60,
-    mobileX: 85, // 모바일용 좌표 (%)
-    mobileY: 60, // 모바일용 좌표 (%)
-    mobileWidth: 40, // 모바일용 크기
-    mobileHeight: 40, // 모바일용 크기
+    mobileX: 85,
+    mobileY: 65,
+    mobileWidth: 40,
+    mobileHeight: 40,
+    tabletX: 85,
+    tabletY: 65,
+    tabletWidth: 50,
+    tabletHeight: 50,
   },
   {
     id: 'gear',
-    x: (247 / 828) * 100,
-    y: (500 / 672) * 100,
+    x: 30,
+    y: 75,
     name: '기어',
     width: 28,
     height: 28,
     mobileX: 30,
-    mobileY: 70,
+    mobileY: 75,
     mobileWidth: 20,
     mobileHeight: 20,
+    tabletX: 30,
+    tabletY: 75,
+    tabletWidth: 24,
+    tabletHeight: 24,
   },
   {
     id: 'gear2',
-    x: (378 / 828) * 100,
-    y: (590 / 672) * 100,
+    x: 45.5,
+    y: 87,
     name: '기어2',
     width: 28,
     height: 28,
-    mobileX: 45,
+    mobileX: 40,
     mobileY: 85,
     mobileWidth: 20,
     mobileHeight: 20,
+    tabletX: 40,
+    tabletY: 85,
+    tabletWidth: 24,
+    tabletHeight: 24,
   },
   {
     id: 'h2',
-    x: (812 / 828) * 100,
-    y: (282 / 672) * 100,
+    x: 97,
+    y: 42,
     name: '수소',
     width: 60,
     height: 60,
     mobileX: 85,
-    mobileY: 35,
+    mobileY: 40,
     mobileWidth: 40,
     mobileHeight: 40,
+    tabletX: 85,
+    tabletY: 40,
+    tabletWidth: 50,
+    tabletHeight: 50,
   },
+];
+
+// 점 위치 정의
+const TUBE_TRAILER_POINTS = [
   {
-    id: 'line1',
-    x: (387 / 828) * 100,
-    y: (500 / 672) * 100,
-    name: '라인1',
-    width: 285,
-    height: 40,
-    mobileX: 48,
-    mobileY: 83,
-    mobileWidth: 220,
-    mobileHeight: 5,
-  },
-  {
-    id: 'line2',
-    x: (444 / 828) * 100,
-    y: (535 / 672) * 100,
-    name: '라인2',
-    width: 150,
-    height: 40,
-    mobileX: 55,
-    mobileY: 90,
-    mobileWidth: 110,
-    mobileHeight: 25,
-  },
-  {
-    id: 'line3',
-    x: (682 / 828) * 100,
-    y: (473 / 672) * 100,
-    name: '라인3',
-    width: 265,
-    height: 50,
-    mobileX: 70,
+    id: 'point1',
+    x: 62,
+    y: 75,
+    radius: 3,
+    color: '#00f6ff',
+    mobileX: 62,
     mobileY: 75,
-    mobileWidth: 160,
-    mobileHeight: 35,
+    mobileRadius: 5,
+    tabletX: 62,
+    tabletY: 75,
+    tabletRadius: 6,
   },
   {
-    id: 'line4',
-    x: (689 / 828) * 100,
-    y: (397 / 672) * 100,
-    name: '라인4',
-    width: 480,
-    height: 109,
-    mobileX: 72,
-    mobileY: 65,
-    mobileWidth: 300,
-    mobileHeight: 75,
+    id: 'point2',
+    x: 32,
+    y: 75,
+    radius: 3,
+    color: '#00f6ff',
+    mobileX: 32,
+    mobileY: 75,
+    mobileRadius: 5,
+    tabletX: 32,
+    tabletY: 75,
+    tabletRadius: 6,
+  },
+  {
+    id: 'point3',
+    x: 45.5,
+    y: 82,
+    radius: 3,
+    color: '#00f6ff',
+    mobileX: 45.5,
+    mobileY: 82,
+    mobileRadius: 5,
+    tabletX: 45.5,
+    tabletY: 82,
+    tabletRadius: 6,
+  },
+  {
+    id: 'point4',
+    x: 45.5,
+    y: 78,
+    radius: 3,
+    color: '#00f6ff',
+    mobileX: 45.5,
+    mobileY: 78,
+    mobileRadius: 5,
+    tabletX: 45.5,
+    tabletY: 78,
+    tabletRadius: 6,
+  },
+  {
+    id: 'point5',
+    x: 62,
+    y: 78,
+    radius: 3,
+    color: '#00f6ff',
+    mobileX: 90,
+    mobileY: 75,
+    mobileRadius: 5,
+    tabletX: 90,
+    tabletY: 75,
+    tabletRadius: 6,
   },
 ];
 
@@ -269,6 +318,16 @@ const TubeTrailerPage = () => {
 
   return (
     <PageContainer>
+      <style jsx global>{`
+        @keyframes line-flow {
+          0% {
+            background-position: 0% 0%;
+          }
+          100% {
+            background-position: -100% 0%;
+          }
+        }
+      `}</style>
       <TopBanner
         params={params}
         pathname={pathname ?? ''}
@@ -311,275 +370,36 @@ const TubeTrailerPage = () => {
                 style={{
                   width: '100%',
                   height: '100%',
-                  objectFit: 'contain',
+                  objectFit: 'cover',
                   display: 'block',
-                  maxHeight: isMobile ? '300px' : 'unset',
+                  margin: 0,
+                  padding: 0,
                 }}
               />
               {/* 아이콘 오버레이 */}
               {TUBE_TRAILER_SENSORS.map((sensor) => {
-                // 모바일인지 여부에 따라 적절한 위치와 크기 값 사용
-                const sensorX = isMobile ? sensor.mobileX : sensor.x;
-                const sensorY = isMobile ? sensor.mobileY : sensor.y;
+                // 아이콘과 라인을 동일한 방식으로 처리
+                const sensorX = isMobile
+                  ? sensor.mobileX
+                  : isTablet
+                  ? sensor.tabletX
+                  : sensor.x;
+                const sensorY = isMobile
+                  ? sensor.mobileY
+                  : isTablet
+                  ? sensor.tabletY
+                  : sensor.y;
                 const sensorWidth = isMobile
                   ? sensor.mobileWidth
+                  : isTablet
+                  ? sensor.tabletWidth
                   : sensor.width;
                 const sensorHeight = isMobile
                   ? sensor.mobileHeight
+                  : isTablet
+                  ? sensor.tabletHeight
                   : sensor.height;
 
-                if (sensor.id === 'line1') {
-                  // Line 1: 수평 직선 (파랑)
-                  return (
-                    <div
-                      key={sensor.id}
-                      style={{
-                        position: 'absolute',
-                        left: `${sensorX}%`,
-                        top: `${sensorY}%`,
-                        width: sensorWidth,
-                        height: sensorHeight,
-                        pointerEvents: 'none',
-                        zIndex: 3,
-                        transform: 'translate(-50%, -50%)',
-                      }}
-                    >
-                      <svg
-                        width={isMobile ? 200 : 404}
-                        height={2}
-                        viewBox="0 0 404 2"
-                        style={{ width: '100%', height: '100%' }}
-                      >
-                        <line
-                          x1="0"
-                          y1="1"
-                          x2="404"
-                          y2="1"
-                          stroke="#00f6ff"
-                          strokeWidth={isMobile ? 3 : 5}
-                          strokeDasharray="30 30"
-                          style={{
-                            filter: 'drop-shadow(0 0 8px #00f6ff)',
-                            animation: 'line-flow 1.2s linear infinite',
-                          }}
-                        />
-                        <style>{`
-                          @keyframes line-flow {
-                            0% { stroke-dashoffset: 0; }
-                            100% { stroke-dashoffset: -60; }
-                          }
-                        `}</style>
-                      </svg>
-                    </div>
-                  );
-                }
-                if (sensor.id === 'line2') {
-                  // Line 2: 주황
-                  return (
-                    <div
-                      key={sensor.id}
-                      style={{
-                        position: 'absolute',
-                        left: `${sensorX}%`,
-                        top: `${sensorY}%`,
-                        width: sensorWidth,
-                        height: sensorHeight,
-                        pointerEvents: 'none',
-                        zIndex: 3,
-                        transform: 'translate(-50%, -50%)',
-                      }}
-                    >
-                      <svg
-                        width={isMobile ? 150 : 216}
-                        height={isMobile ? 25 : 37}
-                        viewBox="0 0 216 37"
-                        style={{ width: '100%', height: '100%' }}
-                      >
-                        <line
-                          x1="1"
-                          y1="37"
-                          x2="1"
-                          y2="2"
-                          stroke="#ffb300"
-                          strokeWidth={isMobile ? 6 : 10}
-                          strokeDasharray="20 20"
-                          style={{
-                            filter: 'drop-shadow(0 0 8px #ffb300)',
-                            animation: 'line-flow 1.2s linear infinite',
-                          }}
-                        />
-                        <path
-                          d="M0 1H216"
-                          stroke="#ffb300"
-                          strokeWidth={isMobile ? 3 : 5}
-                          strokeDasharray="30 30"
-                          style={{
-                            filter: 'drop-shadow(0 0 8px #ffb300)',
-                            animation: 'line-flow 1.2s linear infinite',
-                          }}
-                        />
-                        <style>{`
-                          @keyframes line-flow {
-                            0% { stroke-dashoffset: 0; }
-                            100% { stroke-dashoffset: -60; }
-                          }
-                        `}</style>
-                      </svg>
-                    </div>
-                  );
-                }
-                if (sensor.id === 'line3') {
-                  // Line 3: 핑크
-                  return (
-                    <div
-                      key={sensor.id}
-                      style={{
-                        position: 'absolute',
-                        left: `${sensorX}%`,
-                        top: `${sensorY}%`,
-                        width: sensorWidth,
-                        height: sensorHeight,
-                        pointerEvents: 'none',
-                        zIndex: 3,
-                        transform: 'translate(-50%, -50%)',
-                      }}
-                    >
-                      <svg
-                        width={isMobile ? 180 : 365}
-                        height={isMobile ? 40 : 57}
-                        viewBox="0 0 365 57"
-                        style={{ width: '100%', height: '100%' }}
-                      >
-                        <line
-                          x1="365"
-                          y1="1"
-                          x2="285"
-                          y2="1"
-                          stroke="#ff2d55"
-                          strokeWidth={isMobile ? 3 : 5}
-                          strokeDasharray="20 20"
-                          style={{
-                            filter: 'drop-shadow(0 0 8px #ff2d55)',
-                            animation: 'line-flow 1.2s linear infinite',
-                          }}
-                        />
-                        <line
-                          x1="286"
-                          y1="1"
-                          x2="286"
-                          y2="55"
-                          stroke="#ff2d55"
-                          strokeWidth={isMobile ? 3 : 5}
-                          strokeDasharray="20 20"
-                          style={{
-                            filter: 'drop-shadow(0 0 8px #ff2d55)',
-                            animation: 'line-flow 1.2s linear infinite',
-                          }}
-                        />
-                        <path
-                          d="M287 56L0 56"
-                          stroke="#ff2d55"
-                          strokeWidth={isMobile ? 3 : 5}
-                          strokeDasharray="30 30"
-                          style={{
-                            filter: 'drop-shadow(0 0 8px #ff2d55)',
-                            animation: 'line-flow 1.2s linear infinite',
-                          }}
-                        />
-                        <style>{`
-                          @keyframes line-flow {
-                            0% { stroke-dashoffset: 0; }
-                            100% { stroke-dashoffset: -60; }
-                          }
-                        `}</style>
-                      </svg>
-                    </div>
-                  );
-                }
-                if (sensor.id === 'line4') {
-                  // Line 4: 연두
-                  return (
-                    <div
-                      key={sensor.id}
-                      style={{
-                        position: 'absolute',
-                        left: `${sensorX}%`,
-                        top: `${sensorY}%`,
-                        width: sensorWidth,
-                        height: sensorHeight,
-                        pointerEvents: 'none',
-                        zIndex: 3,
-                        transform: 'translate(-50%, -50%)',
-                      }}
-                    >
-                      <svg
-                        width={isMobile ? 320 : 381}
-                        height={isMobile ? 80 : 152}
-                        viewBox="0 0 381 152"
-                        style={{ width: '100%', height: '100%' }}
-                      >
-                        <line
-                          x1="380"
-                          x2="380"
-                          y1="0"
-                          y2="83"
-                          stroke="#00e676"
-                          strokeWidth={isMobile ? 3 : 5}
-                          strokeDasharray="20 20"
-                          style={{
-                            filter: 'drop-shadow(0 0 8px #00e676)',
-                            animation: 'line-flow 1.2s linear infinite',
-                          }}
-                        />
-                        <line
-                          x1="381"
-                          y1="84"
-                          x2="261"
-                          y2="84"
-                          stroke="#00e676"
-                          strokeWidth={isMobile ? 3 : 5}
-                          strokeDasharray="20 20"
-                          style={{
-                            filter: 'drop-shadow(0 0 8px #00e676)',
-                            animation: 'line-flow 1.2s linear infinite',
-                          }}
-                        />
-                        <line
-                          x1="262"
-                          y1="83"
-                          x2="262"
-                          y2="150"
-                          stroke="#00e676"
-                          strokeWidth={isMobile ? 3 : 5}
-                          strokeDasharray="20 20"
-                          style={{
-                            filter: 'drop-shadow(0 0 8px #00e676)',
-                            animation: 'line-flow 1.2s linear infinite',
-                          }}
-                        />
-                        <line
-                          x1="263"
-                          y1="151"
-                          x2="0"
-                          y2="151"
-                          stroke="#00e676"
-                          strokeWidth={isMobile ? 8 : 8}
-                          strokeDasharray="30 30"
-                          style={{
-                            filter: 'drop-shadow(0 0 8px #00e676)',
-                            animation: 'line-flow 1.2s linear infinite',
-                          }}
-                        />
-                        <style>{`
-                          @keyframes line-flow {
-                            0% { stroke-dashoffset: 0; }
-                            100% { stroke-dashoffset: -60; }
-                          }
-                        `}</style>
-                      </svg>
-                    </div>
-                  );
-                }
                 // 나머지 센서는 기존 <img> 방식
                 return (
                   <div key={sensor.id}>
@@ -615,22 +435,588 @@ const TubeTrailerPage = () => {
                   </div>
                 );
               })}
+
+              {/* 전류 흐름 효과 */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  pointerEvents: 'none',
+                  zIndex: 4,
+                }}
+              >
+                <svg
+                  width="100%"
+                  height="100%"
+                  style={{ position: 'absolute' }}
+                >
+                  <defs>
+                    <linearGradient
+                      id="current-gradient"
+                      x1="0%"
+                      y1="0%"
+                      x2="100%"
+                      y2="0%"
+                    >
+                      <stop offset="0%" stopColor="#00f6ff" stopOpacity="0.3" />
+                      <stop offset="50%" stopColor="#00f6ff" stopOpacity="1" />
+                      <stop
+                        offset="100%"
+                        stopColor="#00f6ff"
+                        stopOpacity="0.3"
+                      />
+                    </linearGradient>
+                    <filter
+                      id="glow"
+                      x="-20%"
+                      y="-20%"
+                      width="140%"
+                      height="140%"
+                    >
+                      <feGaussianBlur stdDeviation="4" result="blur" />
+                      <feComposite
+                        in="SourceGraphic"
+                        in2="blur"
+                        operator="over"
+                      />
+                    </filter>
+                  </defs>
+                </svg>
+              </div>
+
+              {/* 점 2개 추가 */}
+              {TUBE_TRAILER_POINTS.map((point) => {
+                const pointX = isMobile
+                  ? point.mobileX
+                  : isTablet
+                  ? point.tabletX
+                  : point.x;
+                const pointY = isMobile
+                  ? point.mobileY
+                  : isTablet
+                  ? point.tabletY
+                  : point.y;
+                const pointRadius = isMobile
+                  ? point.mobileRadius
+                  : isTablet
+                  ? point.tabletRadius
+                  : point.radius;
+
+                return (
+                  <div
+                    key={point.id}
+                    style={{
+                      position: 'absolute',
+                      left: `${pointX}%`,
+                      top: `${pointY}%`,
+                      width: pointRadius * 2,
+                      height: pointRadius * 2,
+                      borderRadius: '50%',
+                      backgroundColor: point.color,
+                      transform: 'translate(-50%, -50%)',
+                      zIndex: 5,
+                      boxShadow: `0 0 10px ${point.color}, 0 0 20px ${point.color}`,
+                      animation: 'point-pulse 1.5s ease-in-out infinite',
+                    }}
+                  />
+                );
+              })}
+
+              {/* 새 전류 효과 구현 - 직접 div로 */}
+              <div
+                style={{
+                  position: 'absolute',
+                  left: `${
+                    isMobile
+                      ? TUBE_TRAILER_POINTS[1].mobileX
+                      : isTablet
+                      ? TUBE_TRAILER_POINTS[1].tabletX
+                      : TUBE_TRAILER_POINTS[1].x
+                  }%`,
+                  top: `${
+                    isMobile
+                      ? TUBE_TRAILER_POINTS[1].mobileY
+                      : isTablet
+                      ? TUBE_TRAILER_POINTS[1].tabletY
+                      : TUBE_TRAILER_POINTS[1].y
+                  }%`,
+                  width: `${Math.abs(
+                    isMobile
+                      ? TUBE_TRAILER_POINTS[0].mobileX -
+                          TUBE_TRAILER_POINTS[1].mobileX
+                      : isTablet
+                      ? TUBE_TRAILER_POINTS[0].tabletX -
+                        TUBE_TRAILER_POINTS[1].tabletX
+                      : TUBE_TRAILER_POINTS[0].x - TUBE_TRAILER_POINTS[1].x
+                  )}%`,
+                  height: 3,
+                  background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
+                  borderRadius: '2px',
+                  transformOrigin: 'left center',
+                  transform: `translateY(-50%) rotate(${
+                    (Math.atan2(
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[0].mobileY -
+                            TUBE_TRAILER_POINTS[1].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[0].tabletY -
+                          TUBE_TRAILER_POINTS[1].tabletY
+                        : TUBE_TRAILER_POINTS[0].y - TUBE_TRAILER_POINTS[1].y,
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[0].mobileX -
+                            TUBE_TRAILER_POINTS[1].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[0].tabletX -
+                          TUBE_TRAILER_POINTS[1].tabletX
+                        : TUBE_TRAILER_POINTS[0].x - TUBE_TRAILER_POINTS[1].x
+                    ) *
+                      180) /
+                    Math.PI
+                  }deg)`,
+                  zIndex: 4,
+                  boxShadow: '0 0 8px #00f6ff, 0 0 16px #00f6ff',
+                  backgroundSize: '30px 3px',
+                  backgroundImage:
+                    'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
+                  backgroundRepeat: 'repeat-x',
+                  animation: 'current-flow 1s linear infinite',
+                }}
+              />
+
+              {/* 점3-4 전류선 */}
+              <div
+                style={{
+                  position: 'absolute',
+                  left: `${
+                    isMobile
+                      ? TUBE_TRAILER_POINTS[2].mobileX
+                      : isTablet
+                      ? TUBE_TRAILER_POINTS[2].tabletX
+                      : TUBE_TRAILER_POINTS[2].x
+                  }%`,
+                  top: `${
+                    isMobile
+                      ? TUBE_TRAILER_POINTS[2].mobileY
+                      : isTablet
+                      ? TUBE_TRAILER_POINTS[2].tabletY
+                      : TUBE_TRAILER_POINTS[2].y
+                  }%`,
+                  width: `${Math.abs(
+                    isMobile
+                      ? TUBE_TRAILER_POINTS[3].mobileX -
+                          TUBE_TRAILER_POINTS[2].mobileX
+                      : isTablet
+                      ? TUBE_TRAILER_POINTS[3].tabletX -
+                        TUBE_TRAILER_POINTS[2].tabletX
+                      : TUBE_TRAILER_POINTS[3].x - TUBE_TRAILER_POINTS[2].x
+                  )}%`,
+                  height: 2,
+                  background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
+                  borderRadius: '2px',
+                  transformOrigin: 'left center',
+                  transform: `translateY(-50%) rotate(${
+                    (Math.atan2(
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[3].mobileY -
+                            TUBE_TRAILER_POINTS[2].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[3].tabletY -
+                          TUBE_TRAILER_POINTS[2].tabletY
+                        : TUBE_TRAILER_POINTS[3].y - TUBE_TRAILER_POINTS[2].y,
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[3].mobileX -
+                            TUBE_TRAILER_POINTS[2].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[3].tabletX -
+                          TUBE_TRAILER_POINTS[2].tabletX
+                        : TUBE_TRAILER_POINTS[3].x - TUBE_TRAILER_POINTS[2].x
+                    ) *
+                      180) /
+                    Math.PI
+                  }deg)`,
+                  zIndex: 4,
+                  boxShadow: '0 0 8px #00f6ff, 0 0 16px #00f6ff',
+                  backgroundSize: '20px 2px',
+                  backgroundImage:
+                    'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
+                  backgroundRepeat: 'repeat-x',
+                  animation: 'current-flow 1.2s linear infinite',
+                }}
+              />
+
+              {/* 점4-5 전류선 */}
+              <div
+                style={{
+                  position: 'absolute',
+                  left: `${
+                    isMobile
+                      ? TUBE_TRAILER_POINTS[3].mobileX
+                      : isTablet
+                      ? TUBE_TRAILER_POINTS[3].tabletX
+                      : TUBE_TRAILER_POINTS[3].x
+                  }%`,
+                  top: `${
+                    isMobile
+                      ? TUBE_TRAILER_POINTS[3].mobileY
+                      : isTablet
+                      ? TUBE_TRAILER_POINTS[3].tabletY
+                      : TUBE_TRAILER_POINTS[3].y
+                  }%`,
+                  width: `${Math.sqrt(
+                    Math.pow(
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[4].mobileX -
+                            TUBE_TRAILER_POINTS[3].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[4].tabletX -
+                          TUBE_TRAILER_POINTS[3].tabletX
+                        : TUBE_TRAILER_POINTS[4].x - TUBE_TRAILER_POINTS[3].x,
+                      2
+                    ) +
+                      Math.pow(
+                        isMobile
+                          ? TUBE_TRAILER_POINTS[4].mobileY -
+                              TUBE_TRAILER_POINTS[3].mobileY
+                          : isTablet
+                          ? TUBE_TRAILER_POINTS[4].tabletY -
+                            TUBE_TRAILER_POINTS[3].tabletY
+                          : TUBE_TRAILER_POINTS[4].y - TUBE_TRAILER_POINTS[3].y,
+                        2
+                      )
+                  )}%`,
+                  height: 2,
+                  background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
+                  borderRadius: '2px',
+                  transformOrigin: 'left center',
+                  transform: `translateY(-50%) rotate(${
+                    (Math.atan2(
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[4].mobileY -
+                            TUBE_TRAILER_POINTS[3].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[4].tabletY -
+                          TUBE_TRAILER_POINTS[3].tabletY
+                        : TUBE_TRAILER_POINTS[4].y - TUBE_TRAILER_POINTS[3].y,
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[4].mobileX -
+                            TUBE_TRAILER_POINTS[3].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[4].tabletX -
+                          TUBE_TRAILER_POINTS[3].tabletX
+                        : TUBE_TRAILER_POINTS[4].x - TUBE_TRAILER_POINTS[3].x
+                    ) *
+                      180) /
+                    Math.PI
+                  }deg)`,
+                  zIndex: 4,
+                  boxShadow: '0 0 8px #00f6ff, 0 0 16px #00f6ff',
+                  backgroundSize: '20px 2px',
+                  backgroundImage:
+                    'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
+                  backgroundRepeat: 'repeat-x',
+                  animation: 'current-flow 1.2s linear infinite',
+                }}
+              />
+
+              {/* 전류 파티클 1 */}
+              <div
+                style={{
+                  position: 'absolute',
+                  left: `${
+                    isMobile
+                      ? TUBE_TRAILER_POINTS[1].mobileX
+                      : isTablet
+                      ? TUBE_TRAILER_POINTS[1].tabletX
+                      : TUBE_TRAILER_POINTS[1].x
+                  }%`,
+                  top: `${
+                    isMobile
+                      ? TUBE_TRAILER_POINTS[1].mobileY
+                      : isTablet
+                      ? TUBE_TRAILER_POINTS[1].tabletY
+                      : TUBE_TRAILER_POINTS[1].y
+                  }%`,
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  backgroundColor: '#FFFFFF',
+                  boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
+                  transform: 'translate(-50%, -50%)',
+                  zIndex: 6,
+                  animation: 'particle-move 2s linear infinite',
+                }}
+              />
+
+              {/* 전류 파티클 2 */}
+              <div
+                style={{
+                  position: 'absolute',
+                  left: `${
+                    isMobile
+                      ? TUBE_TRAILER_POINTS[1].mobileX
+                      : isTablet
+                      ? TUBE_TRAILER_POINTS[1].tabletX
+                      : TUBE_TRAILER_POINTS[1].x
+                  }%`,
+                  top: `${
+                    isMobile
+                      ? TUBE_TRAILER_POINTS[1].mobileY
+                      : isTablet
+                      ? TUBE_TRAILER_POINTS[1].tabletY
+                      : TUBE_TRAILER_POINTS[1].y
+                  }%`,
+                  width: '6px',
+                  height: '6px',
+                  borderRadius: '50%',
+                  backgroundColor: '#FFFFFF',
+                  boxShadow: '0 0 8px #00f6ff, 0 0 16px #00f6ff',
+                  transform: 'translate(-50%, -50%)',
+                  zIndex: 6,
+                  animation: 'particle-move 2s linear 1s infinite',
+                }}
+              />
+
+              {/* 점3-4-5 연결 파티클 */}
+              <div
+                style={{
+                  position: 'absolute',
+                  left: `${
+                    isMobile
+                      ? TUBE_TRAILER_POINTS[2].mobileX
+                      : isTablet
+                      ? TUBE_TRAILER_POINTS[2].tabletX
+                      : TUBE_TRAILER_POINTS[2].x
+                  }%`,
+                  top: `${
+                    isMobile
+                      ? TUBE_TRAILER_POINTS[2].mobileY
+                      : isTablet
+                      ? TUBE_TRAILER_POINTS[2].tabletY
+                      : TUBE_TRAILER_POINTS[2].y
+                  }%`,
+                  width: '6px',
+                  height: '6px',
+                  borderRadius: '50%',
+                  backgroundColor: '#FFFFFF',
+                  boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
+                  transform: 'translate(-50%, -50%)',
+                  zIndex: 6,
+                  animation: 'particle-move-345 3.5s linear infinite',
+                }}
+              />
+
+              {/* 추가 파티클 - 시차 효과 */}
+              <div
+                style={{
+                  position: 'absolute',
+                  left: `${
+                    isMobile
+                      ? TUBE_TRAILER_POINTS[2].mobileX
+                      : isTablet
+                      ? TUBE_TRAILER_POINTS[2].tabletX
+                      : TUBE_TRAILER_POINTS[2].x
+                  }%`,
+                  top: `${
+                    isMobile
+                      ? TUBE_TRAILER_POINTS[2].mobileY
+                      : isTablet
+                      ? TUBE_TRAILER_POINTS[2].tabletY
+                      : TUBE_TRAILER_POINTS[2].y
+                  }%`,
+                  width: '4px',
+                  height: '4px',
+                  borderRadius: '50%',
+                  backgroundColor: '#FFFFFF',
+                  boxShadow: '0 0 8px #00f6ff, 0 0 16px #00f6ff',
+                  transform: 'translate(-50%, -50%)',
+                  zIndex: 6,
+                  animation: 'particle-move-345 3.5s linear 1.5s infinite',
+                }}
+              />
+
+              <style>{`
+                @keyframes point-pulse {
+                  0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+                  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+                  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+                }
+                @keyframes current-flow {
+                  0% { background-position: 0 0; }
+                  100% { background-position: 30px 0; }
+                }
+                @keyframes particle-move {
+                  0% {
+                    left: ${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[1].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[1].tabletX
+                        : TUBE_TRAILER_POINTS[1].x
+                    }%;
+                    top: ${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[1].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[1].tabletY
+                        : TUBE_TRAILER_POINTS[1].y
+                    }%;
+                  }
+                  100% {
+                    left: ${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[0].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[0].tabletX
+                        : TUBE_TRAILER_POINTS[0].x
+                    }%;
+                    top: ${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[0].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[0].tabletY
+                        : TUBE_TRAILER_POINTS[0].y
+                    }%;
+                  }
+                }
+                @keyframes particle-move-345 {
+                  0% {
+                    left: ${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[2].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[2].tabletX
+                        : TUBE_TRAILER_POINTS[2].x
+                    }%;
+                    top: ${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[2].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[2].tabletY
+                        : TUBE_TRAILER_POINTS[2].y
+                    }%;
+                    opacity: 1;
+                  }
+                  39% {
+                    left: ${
+                      (isMobile
+                        ? TUBE_TRAILER_POINTS[3].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[3].tabletX
+                        : TUBE_TRAILER_POINTS[3].x) - 0.5
+                    }%;
+                    top: ${
+                      (isMobile
+                        ? TUBE_TRAILER_POINTS[3].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[3].tabletY
+                        : TUBE_TRAILER_POINTS[3].y) - 0.5
+                    }%;
+                    opacity: 0.9;
+                  }
+                  40% {
+                    left: ${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[3].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[3].tabletX
+                        : TUBE_TRAILER_POINTS[3].x
+                    }%;
+                    top: ${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[3].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[3].tabletY
+                        : TUBE_TRAILER_POINTS[3].y
+                    }%;
+                    opacity: 1;
+                  }
+                  41% {
+                    opacity: 0.9;
+                  }
+                  45% {
+                    opacity: 0.8;
+                  }
+                  84% {
+                    left: ${
+                      (isMobile
+                        ? TUBE_TRAILER_POINTS[4].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[4].tabletX
+                        : TUBE_TRAILER_POINTS[4].x) - 0.5
+                    }%;
+                    top: ${
+                      (isMobile
+                        ? TUBE_TRAILER_POINTS[4].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[4].tabletY
+                        : TUBE_TRAILER_POINTS[4].y) - 0.5
+                    }%;
+                    opacity: 0.9;
+                  }
+                  85% {
+                    left: ${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[4].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[4].tabletX
+                        : TUBE_TRAILER_POINTS[4].x
+                    }%;
+                    top: ${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[4].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[4].tabletY
+                        : TUBE_TRAILER_POINTS[4].y
+                    }%;
+                    opacity: 1;
+                  }
+                  100% {
+                    left: ${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[4].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[4].tabletX
+                        : TUBE_TRAILER_POINTS[4].x
+                    }%;
+                    top: ${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[4].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[4].tabletY
+                        : TUBE_TRAILER_POINTS[4].y
+                    }%;
+                    opacity: 0;
+                  }
+                }
+              `}</style>
+
               {/* 이미지 컨테이너 중앙에 와이파이 데이터 전송 효과 */}
               <div
                 style={{
                   position: 'absolute',
-                  left: isMobile ? '58%' : `${(544 / 828) * 100}%`,
-                  top: isMobile ? '62%' : `${(486 / 672) * 100}%`,
+                  left: isMobile
+                    ? '58%'
+                    : isTablet
+                    ? '56%'
+                    : `${(544 / 828) * 100}%`,
+                  top: isMobile
+                    ? '62%'
+                    : isTablet
+                    ? '60%'
+                    : `${(486 / 672) * 100}%`,
                   transform: 'translate(-50%, -50%)',
-                  width: isMobile ? 80 : 120,
-                  height: isMobile ? 80 : 120,
+                  width: isMobile ? 80 : isTablet ? 100 : 120,
+                  height: isMobile ? 80 : isTablet ? 100 : 120,
                   pointerEvents: 'none',
                   zIndex: 10,
                 }}
               >
                 <svg
-                  width="120"
-                  height="120"
+                  width="100%"
+                  height="100%"
                   viewBox="0 0 120 120"
                   style={{ position: 'absolute', left: 0, top: 0 }}
                 >
@@ -707,18 +1093,26 @@ const TubeTrailerPage = () => {
               <div
                 style={{
                   position: 'absolute',
-                  left: isMobile ? '25%' : `${(112 / 828) * 100}%`,
-                  top: isMobile ? '35%' : `${(170 / 672) * 100}%`,
+                  left: isMobile
+                    ? '25%'
+                    : isTablet
+                    ? '20%'
+                    : `${(112 / 828) * 100}%`,
+                  top: isMobile
+                    ? '35%'
+                    : isTablet
+                    ? '30%'
+                    : `${(170 / 672) * 100}%`,
                   transform: 'translate(-50%, -50%)',
-                  width: isMobile ? 80 : 120,
-                  height: isMobile ? 80 : 120,
+                  width: isMobile ? 80 : isTablet ? 100 : 120,
+                  height: isMobile ? 80 : isTablet ? 100 : 120,
                   pointerEvents: 'none',
                   zIndex: 10,
                 }}
               >
                 <svg
-                  width="120"
-                  height="120"
+                  width="100%"
+                  height="100%"
                   viewBox="0 0 120 120"
                   style={{ position: 'absolute', left: 0, top: 0 }}
                 >

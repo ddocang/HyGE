@@ -711,9 +711,9 @@ function DetailPageContent({
     let sensors: (GasSensor | FireSensor | VibrationSensor)[] = [];
     if (selectedSensorType === 'all') {
       sensors = [
-        ...vibrationSensors,
         ...FACILITY_DETAIL.sensors.gas,
         ...FACILITY_DETAIL.sensors.fire,
+        ...vibrationSensors,
       ];
     } else if (selectedSensorType === 'gas') {
       sensors = FACILITY_DETAIL.sensors.gas;
@@ -1395,20 +1395,15 @@ function DetailPageContent({
     value: string;
   } | null>(null);
 
+  // 중복 Supabase 호출 제거 (fetchInitialVibrationData로 통합)
+  /*
   useEffect(() => {
     async function fetchData() {
-      const { data, error } = await supabase
-        .from('realtime_data')
-        .select('*')
-        .order('last_update_time', { ascending: false })
-        .limit(10);
-      if (!error && data) {
-        // 기존 WebSocket 데이터 처리 로직을 여기에 적용
-        // 예시: setVibrationSensors, setGasStatus, setFireStatus 등
-      }
+      // 이 함수는 fetchInitialVibrationData에서 모든 데이터를 처리하므로 제거됨
     }
     fetchData();
   }, []);
+  */
 
   // 1️⃣ Supabase에서 과거 진동 데이터 불러와서 그래프에 반영
   useEffect(() => {
@@ -1416,7 +1411,7 @@ function DetailPageContent({
       console.log('Supabase fetch 시작!');
       const { data, error } = await supabase
         .from('realtime_data')
-        .select('last_update_time, barr')
+        .select('last_update_time, barr, gdet, fdet') // gdet, fdet 필드도 함께 쿼리
         .eq('topic_id', 'BASE/P001')
         .order('last_update_time', { ascending: false })
         .limit(100); // 원하는 개수만큼
@@ -1451,12 +1446,47 @@ function DetailPageContent({
           };
         });
         setVibrationSensors(sensors);
+
+        // 가스/화재 데이터 처리 추가
+        if (data.length > 0) {
+          const latestData = data[0];
+
+          // 가스 상태 설정 - 직접 gdet 필드에서 가져옴
+          if (latestData.gdet !== undefined) {
+            const gdetArr = Array.isArray(latestData.gdet)
+              ? latestData.gdet
+              : typeof latestData.gdet === 'string'
+              ? latestData.gdet.split(',').map(Number)
+              : [];
+            setGasStatusArr(gdetArr);
+            setGasStatus(latestData.gdet);
+          }
+
+          // 화재 상태 설정 - 직접 fdet 필드에서 가져옴
+          if (latestData.fdet !== undefined) {
+            const fdetArr = Array.isArray(latestData.fdet)
+              ? latestData.fdet
+              : typeof latestData.fdet === 'string'
+              ? latestData.fdet.split(',').map(Number)
+              : typeof latestData.fdet === 'number'
+              ? [latestData.fdet]
+              : [];
+            setFireStatusArr(fdetArr);
+            setFireStatus(latestData.fdet);
+          }
+
+          // 최종 업데이트 시간 설정
+          if (latestData.last_update_time) {
+            setLastUpdateTime(latestData.last_update_time);
+          }
+        }
       }
     }
     fetchInitialVibrationData();
   }, []);
 
-  // 클라이언트에서 Supabase 직접 호출 테스트
+  // 클라이언트에서 Supabase 직접 호출 테스트 (제거됨 - 첫 번째 함수에 통합)
+  /*
   useEffect(() => {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -1478,6 +1508,7 @@ function DetailPageContent({
         }
       });
   }, []);
+  */
 
   // 진동 센서 ID 가져오기 헬퍼 함수
   const getSensorDomId = (sensor: any): string => {

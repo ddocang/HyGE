@@ -174,6 +174,75 @@ function convertPLCtoRealValue(plcValue: number, key: string): number {
   return plcValue;
 }
 
+// 가스 상태 계산 함수
+const calculateGasStatus = (
+  gdetData: string | undefined
+): 'normal' | 'warning' | 'inactive' => {
+  if (!gdetData) return 'inactive';
+  const gdetArr = gdetData.split(',').map(Number);
+
+  if (gdetArr.length && gdetArr.some((v) => v === 1)) return 'warning';
+  if (gdetArr.length && gdetArr.every((v) => v === 0)) return 'normal';
+  return 'inactive';
+};
+
+// 화재 상태 계산 함수
+const calculateFireStatus = (
+  fdetData: string | undefined
+): 'normal' | 'warning' | 'inactive' => {
+  if (!fdetData) return 'inactive';
+  const fdetArr = fdetData.split(',').map(Number);
+
+  if (fdetArr.length && fdetArr.some((v) => v === 1)) return 'warning';
+  if (fdetArr.length && fdetArr.every((v) => v === 0)) return 'normal';
+  return 'inactive';
+};
+
+// 진동 상태 계산 함수
+const calculateVibrationStatus = (
+  barrData: string | undefined,
+  topicId: string
+): 'normal' | 'warning' | 'inactive' => {
+  if (!barrData) return 'inactive';
+  const barrArr = barrData.split(',').map(Number);
+
+  const vibrationKeys =
+    topicId === 'BASE/P001'
+      ? [
+          'vibration-1',
+          'vibration-2',
+          'vibration-3',
+          'vibration-4',
+          'vibration-5',
+          'vibration-6',
+          'vibration-7',
+          'vibration-8',
+          'vibration-9',
+        ]
+      : topicId === 'BASE/P003'
+      ? ['vibration2-1', 'vibration2-2', 'vibration2-3']
+      : [];
+
+  const vibrationStatuses = vibrationKeys.map((key, idx) => {
+    const plcValue = barrArr[idx];
+    const realValue = convertPLCtoRealValue(plcValue, key);
+    const threshold = VIBRATION_THRESHOLDS[key]?.value;
+    if (typeof realValue !== 'number' || isNaN(realValue)) return 'inactive';
+    if (typeof threshold === 'number' && realValue >= threshold)
+      return 'warning';
+    if (typeof threshold === 'number' && realValue < threshold) return 'normal';
+    return 'inactive';
+  });
+
+  if (vibrationStatuses.includes('warning')) return 'warning';
+  if (
+    vibrationStatuses.length &&
+    vibrationStatuses.every((s) => s === 'normal')
+  )
+    return 'normal';
+  return 'inactive';
+};
+
 export default function MonitoringPage() {
   const [selectedFacility, setSelectedFacility] = useState(DUMMY_LIST[0]);
   const [facilityStatusList, setFacilityStatusList] = useState<
@@ -198,7 +267,130 @@ export default function MonitoringPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isAutoCompleteVisible, setIsAutoCompleteVisible] = useState(false);
 
+  // Supabase에서 초기 센서 데이터 로드 함수
+  const fetchInitialSensorData = async () => {
+    console.log('Supabase 초기 센서 데이터 로드 시작');
+    try {
+      console.log('API 호출: /api/supabase-sensor-status');
+      const res = await fetch('/api/supabase-sensor-status');
+      const json = await res.json();
+      console.log('API 응답:', json);
+
+      if (res.ok && json.data && json.data.length > 0) {
+        console.log('유효한 데이터 수:', json.data.length);
+        // 가장 최근 데이터 기준으로 상태 설정
+        json.data.forEach((record: { topic_id: string; data: any }) => {
+          console.log('처리 중인 레코드:', record.topic_id);
+          const topicId = record.topic_id;
+          const mqtt = record.data; // 바로 data 객체 사용 (이미 파싱되어 있음)
+          const id =
+            topicId === 'BASE/P001' ? 1 : topicId === 'BASE/P003' ? 2 : null;
+
+          if (id && mqtt) {
+            try {
+              // barrArr, gdetArr, fdetArr 처리 - WebSocket과 동일한 방식
+              const gdetArr = (mqtt.gdet || '').split(',').map(Number);
+              const fdetArr = (mqtt.fdet || '').split(',').map(Number);
+              const barrArr = (mqtt.barr || '').split(',').map(Number);
+
+              console.log('파싱된 데이터:', { gdetArr, fdetArr, barrArr });
+
+              const gasStatus =
+                gdetArr.length && gdetArr.some((v: number) => v === 1)
+                  ? 'warning'
+                  : gdetArr.length && gdetArr.every((v: number) => v === 0)
+                  ? 'normal'
+                  : 'inactive';
+
+              const fireStatus =
+                fdetArr.length && fdetArr.some((v: number) => v === 1)
+                  ? 'warning'
+                  : fdetArr.length && fdetArr.every((v: number) => v === 0)
+                  ? 'normal'
+                  : 'inactive';
+
+              // 진동 센서 처리 - WebSocket과 동일한 로직
+              const vibrationKeys =
+                topicId === 'BASE/P001'
+                  ? [
+                      'vibration-1',
+                      'vibration-2',
+                      'vibration-3',
+                      'vibration-4',
+                      'vibration-5',
+                      'vibration-6',
+                      'vibration-7',
+                      'vibration-8',
+                      'vibration-9',
+                    ]
+                  : topicId === 'BASE/P003'
+                  ? ['vibration2-1', 'vibration2-2', 'vibration2-3']
+                  : [];
+
+              const vibrationStatuses = vibrationKeys.map((key, idx) => {
+                const plcValue = barrArr[idx];
+                const realValue = convertPLCtoRealValue(plcValue, key);
+                const threshold = VIBRATION_THRESHOLDS[key]?.value;
+                if (typeof realValue !== 'number' || isNaN(realValue))
+                  return 'inactive';
+                if (typeof threshold === 'number' && realValue >= threshold)
+                  return 'warning';
+                if (typeof threshold === 'number' && realValue < threshold)
+                  return 'normal';
+                return 'inactive';
+              });
+
+              // 전체 진동 상태
+              let vibrationStatus: 'inactive' | 'normal' | 'warning' =
+                'inactive';
+              if (vibrationStatuses.includes('warning')) {
+                vibrationStatus = 'warning';
+              } else if (
+                vibrationStatuses.length &&
+                vibrationStatuses.every((s) => s === 'normal')
+              ) {
+                vibrationStatus = 'normal';
+              }
+
+              console.log('계산된 상태:', {
+                gasStatus,
+                fireStatus,
+                vibrationStatus,
+              });
+
+              // 상태 업데이트
+              setFacilityStatusList((prev) =>
+                prev.map((item) =>
+                  item.id === id
+                    ? {
+                        ...item,
+                        gasStatus,
+                        fireStatus,
+                        vibrationStatus,
+                      }
+                    : item
+                )
+              );
+              console.log(`ID ${id} 상태 업데이트 완료`);
+            } catch (e) {
+              console.error('데이터 파싱 오류:', e);
+            }
+          } else {
+            console.log('처리할 수 없는 레코드:', { id, hasData: !!mqtt });
+          }
+        });
+      } else {
+        console.error('API 응답에 유효한 데이터가 없음:', res.status, json);
+      }
+    } catch (error) {
+      console.error('초기 센서 상태 로딩 오류:', error);
+    }
+  };
+
   useEffect(() => {
+    // 초기 센서 상태 로드
+    fetchInitialSensorData();
+
     // 초기 시간 설정
     setCurrentTime(formatTime(new Date()));
 
@@ -730,7 +922,7 @@ const MapContent = styled.div`
 
 const FacilityInfo = styled.div`
   width: 378px;
-  height: 630px;
+  height: 500px;
   @media (max-width: 1024px) {
     width: 100%;
     height: auto;
@@ -740,13 +932,13 @@ const FacilityInfo = styled.div`
 
 const MapView = styled.div`
   flex: 1;
-  min-height: 630px;
+  min-height: 500px;
   position: relative;
   background: white;
   border-radius: 16px;
   overflow: hidden;
   @media (max-width: 1024px) {
-    min-height: 500px;
+    min-height: 400px;
   }
   @media (max-width: 768px) {
     min-height: 300px;

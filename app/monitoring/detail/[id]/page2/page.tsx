@@ -613,9 +613,9 @@ function DetailPageContent({ params }: { params: { id: string } }) {
     let sensors: (GasSensor | FireSensor | VibrationSensor)[] = [];
     if (selectedSensorType === 'all') {
       sensors = [
-        ...vibrationSensors,
         ...FACILITY_DETAIL.sensors.gas,
         ...FACILITY_DETAIL.sensors.fire,
+        ...vibrationSensors,
       ];
     } else if (selectedSensorType === 'gas') {
       sensors = FACILITY_DETAIL.sensors.gas;
@@ -1338,7 +1338,7 @@ function DetailPageContent({ params }: { params: { id: string } }) {
       console.log('Supabase fetch 시작!');
       const { data, error } = await supabase
         .from('realtime_data')
-        .select('last_update_time, barr')
+        .select('last_update_time, barr, gdet, fdet') // gdet, fdet 필드도 함께 쿼리
         .eq('topic_id', 'BASE/P003')
         .order('last_update_time', { ascending: false })
         .limit(100);
@@ -1373,6 +1373,40 @@ function DetailPageContent({ params }: { params: { id: string } }) {
           };
         });
         setVibrationSensors(sensors);
+
+        // 가스/화재 데이터 처리 추가
+        if (data.length > 0) {
+          const latestData = data[0];
+
+          // 가스 상태 설정 - 직접 gdet 필드에서 가져옴
+          if (latestData.gdet !== undefined) {
+            const gdetArr = Array.isArray(latestData.gdet)
+              ? latestData.gdet
+              : typeof latestData.gdet === 'string'
+              ? latestData.gdet.split(',').map(Number)
+              : [];
+            setGasStatusArr(gdetArr);
+            setGasStatus(latestData.gdet);
+          }
+
+          // 화재 상태 설정 - 직접 fdet 필드에서 가져옴
+          if (latestData.fdet !== undefined) {
+            const fdetArr = Array.isArray(latestData.fdet)
+              ? latestData.fdet
+              : typeof latestData.fdet === 'string'
+              ? latestData.fdet.split(',').map(Number)
+              : typeof latestData.fdet === 'number'
+              ? [latestData.fdet]
+              : [];
+            setFireStatusArr(fdetArr);
+            setFireStatus(latestData.fdet);
+          }
+
+          // 최종 업데이트 시간 설정
+          if (latestData.last_update_time) {
+            setLastUpdateTime(latestData.last_update_time);
+          }
+        }
       }
     }
     fetchInitialVibrationData();

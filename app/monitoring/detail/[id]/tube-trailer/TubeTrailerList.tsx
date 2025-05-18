@@ -216,10 +216,10 @@ const TubeTrailerList: React.FC<TubeTrailerListProps> = ({
                 <div
                   style={{
                     fontSize: isMobile
-                      ? '0.85em'
+                      ? '0.8em'
                       : isTablet
-                      ? '0.9em'
-                      : '0.9em',
+                      ? '0.85em'
+                      : '0.85em',
                     color: '#64748b',
                     display: 'flex',
                     flexDirection: 'column',
@@ -227,21 +227,33 @@ const TubeTrailerList: React.FC<TubeTrailerListProps> = ({
                     overflow: 'hidden',
                   }}
                 >
-                  <div style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                  <div
+                    style={{
+                      textOverflow: 'ellipsis',
+                      overflow: 'hidden',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
                     위도:{' '}
                     {isMobile
-                      ? Number(tube.lat).toFixed(4)
+                      ? Number(tube.lat).toFixed(3)
                       : isTablet
-                      ? Number(tube.lat).toFixed(5)
-                      : tube.lat.toFixed(6)}
+                      ? Number(tube.lat).toFixed(4)
+                      : tube.lat.toFixed(5)}
                   </div>
-                  <div style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                  <div
+                    style={{
+                      textOverflow: 'ellipsis',
+                      overflow: 'hidden',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
                     경도:{' '}
                     {isMobile
-                      ? Number(tube.lng).toFixed(4)
+                      ? Number(tube.lng).toFixed(3)
                       : isTablet
-                      ? Number(tube.lng).toFixed(5)
-                      : tube.lng.toFixed(6)}
+                      ? Number(tube.lng).toFixed(4)
+                      : tube.lng.toFixed(5)}
                   </div>
                 </div>
               </TubeListItem>
@@ -440,12 +452,12 @@ const TubeListHeader = styled.div<{ $isMobile?: boolean; $isTablet?: boolean }>`
       ? 'repeat(5, 1fr)'
       : 'repeat(8, 1fr)'};
   column-gap: ${(props) =>
-    props.$isMobile ? '8px' : props.$isTablet ? '12px' : '20px'};
-  font-size: ${(props) => (props.$isMobile ? '12px' : '14px')};
+    props.$isMobile ? '5px' : props.$isTablet ? '8px' : '12px'};
+  font-size: ${(props) => (props.$isMobile ? '11px' : '13px')};
   font-weight: 500;
   color: #64748b;
   background: #f3f6fa;
-  padding: ${(props) => (props.$isMobile ? '10px 14px' : '14px 24px')};
+  padding: ${(props) => (props.$isMobile ? '8px 10px' : '10px 15px')};
   border-bottom: 1px solid ${colors.theme.light.border};
   font-family: 'Pretendard', sans-serif;
   overflow-x: hidden;
@@ -456,7 +468,7 @@ const TubeListHeader = styled.div<{ $isMobile?: boolean; $isTablet?: boolean }>`
     justify-content: center;
     align-items: center;
     white-space: nowrap;
-    min-width: ${(props) => (props.$isMobile ? '40px' : '50px')};
+    min-width: ${(props) => (props.$isMobile ? '30px' : '40px')};
 
     & > div {
       display: inline-flex;
@@ -464,10 +476,20 @@ const TubeListHeader = styled.div<{ $isMobile?: boolean; $isTablet?: boolean }>`
   }
 
   @media (min-width: 769px) and (max-width: 1366px) {
-    column-gap: 10px;
-    padding: 14px 16px;
+    column-gap: 5px;
+    padding: 10px 10px;
+    font-size: 12px;
     & > div {
-      min-width: 40px;
+      min-width: 30px;
+    }
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    column-gap: 3px;
+    padding: 8px 8px;
+    font-size: 11px;
+    & > div {
+      min-width: 25px;
     }
   }
 `;
@@ -480,25 +502,32 @@ const TubeListBody = styled.div`
 `;
 const CarNumberCell = styled.div<{ $backgroundColor: string }>`
   background-color: ${(props) => props.$backgroundColor};
-  padding: 6px 12px;
+  padding: 4px 8px;
   border-radius: 4px;
   color: #000000;
   font-weight: 500;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  min-width: 60px;
+  min-width: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
 
   @media (max-width: 768px) {
-    padding: 4px 8px;
-    min-width: 40px;
+    padding: 3px 6px;
+    min-width: 35px;
+    font-size: 0.9em;
   }
 
   @media (min-width: 769px) and (max-width: 1366px) {
-    padding: 4px 8px;
-    min-width: 50px;
-    font-size: 0.9em;
+    padding: 3px 6px;
+    min-width: 40px;
+    font-size: 0.85em;
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    padding: 2px 4px;
+    min-width: 35px;
+    font-size: 0.8em;
   }
 `;
 const TubeListItem = styled.div<{
@@ -514,11 +543,11 @@ const TubeListItem = styled.div<{
       ? 'repeat(5, 1fr)'
       : 'repeat(8, 1fr)'};
   column-gap: ${(props) =>
-    props.$isMobile ? '8px' : props.$isTablet ? '12px' : '20px'};
+    props.$isMobile ? '5px' : props.$isTablet ? '8px' : '12px'};
   align-items: center;
-  font-size: ${(props) => (props.$isMobile ? '12px' : '14px')};
+  font-size: ${(props) => (props.$isMobile ? '11px' : '13px')};
   color: #222;
-  padding: ${(props) => (props.$isMobile ? '10px 14px' : '14px 24px')};
+  padding: ${(props) => (props.$isMobile ? '8px 10px' : '10px 15px')};
   border-bottom: 1px solid ${colors.theme.light.border};
   background: ${(props) => (props.$isSelected ? '#f3f6fa' : '#fff')};
   transition: background 0.15s;
@@ -540,7 +569,7 @@ const TubeListItem = styled.div<{
     justify-content: center;
     align-items: center;
     white-space: nowrap;
-    min-width: ${(props) => (props.$isMobile ? '40px' : '50px')};
+    min-width: ${(props) => (props.$isMobile ? '30px' : '40px')};
 
     & > div {
       display: inline-flex;
@@ -548,18 +577,28 @@ const TubeListItem = styled.div<{
   }
 
   @media (min-width: 769px) and (max-width: 1366px) {
-    column-gap: 10px;
-    padding: 14px 16px;
+    column-gap: 5px;
+    padding: 10px 10px;
+    font-size: 12px;
     & > div {
-      min-width: 40px;
+      min-width: 30px;
+    }
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    column-gap: 3px;
+    padding: 8px 8px;
+    font-size: 11px;
+    & > div {
+      min-width: 25px;
     }
   }
 `;
 const StatusWrapper = styled.div<{ $status: string }>`
   display: inline-flex;
   align-items: center;
-  gap: 15px;
-  padding: 4px 6px;
+  gap: 10px;
+  padding: 3px 5px;
   border-radius: 20px;
   background: #f8f8f8;
   position: relative;
@@ -605,15 +644,23 @@ const StatusWrapper = styled.div<{ $status: string }>`
   }
 
   @media (min-width: 769px) and (max-width: 1366px) {
-    gap: 8px;
-    padding: 3px 5px;
-    font-size: 0.9em;
+    gap: 5px;
+    padding: 2px 4px;
+    font-size: 0.8em;
+    border-radius: 15px;
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    gap: 3px;
+    padding: 2px 3px;
+    font-size: 0.75em;
+    border-radius: 12px;
   }
 `;
 
 const StatusIndicator = styled.div<{ $status: string }>`
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   position: relative;
   flex-shrink: 0;
@@ -640,10 +687,20 @@ const StatusIndicator = styled.div<{ $status: string }>`
     border: 1px solid currentColor;
     transform: translate(-50%, -50%);
   }
+
+  @media (min-width: 769px) and (max-width: 1366px) {
+    width: 6px;
+    height: 6px;
+  }
+
+  @media (max-width: 768px) {
+    width: 6px;
+    height: 6px;
+  }
 `;
 
 const StatusLabel = styled.span<{ $status: string }>`
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   text-align: center;
   color: ${({ $status }) => {
@@ -662,7 +719,11 @@ const StatusLabel = styled.span<{ $status: string }>`
   z-index: 1;
 
   @media (min-width: 769px) and (max-width: 1366px) {
-    font-size: 12px;
+    font-size: 11px;
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    font-size: 10px;
   }
 `;
 

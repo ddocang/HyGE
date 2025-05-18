@@ -334,7 +334,7 @@ export const GraphStatsBar = styled.div`
 
 export const MainMenu = styled.div`
   display: flex;
-  gap: 16px;
+  gap: 8px;
   user-select: none;
   align-items: center;
   background: #eaf3fb;

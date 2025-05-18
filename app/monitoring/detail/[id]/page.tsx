@@ -453,7 +453,21 @@ function DetailPageContent({
             })
           );
 
-          setLastUpdateTime(lastUpdateTime);
+          // 한국표준시로 년/월/일 제외하고 시간 포맷팅
+          const updateDate = new Date(lastUpdateTime);
+          if (!isNaN(updateDate.getTime())) {
+            // UTC+9 시간으로 변환 (한국표준시)
+            const kstDate = new Date(updateDate.getTime() + 9 * 60 * 60 * 1000);
+            const formattedTime = kstDate.toLocaleTimeString('ko-KR', {
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
+              hour12: false,
+            });
+            setLastUpdateTime(formattedTime);
+          } else {
+            setLastUpdateTime(lastUpdateTime);
+          }
         } catch (error) {
           console.error('진동 센서 데이터 처리 중 오류:', error);
         }
@@ -1475,9 +1489,24 @@ function DetailPageContent({
             setFireStatus(latestData.fdet);
           }
 
-          // 최종 업데이트 시간 설정
+          // 최종 업데이트 시간 설정 (한국표준시, 년/월/일 제외)
           if (latestData.last_update_time) {
-            setLastUpdateTime(latestData.last_update_time);
+            const updateDate = new Date(latestData.last_update_time);
+            if (!isNaN(updateDate.getTime())) {
+              // UTC+9 시간으로 변환 (한국표준시)
+              const kstDate = new Date(
+                updateDate.getTime() + 9 * 60 * 60 * 1000
+              );
+              const formattedTime = kstDate.toLocaleTimeString('ko-KR', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false,
+              });
+              setLastUpdateTime(formattedTime);
+            } else {
+              setLastUpdateTime(latestData.last_update_time);
+            }
           }
         }
       }
@@ -1631,7 +1660,7 @@ function DetailPageContent({
               {/* 진동값보기 버튼을 모드전환과 홈버튼 사이에 위치 */}
               <button
                 style={{
-                  margin: '0 12px',
+                  margin: '0 6px',
                   padding: '8px 16px',
                   background: 'transparent',
                   border: 'none',

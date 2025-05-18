@@ -442,7 +442,21 @@ function DetailPageContent({ params }: { params: { id: string } }) {
           ? [fdet]
           : [];
         setFireStatusArr(fdetArr);
-        setLastUpdateTime(lastUpdateTime);
+        // 한국표준시로 년/월/일 제외하고 시간 포맷팅
+        const updateDate = new Date(lastUpdateTime);
+        if (!isNaN(updateDate.getTime())) {
+          // UTC+9 시간으로 변환 (한국표준시)
+          const kstDate = new Date(updateDate.getTime() + 9 * 60 * 60 * 1000);
+          const formattedTime = kstDate.toLocaleTimeString('ko-KR', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false,
+          });
+          setLastUpdateTime(formattedTime);
+        } else {
+          setLastUpdateTime(lastUpdateTime);
+        }
       } catch (error) {
         console.error('❌ 삼척수소충전소(P003) 데이터 처리 중 오류:', error);
       }
@@ -1402,9 +1416,24 @@ function DetailPageContent({ params }: { params: { id: string } }) {
             setFireStatus(latestData.fdet);
           }
 
-          // 최종 업데이트 시간 설정
+          // 최종 업데이트 시간 설정 (한국표준시, 년/월/일 제외)
           if (latestData.last_update_time) {
-            setLastUpdateTime(latestData.last_update_time);
+            const updateDate = new Date(latestData.last_update_time);
+            if (!isNaN(updateDate.getTime())) {
+              // UTC+9 시간으로 변환 (한국표준시)
+              const kstDate = new Date(
+                updateDate.getTime() + 9 * 60 * 60 * 1000
+              );
+              const formattedTime = kstDate.toLocaleTimeString('ko-KR', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false,
+              });
+              setLastUpdateTime(formattedTime);
+            } else {
+              setLastUpdateTime(latestData.last_update_time);
+            }
           }
         }
       }
@@ -1492,7 +1521,7 @@ function DetailPageContent({ params }: { params: { id: string } }) {
               {/* 진동 위험값 설정 버튼 - 상단배너 다른 버튼들과 동일한 색상/스타일 */}
               <button
                 style={{
-                  margin: '0 12px',
+                  margin: '0 6px',
                   padding: '8px 16px',
                   background: 'transparent',
                   border: 'none',

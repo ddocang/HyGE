@@ -437,7 +437,7 @@ const TubeListHeader = styled.div<{ $isMobile?: boolean; $isTablet?: boolean }>`
   padding: ${(props) => (props.$isMobile ? '10px 14px' : '14px 24px')};
   border-bottom: 1px solid ${colors.theme.light.border};
   font-family: 'Pretendard', sans-serif;
-  overflow-x: auto;
+  overflow-x: hidden;
 
   & > div {
     text-align: center;
@@ -498,7 +498,7 @@ const TubeListItem = styled.div<{
   transition: background 0.15s;
   font-family: 'Pretendard', sans-serif;
   cursor: pointer;
-  overflow-x: auto;
+  overflow-x: hidden;
 
   &:hover {
     background: #f3f6fa;
@@ -653,7 +653,7 @@ const ResponsiveTable = styled.table<{ $isMobile?: boolean }>`
   @media (max-width: 480px) {
     display: ${(props) => (props.$isMobile ? 'block' : 'table')};
     max-width: 100%;
-    overflow-x: auto;
+    overflow-x: hidden;
   }
 `;
 

@@ -24,6 +24,7 @@ const PageContainer = styled.div`
     height: auto;
     min-height: 100vh;
     padding: 0;
+    overflow-x: hidden;
   }
 `;
 
@@ -53,6 +54,7 @@ const ColumnContainer = styled.div`
   @media (max-width: 768px) {
     gap: 12px;
     height: auto;
+    overflow-x: hidden;
   }
 `;
 
@@ -94,12 +96,7 @@ const TubeTrailerBottomContainer = styled.div`
   position: relative;
 
   @media (max-width: 768px) {
-    min-height: 150px;
-    aspect-ratio: 947 / 350;
-    max-height: 60vh;
-    border-radius: 12px;
-    margin-top: 8px;
-    width: 100%;
+    display: none; /* 모바일에서 숨김 처리 */
   }
 
   @media (min-width: 769px) and (max-width: 1024px) {
@@ -492,231 +489,219 @@ const TubeTrailerPage = () => {
               onVehicleSelect={setSelectedVehicleId}
             />
           </div>
-          <TubeTrailerBottomContainer>
-            <div
-              style={{
-                position: 'relative',
-                width: '100%',
-                height: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: 0,
-                overflow: 'hidden',
-                transformOrigin: 'center center',
-              }}
-            >
-              <img
-                src="/images/tube-trailer/tt 2.svg"
-                alt="튜브 트레일러"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  display: 'block',
-                  margin: 0,
-                  padding: 0,
-                }}
-              />
-              {/* 아이콘 오버레이 */}
-              {TUBE_TRAILER_SENSORS.map((sensor) => {
-                // 아이콘과 라인을 동일한 방식으로 처리
-                const sensorX = isMobile
-                  ? sensor.mobileX
-                  : isTablet
-                  ? sensor.tabletX
-                  : sensor.x;
-                const sensorY = isMobile
-                  ? sensor.mobileY
-                  : isTablet
-                  ? sensor.tabletY
-                  : sensor.y;
-                const sensorWidth = isMobile
-                  ? sensor.mobileWidth
-                  : isTablet
-                  ? sensor.tabletWidth
-                  : sensor.width;
-                const sensorHeight = isMobile
-                  ? sensor.mobileHeight
-                  : isTablet
-                  ? sensor.tabletHeight
-                  : sensor.height;
-
-                // 나머지 센서는 기존 <img> 방식
-                return (
-                  <div key={sensor.id}>
-                    <img
-                      src={
-                        TUBE_TRAILER_ICON_SRC[
-                          sensor.id as keyof typeof TUBE_TRAILER_ICON_SRC
-                        ]
-                      }
-                      alt={sensor.name}
-                      title={sensor.name}
-                      style={{
-                        position: 'absolute',
-                        left: `${sensorX}%`,
-                        top: `${sensorY}%`,
-                        width: sensorWidth,
-                        height: sensorHeight,
-                        pointerEvents: 'auto',
-                        zIndex: 2,
-                        transform: 'translate(-50%, -50%)',
-                        transformOrigin: 'center center',
-                        filter:
-                          'drop-shadow(0 0 12px #00f6ff) drop-shadow(0 0 24px #00f6ff)',
-                        animation: 'icon-glow 1.2s ease-in-out infinite',
-                        maxWidth: isMobile
-                          ? '40px'
-                          : isTablet
-                          ? '50px'
-                          : '60px',
-                        objectFit: 'contain',
-                      }}
-                    />
-                    <style>{`
-                      @keyframes icon-glow {
-                        0% { filter: drop-shadow(0 0 8px #00f6ff) drop-shadow(0 0 16px #00f6ff); }
-                        50% { filter: drop-shadow(0 0 24px #00f6ff) drop-shadow(0 0 48px #00f6ff); }
-                        100% { filter: drop-shadow(0 0 8px #00f6ff) drop-shadow(0 0 16px #00f6ff); }
-                      }
-                    `}</style>
-                  </div>
-                );
-              })}
-
-              {/* 전류 흐름 효과 */}
+          {!isMobile && (
+            <TubeTrailerBottomContainer>
               <div
                 style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
+                  position: 'relative',
                   width: '100%',
                   height: '100%',
-                  pointerEvents: 'none',
-                  zIndex: 4,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  padding: 0,
+                  overflow: 'hidden',
+                  transformOrigin: 'center center',
                 }}
               >
-                <svg
-                  width="100%"
-                  height="100%"
-                  style={{ position: 'absolute' }}
+                <img
+                  src="/images/tube-trailer/tt 2.svg"
+                  alt="튜브 트레일러"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    display: 'block',
+                    margin: 0,
+                    padding: 0,
+                  }}
+                />
+                {/* 아이콘 오버레이 */}
+                {TUBE_TRAILER_SENSORS.map((sensor) => {
+                  // 아이콘과 라인을 동일한 방식으로 처리
+                  const sensorX = isMobile
+                    ? sensor.mobileX
+                    : isTablet
+                    ? sensor.tabletX
+                    : sensor.x;
+                  const sensorY = isMobile
+                    ? sensor.mobileY
+                    : isTablet
+                    ? sensor.tabletY
+                    : sensor.y;
+                  const sensorWidth = isMobile
+                    ? sensor.mobileWidth
+                    : isTablet
+                    ? sensor.tabletWidth
+                    : sensor.width;
+                  const sensorHeight = isMobile
+                    ? sensor.mobileHeight
+                    : isTablet
+                    ? sensor.tabletHeight
+                    : sensor.height;
+
+                  // 나머지 센서는 기존 <img> 방식
+                  return (
+                    <div key={sensor.id}>
+                      <img
+                        src={
+                          TUBE_TRAILER_ICON_SRC[
+                            sensor.id as keyof typeof TUBE_TRAILER_ICON_SRC
+                          ]
+                        }
+                        alt={sensor.name}
+                        title={sensor.name}
+                        style={{
+                          position: 'absolute',
+                          left: `${sensorX}%`,
+                          top: `${sensorY}%`,
+                          width: sensorWidth,
+                          height: sensorHeight,
+                          pointerEvents: 'auto',
+                          zIndex: 2,
+                          transform: 'translate(-50%, -50%)',
+                          transformOrigin: 'center center',
+                          filter:
+                            'drop-shadow(0 0 12px #00f6ff) drop-shadow(0 0 24px #00f6ff)',
+                          animation: 'icon-glow 1.2s ease-in-out infinite',
+                          maxWidth: isMobile
+                            ? '40px'
+                            : isTablet
+                            ? '50px'
+                            : '60px',
+                          objectFit: 'contain',
+                        }}
+                      />
+                      <style>{`
+                        @keyframes icon-glow {
+                          0% { filter: drop-shadow(0 0 8px #00f6ff) drop-shadow(0 0 16px #00f6ff); }
+                          50% { filter: drop-shadow(0 0 24px #00f6ff) drop-shadow(0 0 48px #00f6ff); }
+                          100% { filter: drop-shadow(0 0 8px #00f6ff) drop-shadow(0 0 16px #00f6ff); }
+                        }
+                      `}</style>
+                    </div>
+                  );
+                })}
+
+                {/* 전류 흐름 효과 */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    pointerEvents: 'none',
+                    zIndex: 4,
+                  }}
                 >
-                  <defs>
-                    <linearGradient
-                      id="current-gradient"
-                      x1="0%"
-                      y1="0%"
-                      x2="100%"
-                      y2="0%"
-                    >
-                      <stop offset="0%" stopColor="#00f6ff" stopOpacity="0.3" />
-                      <stop offset="50%" stopColor="#00f6ff" stopOpacity="1" />
-                      <stop
-                        offset="100%"
-                        stopColor="#00f6ff"
-                        stopOpacity="0.3"
-                      />
-                    </linearGradient>
-                    <filter
-                      id="glow"
-                      x="-20%"
-                      y="-20%"
-                      width="140%"
-                      height="140%"
-                    >
-                      <feGaussianBlur stdDeviation="4" result="blur" />
-                      <feComposite
-                        in="SourceGraphic"
-                        in2="blur"
-                        operator="over"
-                      />
-                    </filter>
-                  </defs>
-                </svg>
-              </div>
+                  <svg
+                    width="100%"
+                    height="100%"
+                    style={{ position: 'absolute' }}
+                  >
+                    <defs>
+                      <linearGradient
+                        id="current-gradient"
+                        x1="0%"
+                        y1="0%"
+                        x2="100%"
+                        y2="0%"
+                      >
+                        <stop
+                          offset="0%"
+                          stopColor="#00f6ff"
+                          stopOpacity="0.3"
+                        />
+                        <stop
+                          offset="50%"
+                          stopColor="#00f6ff"
+                          stopOpacity="1"
+                        />
+                        <stop
+                          offset="100%"
+                          stopColor="#00f6ff"
+                          stopOpacity="0.3"
+                        />
+                      </linearGradient>
+                      <filter
+                        id="glow"
+                        x="-20%"
+                        y="-20%"
+                        width="140%"
+                        height="140%"
+                      >
+                        <feGaussianBlur stdDeviation="4" result="blur" />
+                        <feComposite
+                          in="SourceGraphic"
+                          in2="blur"
+                          operator="over"
+                        />
+                      </filter>
+                    </defs>
+                  </svg>
+                </div>
 
-              {/* 점 2개 추가 */}
-              {TUBE_TRAILER_POINTS.map((point) => {
-                const pointX = isMobile
-                  ? point.mobileX
-                  : isTablet
-                  ? point.tabletX
-                  : point.x;
-                const pointY = isMobile
-                  ? point.mobileY
-                  : isTablet
-                  ? point.tabletY
-                  : point.y;
-                const pointRadius = isMobile
-                  ? point.mobileRadius
-                  : isTablet
-                  ? point.tabletRadius
-                  : point.radius;
+                {/* 점 2개 추가 */}
+                {TUBE_TRAILER_POINTS.map((point) => {
+                  const pointX = isMobile
+                    ? point.mobileX
+                    : isTablet
+                    ? point.tabletX
+                    : point.x;
+                  const pointY = isMobile
+                    ? point.mobileY
+                    : isTablet
+                    ? point.tabletY
+                    : point.y;
+                  const pointRadius = isMobile
+                    ? point.mobileRadius
+                    : isTablet
+                    ? point.tabletRadius
+                    : point.radius;
 
-                return (
-                  <div
-                    key={point.id}
-                    style={{
-                      position: 'absolute',
-                      left: `${pointX}%`,
-                      top: `${pointY}%`,
-                      width: pointRadius * 2,
-                      height: pointRadius * 2,
-                      borderRadius: '50%',
-                      backgroundColor: point.color,
-                      transform: 'translate(-50%, -50%)',
-                      transformOrigin: 'center center',
-                      zIndex: 5,
-                      boxShadow: `0 0 10px ${point.color}, 0 0 20px ${point.color}`,
-                      animation: 'point-pulse 1.5s ease-in-out infinite',
-                      minWidth: isMobile ? '4px' : '5px',
-                      minHeight: isMobile ? '4px' : '5px',
-                    }}
-                  />
-                );
-              })}
+                  return (
+                    <div
+                      key={point.id}
+                      style={{
+                        position: 'absolute',
+                        left: `${pointX}%`,
+                        top: `${pointY}%`,
+                        width: pointRadius * 2,
+                        height: pointRadius * 2,
+                        borderRadius: '50%',
+                        backgroundColor: point.color,
+                        transform: 'translate(-50%, -50%)',
+                        transformOrigin: 'center center',
+                        zIndex: 5,
+                        boxShadow: `0 0 10px ${point.color}, 0 0 20px ${point.color}`,
+                        animation: 'point-pulse 1.5s ease-in-out infinite',
+                        minWidth: isMobile ? '4px' : '5px',
+                        minHeight: isMobile ? '4px' : '5px',
+                      }}
+                    />
+                  );
+                })}
 
-              {/* 새 전류 효과 구현 - 직접 div로 */}
-              <div
-                className="current-line"
-                style={{
-                  left: `${
-                    isMobile
-                      ? TUBE_TRAILER_POINTS[1].mobileX
-                      : isTablet
-                      ? TUBE_TRAILER_POINTS[1].tabletX
-                      : TUBE_TRAILER_POINTS[1].x
-                  }%`,
-                  top: `${
-                    isMobile
-                      ? TUBE_TRAILER_POINTS[1].mobileY
-                      : isTablet
-                      ? TUBE_TRAILER_POINTS[1].tabletY
-                      : TUBE_TRAILER_POINTS[1].y
-                  }%`,
-                  width: `${Math.abs(
-                    isMobile
-                      ? TUBE_TRAILER_POINTS[0].mobileX -
-                          TUBE_TRAILER_POINTS[1].mobileX
-                      : isTablet
-                      ? TUBE_TRAILER_POINTS[0].tabletX -
-                        TUBE_TRAILER_POINTS[1].tabletX
-                      : TUBE_TRAILER_POINTS[0].x - TUBE_TRAILER_POINTS[1].x
-                  )}%`,
-                  height: 3,
-                  background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
-                  borderRadius: '1.5px',
-                  transformOrigin: 'left center',
-                  transform: `translateY(-50%) rotate(${
-                    (Math.atan2(
+                {/* 새 전류 효과 구현 - 직접 div로 */}
+                <div
+                  className="current-line"
+                  style={{
+                    left: `${
                       isMobile
-                        ? TUBE_TRAILER_POINTS[0].mobileY -
-                            TUBE_TRAILER_POINTS[1].mobileY
+                        ? TUBE_TRAILER_POINTS[1].mobileX
                         : isTablet
-                        ? TUBE_TRAILER_POINTS[0].tabletY -
-                          TUBE_TRAILER_POINTS[1].tabletY
-                        : TUBE_TRAILER_POINTS[0].y - TUBE_TRAILER_POINTS[1].y,
+                        ? TUBE_TRAILER_POINTS[1].tabletX
+                        : TUBE_TRAILER_POINTS[1].x
+                    }%`,
+                    top: `${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[1].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[1].tabletY
+                        : TUBE_TRAILER_POINTS[1].y
+                    }%`,
+                    width: `${Math.abs(
                       isMobile
                         ? TUBE_TRAILER_POINTS[0].mobileX -
                             TUBE_TRAILER_POINTS[1].mobileX
@@ -724,128 +709,167 @@ const TubeTrailerPage = () => {
                         ? TUBE_TRAILER_POINTS[0].tabletX -
                           TUBE_TRAILER_POINTS[1].tabletX
                         : TUBE_TRAILER_POINTS[0].x - TUBE_TRAILER_POINTS[1].x
-                    ) *
-                      180) /
-                    Math.PI
-                  }deg)`,
-                  zIndex: 4,
-                  boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
-                  backgroundSize: '30px 3px',
-                  backgroundImage:
-                    'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
-                  backgroundRepeat: 'repeat-x',
-                  animation: 'current-flow 1s linear infinite',
-                }}
-              />
+                    )}%`,
+                    height: 3,
+                    background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
+                    borderRadius: '1.5px',
+                    transformOrigin: 'left center',
+                    transform: `translateY(-50%) rotate(${
+                      (Math.atan2(
+                        isMobile
+                          ? TUBE_TRAILER_POINTS[0].mobileY -
+                              TUBE_TRAILER_POINTS[1].mobileY
+                          : isTablet
+                          ? TUBE_TRAILER_POINTS[0].tabletY -
+                            TUBE_TRAILER_POINTS[1].tabletY
+                          : TUBE_TRAILER_POINTS[0].y - TUBE_TRAILER_POINTS[1].y,
+                        isMobile
+                          ? TUBE_TRAILER_POINTS[0].mobileX -
+                              TUBE_TRAILER_POINTS[1].mobileX
+                          : isTablet
+                          ? TUBE_TRAILER_POINTS[0].tabletX -
+                            TUBE_TRAILER_POINTS[1].tabletX
+                          : TUBE_TRAILER_POINTS[0].x - TUBE_TRAILER_POINTS[1].x
+                      ) *
+                        180) /
+                      Math.PI
+                    }deg)`,
+                    zIndex: 4,
+                    boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
+                    backgroundSize: '30px 3px',
+                    backgroundImage:
+                      'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
+                    backgroundRepeat: 'repeat-x',
+                    animation: 'current-flow 1s linear infinite',
+                  }}
+                />
 
-              {/* 점3-4 전류선 */}
-              <div
-                style={{
-                  position: 'absolute',
-                  left: `${
-                    isMobile
-                      ? TUBE_TRAILER_POINTS[2].mobileX
-                      : isTablet
-                      ? TUBE_TRAILER_POINTS[2].tabletX
-                      : TUBE_TRAILER_POINTS[2].x
-                  }%`,
-                  top: `${
-                    isMobile
-                      ? TUBE_TRAILER_POINTS[2].mobileY
-                      : isTablet
-                      ? TUBE_TRAILER_POINTS[2].tabletY
-                      : TUBE_TRAILER_POINTS[2].y
-                  }%`,
-                  width: `${
-                    Math.sqrt(
-                      Math.pow(
+                {/* 점3-4 전류선 */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: `${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[2].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[2].tabletX
+                        : TUBE_TRAILER_POINTS[2].x
+                    }%`,
+                    top: `${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[2].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[2].tabletY
+                        : TUBE_TRAILER_POINTS[2].y
+                    }%`,
+                    width: `${
+                      Math.sqrt(
+                        Math.pow(
+                          isMobile
+                            ? TUBE_TRAILER_POINTS[3].mobileX -
+                                TUBE_TRAILER_POINTS[2].mobileX
+                            : isTablet
+                            ? TUBE_TRAILER_POINTS[3].tabletX -
+                              TUBE_TRAILER_POINTS[2].tabletX
+                            : TUBE_TRAILER_POINTS[3].x -
+                              TUBE_TRAILER_POINTS[2].x,
+                          2
+                        ) +
+                          Math.pow(
+                            isMobile
+                              ? TUBE_TRAILER_POINTS[3].mobileY -
+                                  TUBE_TRAILER_POINTS[2].mobileY
+                              : isTablet
+                              ? TUBE_TRAILER_POINTS[3].tabletY -
+                                TUBE_TRAILER_POINTS[2].tabletY
+                              : TUBE_TRAILER_POINTS[3].y -
+                                TUBE_TRAILER_POINTS[2].y,
+                            2
+                          )
+                      ) * 0.4
+                    }%`,
+                    height: 3,
+                    background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
+                    borderRadius: '1.5px',
+                    transformOrigin: 'left center',
+                    transform: `translateY(-50%) rotate(${
+                      (Math.atan2(
+                        isMobile
+                          ? TUBE_TRAILER_POINTS[3].mobileY -
+                              TUBE_TRAILER_POINTS[2].mobileY
+                          : isTablet
+                          ? TUBE_TRAILER_POINTS[3].tabletY -
+                            TUBE_TRAILER_POINTS[2].tabletY
+                          : TUBE_TRAILER_POINTS[3].y - TUBE_TRAILER_POINTS[2].y,
                         isMobile
                           ? TUBE_TRAILER_POINTS[3].mobileX -
                               TUBE_TRAILER_POINTS[2].mobileX
                           : isTablet
                           ? TUBE_TRAILER_POINTS[3].tabletX -
                             TUBE_TRAILER_POINTS[2].tabletX
-                          : TUBE_TRAILER_POINTS[3].x - TUBE_TRAILER_POINTS[2].x,
+                          : TUBE_TRAILER_POINTS[3].x - TUBE_TRAILER_POINTS[2].x
+                      ) *
+                        180) /
+                      Math.PI
+                    }deg)`,
+                    zIndex: 4,
+                    boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
+                    backgroundSize: isMobile ? '20px 2px' : '30px 3px',
+                    backgroundImage:
+                      'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
+                    backgroundRepeat: 'repeat-x',
+                    animation: 'current-flow 1s linear infinite',
+                    minWidth: isMobile ? '5px' : '10px',
+                  }}
+                />
+
+                {/* 점4-5 전류선 */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: `${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[3].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[3].tabletX
+                        : TUBE_TRAILER_POINTS[3].x
+                    }%`,
+                    top: `${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[3].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[3].tabletY
+                        : TUBE_TRAILER_POINTS[3].y
+                    }%`,
+                    width: `${Math.sqrt(
+                      Math.pow(
+                        isMobile
+                          ? TUBE_TRAILER_POINTS[4].mobileX -
+                              TUBE_TRAILER_POINTS[3].mobileX
+                          : isTablet
+                          ? TUBE_TRAILER_POINTS[4].tabletX -
+                            TUBE_TRAILER_POINTS[3].tabletX
+                          : TUBE_TRAILER_POINTS[4].x - TUBE_TRAILER_POINTS[3].x,
                         2
                       ) +
                         Math.pow(
                           isMobile
-                            ? TUBE_TRAILER_POINTS[3].mobileY -
-                                TUBE_TRAILER_POINTS[2].mobileY
+                            ? TUBE_TRAILER_POINTS[4].mobileY -
+                                TUBE_TRAILER_POINTS[3].mobileY
                             : isTablet
-                            ? TUBE_TRAILER_POINTS[3].tabletY -
-                              TUBE_TRAILER_POINTS[2].tabletY
-                            : TUBE_TRAILER_POINTS[3].y -
-                              TUBE_TRAILER_POINTS[2].y,
+                            ? TUBE_TRAILER_POINTS[4].tabletY -
+                              TUBE_TRAILER_POINTS[3].tabletY
+                            : TUBE_TRAILER_POINTS[4].y -
+                              TUBE_TRAILER_POINTS[3].y,
                           2
                         )
-                    ) * 0.4
-                  }%`,
-                  height: 3,
-                  background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
-                  borderRadius: '1.5px',
-                  transformOrigin: 'left center',
-                  transform: `translateY(-50%) rotate(${
-                    (Math.atan2(
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[3].mobileY -
-                            TUBE_TRAILER_POINTS[2].mobileY
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[3].tabletY -
-                          TUBE_TRAILER_POINTS[2].tabletY
-                        : TUBE_TRAILER_POINTS[3].y - TUBE_TRAILER_POINTS[2].y,
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[3].mobileX -
-                            TUBE_TRAILER_POINTS[2].mobileX
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[3].tabletX -
-                          TUBE_TRAILER_POINTS[2].tabletX
-                        : TUBE_TRAILER_POINTS[3].x - TUBE_TRAILER_POINTS[2].x
-                    ) *
-                      180) /
-                    Math.PI
-                  }deg)`,
-                  zIndex: 4,
-                  boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
-                  backgroundSize: isMobile ? '20px 2px' : '30px 3px',
-                  backgroundImage:
-                    'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
-                  backgroundRepeat: 'repeat-x',
-                  animation: 'current-flow 1s linear infinite',
-                  minWidth: isMobile ? '5px' : '10px',
-                }}
-              />
-
-              {/* 점4-5 전류선 */}
-              <div
-                style={{
-                  position: 'absolute',
-                  left: `${
-                    isMobile
-                      ? TUBE_TRAILER_POINTS[3].mobileX
-                      : isTablet
-                      ? TUBE_TRAILER_POINTS[3].tabletX
-                      : TUBE_TRAILER_POINTS[3].x
-                  }%`,
-                  top: `${
-                    isMobile
-                      ? TUBE_TRAILER_POINTS[3].mobileY
-                      : isTablet
-                      ? TUBE_TRAILER_POINTS[3].tabletY
-                      : TUBE_TRAILER_POINTS[3].y
-                  }%`,
-                  width: `${Math.sqrt(
-                    Math.pow(
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[4].mobileX -
-                            TUBE_TRAILER_POINTS[3].mobileX
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[4].tabletX -
-                          TUBE_TRAILER_POINTS[3].tabletX
-                        : TUBE_TRAILER_POINTS[4].x - TUBE_TRAILER_POINTS[3].x,
-                      2
-                    ) +
-                      Math.pow(
+                    )}%`,
+                    height: 3,
+                    background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
+                    borderRadius: '1.5px',
+                    transformOrigin: 'left center',
+                    transform: `translateY(-50%) rotate(${
+                      (Math.atan2(
                         isMobile
                           ? TUBE_TRAILER_POINTS[4].mobileY -
                               TUBE_TRAILER_POINTS[3].mobileY
@@ -853,83 +877,46 @@ const TubeTrailerPage = () => {
                           ? TUBE_TRAILER_POINTS[4].tabletY -
                             TUBE_TRAILER_POINTS[3].tabletY
                           : TUBE_TRAILER_POINTS[4].y - TUBE_TRAILER_POINTS[3].y,
-                        2
-                      )
-                  )}%`,
-                  height: 3,
-                  background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
-                  borderRadius: '1.5px',
-                  transformOrigin: 'left center',
-                  transform: `translateY(-50%) rotate(${
-                    (Math.atan2(
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[4].mobileY -
-                            TUBE_TRAILER_POINTS[3].mobileY
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[4].tabletY -
-                          TUBE_TRAILER_POINTS[3].tabletY
-                        : TUBE_TRAILER_POINTS[4].y - TUBE_TRAILER_POINTS[3].y,
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[4].mobileX -
-                            TUBE_TRAILER_POINTS[3].mobileX
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[4].tabletX -
-                          TUBE_TRAILER_POINTS[3].tabletX
-                        : TUBE_TRAILER_POINTS[4].x - TUBE_TRAILER_POINTS[3].x
-                    ) *
-                      180) /
-                    Math.PI
-                  }deg)`,
-                  zIndex: 4,
-                  boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
-                  backgroundSize: '30px 3px',
-                  backgroundImage:
-                    'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
-                  backgroundRepeat: 'repeat-x',
-                  animation: 'current-flow 1s linear infinite',
-                }}
-              />
+                        isMobile
+                          ? TUBE_TRAILER_POINTS[4].mobileX -
+                              TUBE_TRAILER_POINTS[3].mobileX
+                          : isTablet
+                          ? TUBE_TRAILER_POINTS[4].tabletX -
+                            TUBE_TRAILER_POINTS[3].tabletX
+                          : TUBE_TRAILER_POINTS[4].x - TUBE_TRAILER_POINTS[3].x
+                      ) *
+                        180) /
+                      Math.PI
+                    }deg)`,
+                    zIndex: 4,
+                    boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
+                    backgroundSize: '30px 3px',
+                    backgroundImage:
+                      'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
+                    backgroundRepeat: 'repeat-x',
+                    animation: 'current-flow 1s linear infinite',
+                  }}
+                />
 
-              {/* 점6-7 전류선 */}
-              <div
-                style={{
-                  position: 'absolute',
-                  left: `${
-                    isMobile
-                      ? TUBE_TRAILER_POINTS[5].mobileX
-                      : isTablet
-                      ? TUBE_TRAILER_POINTS[5].tabletX
-                      : TUBE_TRAILER_POINTS[5].x
-                  }%`,
-                  top: `${
-                    isMobile
-                      ? TUBE_TRAILER_POINTS[5].mobileY
-                      : isTablet
-                      ? TUBE_TRAILER_POINTS[5].tabletY
-                      : TUBE_TRAILER_POINTS[5].y
-                  }%`,
-                  width: `${Math.abs(
-                    isMobile
-                      ? TUBE_TRAILER_POINTS[6].mobileX -
-                          TUBE_TRAILER_POINTS[5].mobileX
-                      : isTablet
-                      ? TUBE_TRAILER_POINTS[6].tabletX -
-                        TUBE_TRAILER_POINTS[5].tabletX
-                      : TUBE_TRAILER_POINTS[6].x - TUBE_TRAILER_POINTS[5].x
-                  )}%`,
-                  height: 3,
-                  background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
-                  borderRadius: '1.5px',
-                  transformOrigin: 'left center',
-                  transform: `translateY(-50%) rotate(${
-                    (Math.atan2(
+                {/* 점6-7 전류선 */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: `${
                       isMobile
-                        ? TUBE_TRAILER_POINTS[6].mobileY -
-                            TUBE_TRAILER_POINTS[5].mobileY
+                        ? TUBE_TRAILER_POINTS[5].mobileX
                         : isTablet
-                        ? TUBE_TRAILER_POINTS[6].tabletY -
-                          TUBE_TRAILER_POINTS[5].tabletY
-                        : TUBE_TRAILER_POINTS[6].y - TUBE_TRAILER_POINTS[5].y,
+                        ? TUBE_TRAILER_POINTS[5].tabletX
+                        : TUBE_TRAILER_POINTS[5].x
+                    }%`,
+                    top: `${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[5].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[5].tabletY
+                        : TUBE_TRAILER_POINTS[5].y
+                    }%`,
+                    width: `${Math.abs(
                       isMobile
                         ? TUBE_TRAILER_POINTS[6].mobileX -
                             TUBE_TRAILER_POINTS[5].mobileX
@@ -937,127 +924,166 @@ const TubeTrailerPage = () => {
                         ? TUBE_TRAILER_POINTS[6].tabletX -
                           TUBE_TRAILER_POINTS[5].tabletX
                         : TUBE_TRAILER_POINTS[6].x - TUBE_TRAILER_POINTS[5].x
-                    ) *
-                      180) /
-                    Math.PI
-                  }deg)`,
-                  zIndex: 4,
-                  boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
-                  backgroundSize: '30px 3px',
-                  backgroundImage:
-                    'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
-                  backgroundRepeat: 'repeat-x',
-                  animation: 'current-flow 1s linear infinite',
-                }}
-              />
+                    )}%`,
+                    height: 3,
+                    background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
+                    borderRadius: '1.5px',
+                    transformOrigin: 'left center',
+                    transform: `translateY(-50%) rotate(${
+                      (Math.atan2(
+                        isMobile
+                          ? TUBE_TRAILER_POINTS[6].mobileY -
+                              TUBE_TRAILER_POINTS[5].mobileY
+                          : isTablet
+                          ? TUBE_TRAILER_POINTS[6].tabletY -
+                            TUBE_TRAILER_POINTS[5].tabletY
+                          : TUBE_TRAILER_POINTS[6].y - TUBE_TRAILER_POINTS[5].y,
+                        isMobile
+                          ? TUBE_TRAILER_POINTS[6].mobileX -
+                              TUBE_TRAILER_POINTS[5].mobileX
+                          : isTablet
+                          ? TUBE_TRAILER_POINTS[6].tabletX -
+                            TUBE_TRAILER_POINTS[5].tabletX
+                          : TUBE_TRAILER_POINTS[6].x - TUBE_TRAILER_POINTS[5].x
+                      ) *
+                        180) /
+                      Math.PI
+                    }deg)`,
+                    zIndex: 4,
+                    boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
+                    backgroundSize: '30px 3px',
+                    backgroundImage:
+                      'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
+                    backgroundRepeat: 'repeat-x',
+                    animation: 'current-flow 1s linear infinite',
+                  }}
+                />
 
-              {/* 점7-8 전류선 */}
-              <div
-                style={{
-                  position: 'absolute',
-                  left: `${
-                    isMobile
-                      ? TUBE_TRAILER_POINTS[6].mobileX
-                      : isTablet
-                      ? TUBE_TRAILER_POINTS[6].tabletX
-                      : TUBE_TRAILER_POINTS[6].x
-                  }%`,
-                  top: `${
-                    isMobile
-                      ? TUBE_TRAILER_POINTS[6].mobileY
-                      : isTablet
-                      ? TUBE_TRAILER_POINTS[6].tabletY
-                      : TUBE_TRAILER_POINTS[6].y
-                  }%`,
-                  width: `${
-                    Math.sqrt(
-                      Math.pow(
+                {/* 점7-8 전류선 */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: `${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[6].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[6].tabletX
+                        : TUBE_TRAILER_POINTS[6].x
+                    }%`,
+                    top: `${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[6].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[6].tabletY
+                        : TUBE_TRAILER_POINTS[6].y
+                    }%`,
+                    width: `${
+                      Math.sqrt(
+                        Math.pow(
+                          isMobile
+                            ? TUBE_TRAILER_POINTS[7].mobileX -
+                                TUBE_TRAILER_POINTS[6].mobileX
+                            : isTablet
+                            ? TUBE_TRAILER_POINTS[7].tabletX -
+                              TUBE_TRAILER_POINTS[6].tabletX
+                            : TUBE_TRAILER_POINTS[7].x -
+                              TUBE_TRAILER_POINTS[6].x,
+                          2
+                        ) +
+                          Math.pow(
+                            isMobile
+                              ? TUBE_TRAILER_POINTS[7].mobileY -
+                                  TUBE_TRAILER_POINTS[6].mobileY
+                              : isTablet
+                              ? TUBE_TRAILER_POINTS[7].tabletY -
+                                TUBE_TRAILER_POINTS[6].tabletY
+                              : TUBE_TRAILER_POINTS[7].y -
+                                TUBE_TRAILER_POINTS[6].y,
+                            2
+                          )
+                      ) * 0.4
+                    }%`,
+                    height: 3,
+                    background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
+                    borderRadius: '1.5px',
+                    transformOrigin: 'left center',
+                    transform: `translateY(-50%) rotate(${
+                      (Math.atan2(
+                        isMobile
+                          ? TUBE_TRAILER_POINTS[7].mobileY -
+                              TUBE_TRAILER_POINTS[6].mobileY
+                          : isTablet
+                          ? TUBE_TRAILER_POINTS[7].tabletY -
+                            TUBE_TRAILER_POINTS[6].tabletY
+                          : TUBE_TRAILER_POINTS[7].y - TUBE_TRAILER_POINTS[6].y,
                         isMobile
                           ? TUBE_TRAILER_POINTS[7].mobileX -
                               TUBE_TRAILER_POINTS[6].mobileX
                           : isTablet
                           ? TUBE_TRAILER_POINTS[7].tabletX -
                             TUBE_TRAILER_POINTS[6].tabletX
-                          : TUBE_TRAILER_POINTS[7].x - TUBE_TRAILER_POINTS[6].x,
+                          : TUBE_TRAILER_POINTS[7].x - TUBE_TRAILER_POINTS[6].x
+                      ) *
+                        180) /
+                      Math.PI
+                    }deg)`,
+                    zIndex: 4,
+                    boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
+                    backgroundSize: '30px 3px',
+                    backgroundImage:
+                      'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
+                    backgroundRepeat: 'repeat-x',
+                    animation: 'current-flow 1s linear infinite',
+                  }}
+                />
+
+                {/* 점8-9 전류선 */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: `${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[7].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[7].tabletX
+                        : TUBE_TRAILER_POINTS[7].x
+                    }%`,
+                    top: `${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[7].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[7].tabletY
+                        : TUBE_TRAILER_POINTS[7].y
+                    }%`,
+                    width: `${Math.sqrt(
+                      Math.pow(
+                        isMobile
+                          ? TUBE_TRAILER_POINTS[8].mobileX -
+                              TUBE_TRAILER_POINTS[7].mobileX
+                          : isTablet
+                          ? TUBE_TRAILER_POINTS[8].tabletX -
+                            TUBE_TRAILER_POINTS[7].tabletX
+                          : TUBE_TRAILER_POINTS[8].x - TUBE_TRAILER_POINTS[7].x,
                         2
                       ) +
                         Math.pow(
                           isMobile
-                            ? TUBE_TRAILER_POINTS[7].mobileY -
-                                TUBE_TRAILER_POINTS[6].mobileY
+                            ? TUBE_TRAILER_POINTS[8].mobileY -
+                                TUBE_TRAILER_POINTS[7].mobileY
                             : isTablet
-                            ? TUBE_TRAILER_POINTS[7].tabletY -
-                              TUBE_TRAILER_POINTS[6].tabletY
-                            : TUBE_TRAILER_POINTS[7].y -
-                              TUBE_TRAILER_POINTS[6].y,
+                            ? TUBE_TRAILER_POINTS[8].tabletY -
+                              TUBE_TRAILER_POINTS[7].tabletY
+                            : TUBE_TRAILER_POINTS[8].y -
+                              TUBE_TRAILER_POINTS[7].y,
                           2
                         )
-                    ) * 0.4
-                  }%`,
-                  height: 3,
-                  background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
-                  borderRadius: '1.5px',
-                  transformOrigin: 'left center',
-                  transform: `translateY(-50%) rotate(${
-                    (Math.atan2(
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[7].mobileY -
-                            TUBE_TRAILER_POINTS[6].mobileY
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[7].tabletY -
-                          TUBE_TRAILER_POINTS[6].tabletY
-                        : TUBE_TRAILER_POINTS[7].y - TUBE_TRAILER_POINTS[6].y,
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[7].mobileX -
-                            TUBE_TRAILER_POINTS[6].mobileX
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[7].tabletX -
-                          TUBE_TRAILER_POINTS[6].tabletX
-                        : TUBE_TRAILER_POINTS[7].x - TUBE_TRAILER_POINTS[6].x
-                    ) *
-                      180) /
-                    Math.PI
-                  }deg)`,
-                  zIndex: 4,
-                  boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
-                  backgroundSize: '30px 3px',
-                  backgroundImage:
-                    'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
-                  backgroundRepeat: 'repeat-x',
-                  animation: 'current-flow 1s linear infinite',
-                }}
-              />
-
-              {/* 점8-9 전류선 */}
-              <div
-                style={{
-                  position: 'absolute',
-                  left: `${
-                    isMobile
-                      ? TUBE_TRAILER_POINTS[7].mobileX
-                      : isTablet
-                      ? TUBE_TRAILER_POINTS[7].tabletX
-                      : TUBE_TRAILER_POINTS[7].x
-                  }%`,
-                  top: `${
-                    isMobile
-                      ? TUBE_TRAILER_POINTS[7].mobileY
-                      : isTablet
-                      ? TUBE_TRAILER_POINTS[7].tabletY
-                      : TUBE_TRAILER_POINTS[7].y
-                  }%`,
-                  width: `${Math.sqrt(
-                    Math.pow(
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[8].mobileX -
-                            TUBE_TRAILER_POINTS[7].mobileX
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[8].tabletX -
-                          TUBE_TRAILER_POINTS[7].tabletX
-                        : TUBE_TRAILER_POINTS[8].x - TUBE_TRAILER_POINTS[7].x,
-                      2
-                    ) +
-                      Math.pow(
+                    )}%`,
+                    height: 3,
+                    background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
+                    borderRadius: '1.5px',
+                    transformOrigin: 'left center',
+                    transform: `translateY(-50%) rotate(${
+                      (Math.atan2(
                         isMobile
                           ? TUBE_TRAILER_POINTS[8].mobileY -
                               TUBE_TRAILER_POINTS[7].mobileY
@@ -1065,142 +1091,164 @@ const TubeTrailerPage = () => {
                           ? TUBE_TRAILER_POINTS[8].tabletY -
                             TUBE_TRAILER_POINTS[7].tabletY
                           : TUBE_TRAILER_POINTS[8].y - TUBE_TRAILER_POINTS[7].y,
-                        2
-                      )
-                  )}%`,
-                  height: 3,
-                  background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
-                  borderRadius: '1.5px',
-                  transformOrigin: 'left center',
-                  transform: `translateY(-50%) rotate(${
-                    (Math.atan2(
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[8].mobileY -
-                            TUBE_TRAILER_POINTS[7].mobileY
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[8].tabletY -
-                          TUBE_TRAILER_POINTS[7].tabletY
-                        : TUBE_TRAILER_POINTS[8].y - TUBE_TRAILER_POINTS[7].y,
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[8].mobileX -
-                            TUBE_TRAILER_POINTS[7].mobileX
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[8].tabletX -
-                          TUBE_TRAILER_POINTS[7].tabletX
-                        : TUBE_TRAILER_POINTS[8].x - TUBE_TRAILER_POINTS[7].x
-                    ) *
-                      180) /
-                    Math.PI
-                  }deg)`,
-                  zIndex: 4,
-                  boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
-                  backgroundSize: '30px 3px',
-                  backgroundImage:
-                    'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
-                  backgroundRepeat: 'repeat-x',
-                  animation: 'current-flow 1s linear infinite',
-                }}
-              />
+                        isMobile
+                          ? TUBE_TRAILER_POINTS[8].mobileX -
+                              TUBE_TRAILER_POINTS[7].mobileX
+                          : isTablet
+                          ? TUBE_TRAILER_POINTS[8].tabletX -
+                            TUBE_TRAILER_POINTS[7].tabletX
+                          : TUBE_TRAILER_POINTS[8].x - TUBE_TRAILER_POINTS[7].x
+                      ) *
+                        180) /
+                      Math.PI
+                    }deg)`,
+                    zIndex: 4,
+                    boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
+                    backgroundSize: '30px 3px',
+                    backgroundImage:
+                      'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
+                    backgroundRepeat: 'repeat-x',
+                    animation: 'current-flow 1s linear infinite',
+                  }}
+                />
 
-              {/* 점10-11 전류선 */}
-              <div
-                style={{
-                  position: 'absolute',
-                  left: `${
-                    isMobile
-                      ? TUBE_TRAILER_POINTS[9].mobileX
-                      : isTablet
-                      ? TUBE_TRAILER_POINTS[9].tabletX
-                      : TUBE_TRAILER_POINTS[9].x
-                  }%`,
-                  top: `${
-                    isMobile
-                      ? TUBE_TRAILER_POINTS[9].mobileY
-                      : isTablet
-                      ? TUBE_TRAILER_POINTS[9].tabletY
-                      : TUBE_TRAILER_POINTS[9].y
-                  }%`,
-                  width: `${
-                    Math.sqrt(
-                      Math.pow(
+                {/* 점10-11 전류선 */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: `${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[9].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[9].tabletX
+                        : TUBE_TRAILER_POINTS[9].x
+                    }%`,
+                    top: `${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[9].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[9].tabletY
+                        : TUBE_TRAILER_POINTS[9].y
+                    }%`,
+                    width: `${
+                      Math.sqrt(
+                        Math.pow(
+                          isMobile
+                            ? TUBE_TRAILER_POINTS[10].mobileX -
+                                TUBE_TRAILER_POINTS[9].mobileX
+                            : isTablet
+                            ? TUBE_TRAILER_POINTS[10].tabletX -
+                              TUBE_TRAILER_POINTS[9].tabletX
+                            : TUBE_TRAILER_POINTS[10].x -
+                              TUBE_TRAILER_POINTS[9].x,
+                          2
+                        ) +
+                          Math.pow(
+                            isMobile
+                              ? TUBE_TRAILER_POINTS[10].mobileY -
+                                  TUBE_TRAILER_POINTS[9].mobileY
+                              : isTablet
+                              ? TUBE_TRAILER_POINTS[10].tabletY -
+                                TUBE_TRAILER_POINTS[9].tabletY
+                              : TUBE_TRAILER_POINTS[10].y -
+                                TUBE_TRAILER_POINTS[9].y,
+                            2
+                          )
+                      ) * 0.35
+                    }%`,
+                    height: 3,
+                    background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
+                    borderRadius: '1.5px',
+                    transformOrigin: 'left center',
+                    transform: `translateY(-50%) rotate(${
+                      (Math.atan2(
+                        isMobile
+                          ? TUBE_TRAILER_POINTS[10].mobileY -
+                              TUBE_TRAILER_POINTS[9].mobileY
+                          : isTablet
+                          ? TUBE_TRAILER_POINTS[10].tabletY -
+                            TUBE_TRAILER_POINTS[9].tabletY
+                          : TUBE_TRAILER_POINTS[10].y -
+                            TUBE_TRAILER_POINTS[9].y,
                         isMobile
                           ? TUBE_TRAILER_POINTS[10].mobileX -
                               TUBE_TRAILER_POINTS[9].mobileX
                           : isTablet
                           ? TUBE_TRAILER_POINTS[10].tabletX -
                             TUBE_TRAILER_POINTS[9].tabletX
-                          : TUBE_TRAILER_POINTS[10].x -
-                            TUBE_TRAILER_POINTS[9].x,
-                        2
-                      ) +
+                          : TUBE_TRAILER_POINTS[10].x - TUBE_TRAILER_POINTS[9].x
+                      ) *
+                        180) /
+                      Math.PI
+                    }deg)`,
+                    zIndex: 4,
+                    boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
+                    backgroundSize: '30px 3px',
+                    backgroundImage:
+                      'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
+                    backgroundRepeat: 'repeat-x',
+                    animation: 'current-flow 1s linear infinite',
+                  }}
+                />
+
+                {/* 점11-12 전류선 */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: `${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[10].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[10].tabletX
+                        : TUBE_TRAILER_POINTS[10].x
+                    }%`,
+                    top: `${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[10].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[10].tabletY
+                        : TUBE_TRAILER_POINTS[10].y
+                    }%`,
+                    width: `${
+                      Math.sqrt(
                         Math.pow(
                           isMobile
-                            ? TUBE_TRAILER_POINTS[10].mobileY -
-                                TUBE_TRAILER_POINTS[9].mobileY
+                            ? TUBE_TRAILER_POINTS[11].mobileX -
+                                TUBE_TRAILER_POINTS[10].mobileX
                             : isTablet
-                            ? TUBE_TRAILER_POINTS[10].tabletY -
-                              TUBE_TRAILER_POINTS[9].tabletY
-                            : TUBE_TRAILER_POINTS[10].y -
-                              TUBE_TRAILER_POINTS[9].y,
+                            ? TUBE_TRAILER_POINTS[11].tabletX -
+                              TUBE_TRAILER_POINTS[10].tabletX
+                            : TUBE_TRAILER_POINTS[11].x -
+                              TUBE_TRAILER_POINTS[10].x,
                           2
-                        )
-                    ) * 0.35
-                  }%`,
-                  height: 3,
-                  background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
-                  borderRadius: '1.5px',
-                  transformOrigin: 'left center',
-                  transform: `translateY(-50%) rotate(${
-                    (Math.atan2(
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[10].mobileY -
-                            TUBE_TRAILER_POINTS[9].mobileY
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[10].tabletY -
-                          TUBE_TRAILER_POINTS[9].tabletY
-                        : TUBE_TRAILER_POINTS[10].y - TUBE_TRAILER_POINTS[9].y,
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[10].mobileX -
-                            TUBE_TRAILER_POINTS[9].mobileX
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[10].tabletX -
-                          TUBE_TRAILER_POINTS[9].tabletX
-                        : TUBE_TRAILER_POINTS[10].x - TUBE_TRAILER_POINTS[9].x
-                    ) *
-                      180) /
-                    Math.PI
-                  }deg)`,
-                  zIndex: 4,
-                  boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
-                  backgroundSize: '30px 3px',
-                  backgroundImage:
-                    'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
-                  backgroundRepeat: 'repeat-x',
-                  animation: 'current-flow 1s linear infinite',
-                }}
-              />
-
-              {/* 점11-12 전류선 */}
-              <div
-                style={{
-                  position: 'absolute',
-                  left: `${
-                    isMobile
-                      ? TUBE_TRAILER_POINTS[10].mobileX
-                      : isTablet
-                      ? TUBE_TRAILER_POINTS[10].tabletX
-                      : TUBE_TRAILER_POINTS[10].x
-                  }%`,
-                  top: `${
-                    isMobile
-                      ? TUBE_TRAILER_POINTS[10].mobileY
-                      : isTablet
-                      ? TUBE_TRAILER_POINTS[10].tabletY
-                      : TUBE_TRAILER_POINTS[10].y
-                  }%`,
-                  width: `${
-                    Math.sqrt(
-                      Math.pow(
+                        ) +
+                          Math.pow(
+                            isMobile
+                              ? TUBE_TRAILER_POINTS[11].mobileY -
+                                  TUBE_TRAILER_POINTS[10].mobileY
+                              : isTablet
+                              ? TUBE_TRAILER_POINTS[11].tabletY -
+                                TUBE_TRAILER_POINTS[10].tabletY
+                              : TUBE_TRAILER_POINTS[11].y -
+                                TUBE_TRAILER_POINTS[10].y,
+                            2
+                          )
+                      ) * 0.95
+                    }%`,
+                    height: 3,
+                    background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
+                    borderRadius: '1.5px',
+                    transformOrigin: 'left center',
+                    transform: `translateY(-50%) rotate(${
+                      (Math.atan2(
+                        isMobile
+                          ? TUBE_TRAILER_POINTS[11].mobileY -
+                              TUBE_TRAILER_POINTS[10].mobileY
+                          : isTablet
+                          ? TUBE_TRAILER_POINTS[11].tabletY -
+                            TUBE_TRAILER_POINTS[10].tabletY
+                          : TUBE_TRAILER_POINTS[11].y -
+                            TUBE_TRAILER_POINTS[10].y,
                         isMobile
                           ? TUBE_TRAILER_POINTS[11].mobileX -
                               TUBE_TRAILER_POINTS[10].mobileX
@@ -1208,77 +1256,79 @@ const TubeTrailerPage = () => {
                           ? TUBE_TRAILER_POINTS[11].tabletX -
                             TUBE_TRAILER_POINTS[10].tabletX
                           : TUBE_TRAILER_POINTS[11].x -
-                            TUBE_TRAILER_POINTS[10].x,
-                        2
-                      ) +
+                            TUBE_TRAILER_POINTS[10].x
+                      ) *
+                        180) /
+                      Math.PI
+                    }deg)`,
+                    zIndex: 4,
+                    boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
+                    backgroundSize: '30px 3px',
+                    backgroundImage:
+                      'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
+                    backgroundRepeat: 'repeat-x',
+                    animation: 'current-flow 1s linear infinite',
+                  }}
+                />
+
+                {/* 점12-13 전류선 */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: `${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[11].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[11].tabletX
+                        : TUBE_TRAILER_POINTS[11].x
+                    }%`,
+                    top: `${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[11].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[11].tabletY
+                        : TUBE_TRAILER_POINTS[11].y
+                    }%`,
+                    width: `${
+                      Math.sqrt(
                         Math.pow(
                           isMobile
-                            ? TUBE_TRAILER_POINTS[11].mobileY -
-                                TUBE_TRAILER_POINTS[10].mobileY
+                            ? TUBE_TRAILER_POINTS[12].mobileX -
+                                TUBE_TRAILER_POINTS[11].mobileX
                             : isTablet
-                            ? TUBE_TRAILER_POINTS[11].tabletY -
-                              TUBE_TRAILER_POINTS[10].tabletY
-                            : TUBE_TRAILER_POINTS[11].y -
-                              TUBE_TRAILER_POINTS[10].y,
+                            ? TUBE_TRAILER_POINTS[12].tabletX -
+                              TUBE_TRAILER_POINTS[11].tabletX
+                            : TUBE_TRAILER_POINTS[12].x -
+                              TUBE_TRAILER_POINTS[11].x,
                           2
-                        )
-                    ) * 0.95
-                  }%`,
-                  height: 3,
-                  background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
-                  borderRadius: '1.5px',
-                  transformOrigin: 'left center',
-                  transform: `translateY(-50%) rotate(${
-                    (Math.atan2(
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[11].mobileY -
-                            TUBE_TRAILER_POINTS[10].mobileY
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[11].tabletY -
-                          TUBE_TRAILER_POINTS[10].tabletY
-                        : TUBE_TRAILER_POINTS[11].y - TUBE_TRAILER_POINTS[10].y,
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[11].mobileX -
-                            TUBE_TRAILER_POINTS[10].mobileX
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[11].tabletX -
-                          TUBE_TRAILER_POINTS[10].tabletX
-                        : TUBE_TRAILER_POINTS[11].x - TUBE_TRAILER_POINTS[10].x
-                    ) *
-                      180) /
-                    Math.PI
-                  }deg)`,
-                  zIndex: 4,
-                  boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
-                  backgroundSize: '30px 3px',
-                  backgroundImage:
-                    'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
-                  backgroundRepeat: 'repeat-x',
-                  animation: 'current-flow 1s linear infinite',
-                }}
-              />
-
-              {/* 점12-13 전류선 */}
-              <div
-                style={{
-                  position: 'absolute',
-                  left: `${
-                    isMobile
-                      ? TUBE_TRAILER_POINTS[11].mobileX
-                      : isTablet
-                      ? TUBE_TRAILER_POINTS[11].tabletX
-                      : TUBE_TRAILER_POINTS[11].x
-                  }%`,
-                  top: `${
-                    isMobile
-                      ? TUBE_TRAILER_POINTS[11].mobileY
-                      : isTablet
-                      ? TUBE_TRAILER_POINTS[11].tabletY
-                      : TUBE_TRAILER_POINTS[11].y
-                  }%`,
-                  width: `${
-                    Math.sqrt(
-                      Math.pow(
+                        ) +
+                          Math.pow(
+                            isMobile
+                              ? TUBE_TRAILER_POINTS[12].mobileY -
+                                  TUBE_TRAILER_POINTS[11].mobileY
+                              : isTablet
+                              ? TUBE_TRAILER_POINTS[12].tabletY -
+                                TUBE_TRAILER_POINTS[11].tabletY
+                              : TUBE_TRAILER_POINTS[12].y -
+                                TUBE_TRAILER_POINTS[11].y,
+                            2
+                          )
+                      ) * 0.35
+                    }%`,
+                    height: 3,
+                    background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
+                    borderRadius: '1.5px',
+                    transformOrigin: 'left center',
+                    transform: `translateY(-50%) rotate(${
+                      (Math.atan2(
+                        isMobile
+                          ? TUBE_TRAILER_POINTS[12].mobileY -
+                              TUBE_TRAILER_POINTS[11].mobileY
+                          : isTablet
+                          ? TUBE_TRAILER_POINTS[12].tabletY -
+                            TUBE_TRAILER_POINTS[11].tabletY
+                          : TUBE_TRAILER_POINTS[12].y -
+                            TUBE_TRAILER_POINTS[11].y,
                         isMobile
                           ? TUBE_TRAILER_POINTS[12].mobileX -
                               TUBE_TRAILER_POINTS[11].mobileX
@@ -1286,77 +1336,79 @@ const TubeTrailerPage = () => {
                           ? TUBE_TRAILER_POINTS[12].tabletX -
                             TUBE_TRAILER_POINTS[11].tabletX
                           : TUBE_TRAILER_POINTS[12].x -
-                            TUBE_TRAILER_POINTS[11].x,
-                        2
-                      ) +
+                            TUBE_TRAILER_POINTS[11].x
+                      ) *
+                        180) /
+                      Math.PI
+                    }deg)`,
+                    zIndex: 4,
+                    boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
+                    backgroundSize: '30px 3px',
+                    backgroundImage:
+                      'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
+                    backgroundRepeat: 'repeat-x',
+                    animation: 'current-flow 1s linear infinite',
+                  }}
+                />
+
+                {/* 점13-14 전류선 */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: `${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[12].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[12].tabletX
+                        : TUBE_TRAILER_POINTS[12].x
+                    }%`,
+                    top: `${
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[12].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[12].tabletY
+                        : TUBE_TRAILER_POINTS[12].y
+                    }%`,
+                    width: `${
+                      Math.sqrt(
                         Math.pow(
                           isMobile
-                            ? TUBE_TRAILER_POINTS[12].mobileY -
-                                TUBE_TRAILER_POINTS[11].mobileY
+                            ? TUBE_TRAILER_POINTS[13].mobileX -
+                                TUBE_TRAILER_POINTS[12].mobileX
                             : isTablet
-                            ? TUBE_TRAILER_POINTS[12].tabletY -
-                              TUBE_TRAILER_POINTS[11].tabletY
-                            : TUBE_TRAILER_POINTS[12].y -
-                              TUBE_TRAILER_POINTS[11].y,
+                            ? TUBE_TRAILER_POINTS[13].tabletX -
+                              TUBE_TRAILER_POINTS[12].tabletX
+                            : TUBE_TRAILER_POINTS[13].x -
+                              TUBE_TRAILER_POINTS[12].x,
                           2
-                        )
-                    ) * 0.35
-                  }%`,
-                  height: 3,
-                  background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
-                  borderRadius: '1.5px',
-                  transformOrigin: 'left center',
-                  transform: `translateY(-50%) rotate(${
-                    (Math.atan2(
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[12].mobileY -
-                            TUBE_TRAILER_POINTS[11].mobileY
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[12].tabletY -
-                          TUBE_TRAILER_POINTS[11].tabletY
-                        : TUBE_TRAILER_POINTS[12].y - TUBE_TRAILER_POINTS[11].y,
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[12].mobileX -
-                            TUBE_TRAILER_POINTS[11].mobileX
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[12].tabletX -
-                          TUBE_TRAILER_POINTS[11].tabletX
-                        : TUBE_TRAILER_POINTS[12].x - TUBE_TRAILER_POINTS[11].x
-                    ) *
-                      180) /
-                    Math.PI
-                  }deg)`,
-                  zIndex: 4,
-                  boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
-                  backgroundSize: '30px 3px',
-                  backgroundImage:
-                    'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
-                  backgroundRepeat: 'repeat-x',
-                  animation: 'current-flow 1s linear infinite',
-                }}
-              />
-
-              {/* 점13-14 전류선 */}
-              <div
-                style={{
-                  position: 'absolute',
-                  left: `${
-                    isMobile
-                      ? TUBE_TRAILER_POINTS[12].mobileX
-                      : isTablet
-                      ? TUBE_TRAILER_POINTS[12].tabletX
-                      : TUBE_TRAILER_POINTS[12].x
-                  }%`,
-                  top: `${
-                    isMobile
-                      ? TUBE_TRAILER_POINTS[12].mobileY
-                      : isTablet
-                      ? TUBE_TRAILER_POINTS[12].tabletY
-                      : TUBE_TRAILER_POINTS[12].y
-                  }%`,
-                  width: `${
-                    Math.sqrt(
-                      Math.pow(
+                        ) +
+                          Math.pow(
+                            isMobile
+                              ? TUBE_TRAILER_POINTS[13].mobileY -
+                                  TUBE_TRAILER_POINTS[12].mobileY
+                              : isTablet
+                              ? TUBE_TRAILER_POINTS[13].tabletY -
+                                TUBE_TRAILER_POINTS[12].tabletY
+                              : TUBE_TRAILER_POINTS[13].y -
+                                TUBE_TRAILER_POINTS[12].y,
+                            2
+                          )
+                      ) * 1.0
+                    }%`,
+                    height: 3,
+                    background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
+                    borderRadius: '1.5px',
+                    transformOrigin: 'left center',
+                    transform: `translateY(-50%) rotate(${
+                      (Math.atan2(
+                        isMobile
+                          ? TUBE_TRAILER_POINTS[13].mobileY -
+                              TUBE_TRAILER_POINTS[12].mobileY
+                          : isTablet
+                          ? TUBE_TRAILER_POINTS[13].tabletY -
+                            TUBE_TRAILER_POINTS[12].tabletY
+                          : TUBE_TRAILER_POINTS[13].y -
+                            TUBE_TRAILER_POINTS[12].y,
                         isMobile
                           ? TUBE_TRAILER_POINTS[13].mobileX -
                               TUBE_TRAILER_POINTS[12].mobileX
@@ -1364,294 +1416,260 @@ const TubeTrailerPage = () => {
                           ? TUBE_TRAILER_POINTS[13].tabletX -
                             TUBE_TRAILER_POINTS[12].tabletX
                           : TUBE_TRAILER_POINTS[13].x -
-                            TUBE_TRAILER_POINTS[12].x,
-                        2
-                      ) +
-                        Math.pow(
-                          isMobile
-                            ? TUBE_TRAILER_POINTS[13].mobileY -
-                                TUBE_TRAILER_POINTS[12].mobileY
-                            : isTablet
-                            ? TUBE_TRAILER_POINTS[13].tabletY -
-                              TUBE_TRAILER_POINTS[12].tabletY
-                            : TUBE_TRAILER_POINTS[13].y -
-                              TUBE_TRAILER_POINTS[12].y,
-                          2
-                        )
-                    ) * 1.0
-                  }%`,
-                  height: 3,
-                  background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
-                  borderRadius: '1.5px',
-                  transformOrigin: 'left center',
-                  transform: `translateY(-50%) rotate(${
-                    (Math.atan2(
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[13].mobileY -
-                            TUBE_TRAILER_POINTS[12].mobileY
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[13].tabletY -
-                          TUBE_TRAILER_POINTS[12].tabletY
-                        : TUBE_TRAILER_POINTS[13].y - TUBE_TRAILER_POINTS[12].y,
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[13].mobileX -
-                            TUBE_TRAILER_POINTS[12].mobileX
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[13].tabletX -
-                          TUBE_TRAILER_POINTS[12].tabletX
-                        : TUBE_TRAILER_POINTS[13].x - TUBE_TRAILER_POINTS[12].x
-                    ) *
-                      180) /
-                    Math.PI
-                  }deg)`,
-                  zIndex: 4,
-                  boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
-                  backgroundSize: '30px 3px',
-                  backgroundImage:
-                    'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
-                  backgroundRepeat: 'repeat-x',
-                  animation: 'current-flow 1s linear infinite',
-                }}
-              />
+                            TUBE_TRAILER_POINTS[12].x
+                      ) *
+                        180) /
+                      Math.PI
+                    }deg)`,
+                    zIndex: 4,
+                    boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
+                    backgroundSize: '30px 3px',
+                    backgroundImage:
+                      'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
+                    backgroundRepeat: 'repeat-x',
+                    animation: 'current-flow 1s linear infinite',
+                  }}
+                />
 
-              <style>{`
-                @keyframes point-pulse {
-                  0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-                  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
-                  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-                }
-                @keyframes current-flow {
-                  0% { background-position: 0 0; }
-                  100% { background-position: 30px 0; }
-                }
-                
-                @media (max-width: 768px) {
+                <style>{`
+                  @keyframes point-pulse {
+                    0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+                    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+                    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+                  }
                   @keyframes current-flow {
                     0% { background-position: 0 0; }
-                    100% { background-position: 20px 0; }
+                    100% { background-position: 30px 0; }
                   }
-                }
-                
-                .current-line {
-                  position: absolute;
-                  height: 3px;
-                  background: linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%);
-                  border-radius: 1.5px;
-                  transform-origin: left center;
-                  z-index: 4;
-                  box-shadow: 0 0 10px #00f6ff, 0 0 20px #00f6ff;
-                  background-size: 30px 3px;
-                  background-image: linear-gradient(90deg, #00f6ff 50%, transparent 50%);
-                  background-repeat: repeat-x;
-                  animation: current-flow 1s linear infinite;
-                }
-                
-                @media (max-width: 768px) {
+                  
+                  @media (max-width: 768px) {
+                    @keyframes current-flow {
+                      0% { background-position: 0 0; }
+                      100% { background-position: 20px 0; }
+                    }
+                  }
+                  
                   .current-line {
-                    height: 2px;
-                    background-size: 20px 2px;
-                    min-width: 5px;
+                    position: absolute;
+                    height: 3px;
+                    background: linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%);
+                    border-radius: 1.5px;
+                    transform-origin: left center;
+                    z-index: 4;
+                    box-shadow: 0 0 10px #00f6ff, 0 0 20px #00f6ff;
+                    background-size: 30px 3px;
+                    background-image: linear-gradient(90deg, #00f6ff 50%, transparent 50%);
+                    background-repeat: repeat-x;
+                    animation: current-flow 1s linear infinite;
                   }
-                }
+                  
+                  @media (max-width: 768px) {
+                    .current-line {
+                      height: 2px;
+                      background-size: 20px 2px;
+                      min-width: 5px;
+                    }
+                  }
 
-                
+                  
 
-              `}</style>
+                `}</style>
 
-              {/* 이미지 컨테이너 중앙에 와이파이 데이터 전송 효과 */}
-              <div
-                style={{
-                  position: 'absolute',
-                  left: isMobile
-                    ? '58%'
-                    : isTablet
-                    ? '56%'
-                    : `${(544 / 828) * 100}%`,
-                  top: isMobile
-                    ? '62%'
-                    : isTablet
-                    ? '60%'
-                    : `${(486 / 672) * 100}%`,
-                  transform: 'translate(-50%, -50%)',
-                  width: isMobile ? 80 : isTablet ? 100 : 120,
-                  height: isMobile ? 80 : isTablet ? 100 : 120,
-                  pointerEvents: 'none',
-                  zIndex: 10,
-                }}
-              >
-                <svg
-                  width="100%"
-                  height="100%"
-                  viewBox="0 0 120 120"
-                  style={{ position: 'absolute', left: 0, top: 0 }}
+                {/* 이미지 컨테이너 중앙에 와이파이 데이터 전송 효과 */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: isMobile
+                      ? '58%'
+                      : isTablet
+                      ? '56%'
+                      : `${(544 / 828) * 100}%`,
+                    top: isMobile
+                      ? '62%'
+                      : isTablet
+                      ? '60%'
+                      : `${(486 / 672) * 100}%`,
+                    transform: 'translate(-50%, -50%)',
+                    width: isMobile ? 80 : isTablet ? 100 : 120,
+                    height: isMobile ? 80 : isTablet ? 100 : 120,
+                    pointerEvents: 'none',
+                    zIndex: 10,
+                  }}
                 >
-                  {/* 퍼지는 원형 파동 */}
-                  <circle
-                    cx="60"
-                    cy="60"
-                    r="24"
-                    fill="none"
-                    stroke="#ff6f00"
-                    strokeWidth="2"
-                    opacity="0.7"
+                  <svg
+                    width="100%"
+                    height="100%"
+                    viewBox="0 0 120 120"
+                    style={{ position: 'absolute', left: 0, top: 0 }}
                   >
-                    <animate
-                      attributeName="r"
-                      from="24"
-                      to="56"
-                      dur="1.5s"
-                      repeatCount="indefinite"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      from="0.7"
-                      to="0"
-                      dur="1.5s"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                  <circle
-                    cx="60"
-                    cy="60"
-                    r="36"
-                    fill="none"
-                    stroke="#ff6f00"
-                    strokeWidth="2"
-                    opacity="0.5"
-                  >
-                    <animate
-                      attributeName="r"
-                      from="36"
-                      to="70"
-                      dur="1.5s"
-                      begin="0.5s"
-                      repeatCount="indefinite"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      from="0.5"
-                      to="0"
-                      dur="1.5s"
-                      begin="0.5s"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                  {/* WiFi 아이콘 */}
-                  <g>
-                    <path
-                      d="M45 70 Q60 55 75 70"
-                      stroke="#ff6f00"
-                      strokeWidth="3"
+                    {/* 퍼지는 원형 파동 */}
+                    <circle
+                      cx="60"
+                      cy="60"
+                      r="24"
                       fill="none"
-                    />
-                    <path
-                      d="M50 75 Q60 65 70 75"
                       stroke="#ff6f00"
                       strokeWidth="2"
+                      opacity="0.7"
+                    >
+                      <animate
+                        attributeName="r"
+                        from="24"
+                        to="56"
+                        dur="1.5s"
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="opacity"
+                        from="0.7"
+                        to="0"
+                        dur="1.5s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                    <circle
+                      cx="60"
+                      cy="60"
+                      r="36"
                       fill="none"
-                    />
-                    <circle cx="60" cy="80" r="3.5" fill="#ff6f00" />
-                  </g>
-                </svg>
-              </div>
-              {/* 새로운 위치의 와이파이 데이터 전송 효과 */}
-              <div
-                style={{
-                  position: 'absolute',
-                  left: isMobile
-                    ? '25%'
-                    : isTablet
-                    ? '20%'
-                    : `${(112 / 828) * 100}%`,
-                  top: isMobile
-                    ? '35%'
-                    : isTablet
-                    ? '30%'
-                    : `${(170 / 672) * 100}%`,
-                  transform: 'translate(-50%, -50%)',
-                  width: isMobile ? 80 : isTablet ? 100 : 120,
-                  height: isMobile ? 80 : isTablet ? 100 : 120,
-                  pointerEvents: 'none',
-                  zIndex: 10,
-                }}
-              >
-                <svg
-                  width="100%"
-                  height="100%"
-                  viewBox="0 0 120 120"
-                  style={{ position: 'absolute', left: 0, top: 0 }}
-                >
-                  {/* 퍼지는 원형 파동 */}
-                  <circle
-                    cx="60"
-                    cy="60"
-                    r="24"
-                    fill="none"
-                    stroke="#ff6f00"
-                    strokeWidth="2"
-                    opacity="0.7"
-                  >
-                    <animate
-                      attributeName="r"
-                      from="24"
-                      to="56"
-                      dur="1.5s"
-                      repeatCount="indefinite"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      from="0.7"
-                      to="0"
-                      dur="1.5s"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                  <circle
-                    cx="60"
-                    cy="60"
-                    r="36"
-                    fill="none"
-                    stroke="#ff6f00"
-                    strokeWidth="2"
-                    opacity="0.5"
-                  >
-                    <animate
-                      attributeName="r"
-                      from="36"
-                      to="70"
-                      dur="1.5s"
-                      begin="0.5s"
-                      repeatCount="indefinite"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      from="0.5"
-                      to="0"
-                      dur="1.5s"
-                      begin="0.5s"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                  {/* WiFi 아이콘 */}
-                  <g>
-                    <path
-                      d="M45 70 Q60 55 75 70"
-                      stroke="#ff6f00"
-                      strokeWidth="3"
-                      fill="none"
-                    />
-                    <path
-                      d="M50 75 Q60 65 70 75"
                       stroke="#ff6f00"
                       strokeWidth="2"
+                      opacity="0.5"
+                    >
+                      <animate
+                        attributeName="r"
+                        from="36"
+                        to="70"
+                        dur="1.5s"
+                        begin="0.5s"
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="opacity"
+                        from="0.5"
+                        to="0"
+                        dur="1.5s"
+                        begin="0.5s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                    {/* WiFi 아이콘 */}
+                    <g>
+                      <path
+                        d="M45 70 Q60 55 75 70"
+                        stroke="#ff6f00"
+                        strokeWidth="3"
+                        fill="none"
+                      />
+                      <path
+                        d="M50 75 Q60 65 70 75"
+                        stroke="#ff6f00"
+                        strokeWidth="2"
+                        fill="none"
+                      />
+                      <circle cx="60" cy="80" r="3.5" fill="#ff6f00" />
+                    </g>
+                  </svg>
+                </div>
+                {/* 새로운 위치의 와이파이 데이터 전송 효과 */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: isMobile
+                      ? '25%'
+                      : isTablet
+                      ? '20%'
+                      : `${(112 / 828) * 100}%`,
+                    top: isMobile
+                      ? '35%'
+                      : isTablet
+                      ? '30%'
+                      : `${(170 / 672) * 100}%`,
+                    transform: 'translate(-50%, -50%)',
+                    width: isMobile ? 80 : isTablet ? 100 : 120,
+                    height: isMobile ? 80 : isTablet ? 100 : 120,
+                    pointerEvents: 'none',
+                    zIndex: 10,
+                  }}
+                >
+                  <svg
+                    width="100%"
+                    height="100%"
+                    viewBox="0 0 120 120"
+                    style={{ position: 'absolute', left: 0, top: 0 }}
+                  >
+                    {/* 퍼지는 원형 파동 */}
+                    <circle
+                      cx="60"
+                      cy="60"
+                      r="24"
                       fill="none"
-                    />
-                    <circle cx="60" cy="80" r="3.5" fill="#ff6f00" />
-                  </g>
-                </svg>
+                      stroke="#ff6f00"
+                      strokeWidth="2"
+                      opacity="0.7"
+                    >
+                      <animate
+                        attributeName="r"
+                        from="24"
+                        to="56"
+                        dur="1.5s"
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="opacity"
+                        from="0.7"
+                        to="0"
+                        dur="1.5s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                    <circle
+                      cx="60"
+                      cy="60"
+                      r="36"
+                      fill="none"
+                      stroke="#ff6f00"
+                      strokeWidth="2"
+                      opacity="0.5"
+                    >
+                      <animate
+                        attributeName="r"
+                        from="36"
+                        to="70"
+                        dur="1.5s"
+                        begin="0.5s"
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="opacity"
+                        from="0.5"
+                        to="0"
+                        dur="1.5s"
+                        begin="0.5s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                    {/* WiFi 아이콘 */}
+                    <g>
+                      <path
+                        d="M45 70 Q60 55 75 70"
+                        stroke="#ff6f00"
+                        strokeWidth="3"
+                        fill="none"
+                      />
+                      <path
+                        d="M50 75 Q60 65 70 75"
+                        stroke="#ff6f00"
+                        strokeWidth="2"
+                        fill="none"
+                      />
+                      <circle cx="60" cy="80" r="3.5" fill="#ff6f00" />
+                    </g>
+                  </svg>
+                </div>
               </div>
-            </div>
-          </TubeTrailerBottomContainer>
+            </TubeTrailerBottomContainer>
+          )}
         </ColumnContainer>
         <TubeTrailerInfoContainer>
           <TubeTrailerMap

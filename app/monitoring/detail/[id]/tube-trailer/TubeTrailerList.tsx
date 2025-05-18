@@ -215,22 +215,32 @@ const TubeTrailerList: React.FC<TubeTrailerListProps> = ({
                 )}
                 <div
                   style={{
-                    fontSize: '0.9em',
+                    fontSize: isMobile
+                      ? '0.85em'
+                      : isTablet
+                      ? '0.9em'
+                      : '0.9em',
                     color: '#64748b',
                     display: 'flex',
                     flexDirection: 'column',
+                    maxWidth: '100%',
+                    overflow: 'hidden',
                   }}
                 >
-                  <div>
+                  <div style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
                     위도:{' '}
                     {isMobile
                       ? Number(tube.lat).toFixed(4)
+                      : isTablet
+                      ? Number(tube.lat).toFixed(5)
                       : tube.lat.toFixed(6)}
                   </div>
-                  <div>
+                  <div style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
                     경도:{' '}
                     {isMobile
                       ? Number(tube.lng).toFixed(4)
+                      : isTablet
+                      ? Number(tube.lng).toFixed(5)
                       : tube.lng.toFixed(6)}
                   </div>
                 </div>
@@ -429,7 +439,8 @@ const TubeListHeader = styled.div<{ $isMobile?: boolean; $isTablet?: boolean }>`
       : props.$isTablet
       ? 'repeat(5, 1fr)'
       : 'repeat(8, 1fr)'};
-  column-gap: ${(props) => (props.$isMobile ? '10px' : '30px')};
+  column-gap: ${(props) =>
+    props.$isMobile ? '8px' : props.$isTablet ? '12px' : '20px'};
   font-size: ${(props) => (props.$isMobile ? '12px' : '14px')};
   font-weight: 500;
   color: #64748b;
@@ -445,10 +456,18 @@ const TubeListHeader = styled.div<{ $isMobile?: boolean; $isTablet?: boolean }>`
     justify-content: center;
     align-items: center;
     white-space: nowrap;
-    min-width: ${(props) => (props.$isMobile ? '50px' : '80px')};
+    min-width: ${(props) => (props.$isMobile ? '40px' : '50px')};
 
     & > div {
       display: inline-flex;
+    }
+  }
+
+  @media (min-width: 769px) and (max-width: 1366px) {
+    column-gap: 10px;
+    padding: 14px 16px;
+    & > div {
+      min-width: 40px;
     }
   }
 `;
@@ -475,6 +494,12 @@ const CarNumberCell = styled.div<{ $backgroundColor: string }>`
     padding: 4px 8px;
     min-width: 40px;
   }
+
+  @media (min-width: 769px) and (max-width: 1366px) {
+    padding: 4px 8px;
+    min-width: 50px;
+    font-size: 0.9em;
+  }
 `;
 const TubeListItem = styled.div<{
   $isSelected?: boolean;
@@ -488,7 +513,8 @@ const TubeListItem = styled.div<{
       : props.$isTablet
       ? 'repeat(5, 1fr)'
       : 'repeat(8, 1fr)'};
-  column-gap: ${(props) => (props.$isMobile ? '10px' : '30px')};
+  column-gap: ${(props) =>
+    props.$isMobile ? '8px' : props.$isTablet ? '12px' : '20px'};
   align-items: center;
   font-size: ${(props) => (props.$isMobile ? '12px' : '14px')};
   color: #222;
@@ -514,10 +540,18 @@ const TubeListItem = styled.div<{
     justify-content: center;
     align-items: center;
     white-space: nowrap;
-    min-width: ${(props) => (props.$isMobile ? '50px' : '80px')};
+    min-width: ${(props) => (props.$isMobile ? '40px' : '50px')};
 
     & > div {
       display: inline-flex;
+    }
+  }
+
+  @media (min-width: 769px) and (max-width: 1366px) {
+    column-gap: 10px;
+    padding: 14px 16px;
+    & > div {
+      min-width: 40px;
     }
   }
 `;
@@ -568,6 +602,12 @@ const StatusWrapper = styled.div<{ $status: string }>`
       left: 150%;
       opacity: 0;
     }
+  }
+
+  @media (min-width: 769px) and (max-width: 1366px) {
+    gap: 8px;
+    padding: 3px 5px;
+    font-size: 0.9em;
   }
 `;
 
@@ -620,6 +660,10 @@ const StatusLabel = styled.span<{ $status: string }>`
   }};
   position: relative;
   z-index: 1;
+
+  @media (min-width: 769px) and (max-width: 1366px) {
+    font-size: 12px;
+  }
 `;
 
 // 팝업 내용 반응형 컨테이너

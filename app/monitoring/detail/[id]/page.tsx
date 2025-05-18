@@ -68,6 +68,7 @@ import {
   FilterMenuItem,
   PopupButton,
   GraphStatsBar,
+  VibrationSettingButton,
 } from './styles';
 import { colors } from '@/app/styles/colors';
 import { ChevronDown } from 'lucide-react';
@@ -1629,37 +1630,13 @@ function DetailPageContent({
             <MainMenu>
               <ThemeToggleButton />
               {/* 진동값보기 버튼을 모드전환과 홈버튼 사이에 위치 */}
-              <button
-                style={{
-                  margin: '0 12px',
-                  padding: '8px 16px',
-                  background: 'transparent',
-                  border: 'none',
-                  color: document.documentElement.classList.contains('dark')
-                    ? 'rgba(255,255,255,0.7)'
-                    : '#475569',
-                  fontFamily: 'Pretendard',
-                  fontSize: 15,
-                  fontWeight: 400,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  transition: 'all 0.2s',
-                }}
+              <VibrationSettingButton
                 onClick={() => setShowVibrationThresholdModal(true)}
-                onMouseOver={(e) => {
-                  const isDark =
-                    document.documentElement.classList.contains('dark');
-                  e.currentTarget.style.color = isDark ? '#fff' : '#2563eb';
-                }}
-                onMouseOut={(e) => {
-                  const isDark =
-                    document.documentElement.classList.contains('dark');
-                  e.currentTarget.style.color = isDark
-                    ? 'rgba(255,255,255,0.7)'
-                    : '#475569';
-                }}
+                theme={
+                  document.documentElement.classList.contains('dark')
+                    ? 'dark'
+                    : 'light'
+                }
               >
                 {/* 경고+설정 아이콘 */}
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -1689,7 +1666,7 @@ function DetailPageContent({
                   </g>
                 </svg>
                 진동값설정
-              </button>
+              </VibrationSettingButton>
               {/* 경고 로그 버튼 추가 */}
               <LogButton as="button" onClick={() => setIsLogOpen(true)}>
                 <svg

@@ -341,9 +341,20 @@ export const MainMenu = styled.div`
   border: none;
   border-radius: 0;
   box-shadow: none;
+  white-space: nowrap;
 
   html.dark & {
     background: ${colors.theme.dark.surface};
+  }
+
+  @media (max-width: 1366px) {
+    gap: 10px;
+    font-size: 14px;
+  }
+
+  @media (max-width: 1024px) {
+    gap: 8px;
+    font-size: 13px;
   }
 
   @media (max-width: 768px) {
@@ -373,6 +384,7 @@ export const NavLinkStyle = styled.a<{ active?: boolean }>`
       active ? 'rgba(96, 165, 250, 0.18)' : 'transparent'};
     border: 1px solid ${colors.theme.light.border};
     backdrop-filter: blur(8px);
+    white-space: nowrap;
 
     &:hover {
       color: #2563eb;
@@ -408,6 +420,28 @@ export const NavLinkStyle = styled.a<{ active?: boolean }>`
         svg {
           color: #ffffff;
         }
+      }
+    }
+
+    @media (max-width: 1366px) {
+      font-size: 14px;
+      padding: 6px 12px;
+      gap: 4px;
+
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      font-size: 13px;
+      padding: 5px 10px;
+      gap: 3px;
+
+      svg {
+        width: 15px;
+        height: 15px;
       }
     }
   }
@@ -1479,40 +1513,30 @@ export const Subtitle = styled.p`
 `;
 
 export const UpdateTime = styled.div`
-  font-family: 'Pretendard';
+  padding: 10px 16px;
+  background: #e7ecf4;
+  color: #4b5563;
   font-size: 14px;
-  color: #2563eb;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: #e0ecff;
-  padding: 8px 16px;
+  font-weight: 500;
   border-radius: 8px;
-  backdrop-filter: blur(8px);
-  border: 1px solid #bae6fd;
-
-  &:before {
-    content: '';
-    display: block;
-    width: 6px;
-    height: 6px;
-    background: #60a5fa;
-    border-radius: 50%;
-    box-shadow: 0 0 12px #bae6fd;
-  }
+  margin-left: 8px;
+  white-space: nowrap;
 
   html.dark & {
-    color: rgba(255, 255, 255, 0.9);
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    &:before {
-      background: #ffffff;
-      box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
-    }
+    background: #1f2937;
+    color: #cbd5e1;
   }
 
-  @media (max-width: 768px) {
-    display: none;
+  @media (max-width: 1366px) {
+    font-size: 13px;
+    padding: 8px 12px;
+    margin-left: 6px;
+  }
+
+  @media (max-width: 1024px) {
+    font-size: 12px;
+    padding: 6px 10px;
+    margin-left: 4px;
   }
 `;
 
@@ -1769,25 +1793,45 @@ export const SensorTooltip = styled.div<{
 
 export const LogButton = styled(NavLinkStyle)`
   && {
-    svg {
-      color: ${({ active }) =>
-        active ? '#2563eb' : colors.theme.light.text.secondary};
-    }
+    background: linear-gradient(90deg, #ef4444 0%, #f87171 100%);
+    color: white;
+    border: none;
+    font-weight: 600;
+
     &:hover {
+      color: white;
+      background: linear-gradient(90deg, #dc2626 0%, #ef4444 100%);
       svg {
-        color: #2563eb;
+        color: white;
       }
     }
+    svg {
+      color: white;
+    }
+
     html.dark & {
-      svg {
-        color: ${({ active }) =>
-          active ? '#ffffff' : 'rgba(255, 255, 255, 0.7)'};
-      }
+      background: linear-gradient(90deg, #ef4444 0%, #f87171 100%);
+      color: white;
       &:hover {
+        color: white;
+        background: linear-gradient(90deg, #dc2626 0%, #ef4444 100%);
         svg {
-          color: #ffffff;
+          color: white;
         }
       }
+      svg {
+        color: white;
+      }
+    }
+
+    @media (max-width: 1366px) {
+      font-size: 14px;
+      padding: 6px 12px;
+    }
+
+    @media (max-width: 1024px) {
+      font-size: 13px;
+      padding: 5px 10px;
     }
   }
 `;
@@ -1935,49 +1979,38 @@ export const LogItem = styled.div<{ severity: string }>`
   }
 `;
 
-export const BannerTitle = styled.div`
-  font-family: 'Pretendard';
-  font-size: 15px;
-  font-weight: 400;
-  color: ${colors.theme.light.text.primary};
-  padding: 8px 16px;
-  border-radius: 8px;
-  background: rgba(96, 165, 250, 0.15);
-  backdrop-filter: blur(8px);
-  border: 1px solid #bae6fd;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-left: 24px;
-  margin-right: auto;
-  &:before {
-    content: '';
-    display: block;
-    width: 6px;
-    height: 6px;
-    background: #60a5fa;
-    border-radius: 50%;
-    box-shadow: 0 0 12px #bae6fd;
+export const BannerTitle = styled.h1`
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+  color: #fff;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+
+  @media (max-width: 1366px) {
+    font-size: 20px;
   }
-  html.dark & {
-    color: rgba(255, 255, 255, 0.9);
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    &:before {
-      background: #ffffff;
-      box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
-    }
+
+  @media (max-width: 1024px) {
+    font-size: 18px;
   }
+
   @media (max-width: 768px) {
-    justify-content: center;
-    margin: 0 auto;
-    padding: 4px 8px;
-    font-size: 13px;
-    min-width: 0;
-    width: 100%;
-    border-radius: 6px;
-    &:before {
-      margin-right: 4px;
+    position: relative;
+    left: auto;
+    transform: none;
+    margin-bottom: 16px;
+    font-size: 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+
+    a {
+      margin-top: 8px;
     }
   }
 `;
@@ -1988,5 +2021,56 @@ export const RegisterPopup = styled(DetailedGraphPopup)`
     height: auto;
     max-width: 90vw;
     max-height: 80vh;
+  }
+`;
+
+export const VibrationSettingButton = styled.button`
+  margin: 0 12px;
+  padding: 8px 16px;
+  background: transparent;
+  border: none;
+  color: ${(props) =>
+    props.theme === 'dark' ? 'rgba(255,255,255,0.7)' : '#475569'};
+  font-family: 'Pretendard';
+  font-size: 15px;
+  font-weight: 400;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  white-space: nowrap;
+
+  &:hover {
+    color: ${(props) => (props.theme === 'dark' ? '#fff' : '#2563eb')};
+  }
+
+  @media (max-width: 1366px) {
+    font-size: 14px;
+    padding: 6px 12px;
+    margin: 0 8px;
+    gap: 4px;
+  }
+
+  @media (max-width: 1024px) {
+    font-size: 13px;
+    padding: 5px 10px;
+    margin: 0 6px;
+    gap: 3px;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+
+    @media (max-width: 1366px) {
+      width: 18px;
+      height: 18px;
+    }
+
+    @media (max-width: 1024px) {
+      width: 16px;
+      height: 16px;
+    }
   }
 `;

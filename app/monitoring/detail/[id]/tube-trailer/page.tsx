@@ -94,19 +94,22 @@ const TubeTrailerBottomContainer = styled.div`
   position: relative;
 
   @media (max-width: 768px) {
-    min-height: 120px;
+    min-height: 150px;
     aspect-ratio: 947 / 350;
-    max-height: 70vh;
+    max-height: 60vh;
     border-radius: 12px;
     margin-top: 8px;
+    width: 100%;
   }
 
   @media (min-width: 769px) and (max-width: 1024px) {
-    min-height: 150px;
+    min-height: 180px;
     aspect-ratio: 947 / 350;
     max-height: 65vh;
     border-radius: 14px;
     margin-top: 10px;
+    width: 100%;
+    transform-origin: center center;
   }
 
   /* CSS 변수로 컨테이너 크기에 따른 자동 스케일 계산 */
@@ -142,14 +145,14 @@ const TUBE_TRAILER_SENSORS = [
     name: '브레이크',
     width: 60,
     height: 60,
-    mobileX: 85,
-    mobileY: 65,
-    mobileWidth: 40,
-    mobileHeight: 40,
-    tabletX: 85,
-    tabletY: 65,
-    tabletWidth: 50,
-    tabletHeight: 50,
+    mobileX: 97,
+    mobileY: 66,
+    mobileWidth: 36,
+    mobileHeight: 36,
+    tabletX: 97,
+    tabletY: 66,
+    tabletWidth: 48,
+    tabletHeight: 48,
   },
   {
     id: 'gear',
@@ -190,14 +193,14 @@ const TUBE_TRAILER_SENSORS = [
     name: '수소',
     width: 60,
     height: 60,
-    mobileX: 85,
-    mobileY: 40,
-    mobileWidth: 40,
-    mobileHeight: 40,
-    tabletX: 85,
-    tabletY: 40,
-    tabletWidth: 50,
-    tabletHeight: 50,
+    mobileX: 97,
+    mobileY: 42,
+    mobileWidth: 36,
+    mobileHeight: 36,
+    tabletX: 97,
+    tabletY: 42,
+    tabletWidth: 48,
+    tabletHeight: 48,
   },
 ];
 
@@ -261,12 +264,138 @@ const TUBE_TRAILER_POINTS = [
     y: 78,
     radius: 3,
     color: '#00f6ff',
+    mobileX: 62,
+    mobileY: 78,
+    mobileRadius: 4,
+    tabletX: 62,
+    tabletY: 78,
+    tabletRadius: 5,
+  },
+  // 새로 추가하는 점 6
+  {
+    id: 'point6',
+    x: 95,
+    y: 64,
+    radius: 3,
+    color: '#00f6ff',
+    mobileX: 95,
+    mobileY: 64,
+    mobileRadius: 4,
+    tabletX: 95,
+    tabletY: 64,
+    tabletRadius: 5,
+  },
+  // 새로 추가하는 점 7
+  {
+    id: 'point7',
+    x: 90,
+    y: 64,
+    radius: 3,
+    color: '#00f6ff',
     mobileX: 90,
-    mobileY: 75,
-    mobileRadius: 5,
+    mobileY: 64,
+    mobileRadius: 4,
     tabletX: 90,
+    tabletY: 64,
+    tabletRadius: 5,
+  },
+  // 새로 추가하는 점 8
+  {
+    id: 'point8',
+    x: 90,
+    y: 78,
+    radius: 3,
+    color: '#00f6ff',
+    mobileX: 90,
+    mobileY: 78,
+    mobileRadius: 4,
+    tabletX: 90,
+    tabletY: 78,
+    tabletRadius: 5,
+  },
+  // 새로 추가하는 점 9
+  {
+    id: 'point9',
+    x: 68,
+    y: 78,
+    radius: 3,
+    color: '#00f6ff',
+    mobileX: 68,
+    mobileY: 78,
+    mobileRadius: 4,
+    tabletX: 68,
+    tabletY: 78,
+    tabletRadius: 5,
+  },
+  // 새로 추가하는 점 10
+  {
+    id: 'point10',
+    x: 96.8,
+    y: 45,
+    radius: 3,
+    color: '#00f6ff',
+    mobileX: 96.8,
+    mobileY: 45,
+    mobileRadius: 4,
+    tabletX: 96.8,
+    tabletY: 45,
+    tabletRadius: 5,
+  },
+  // 새로 추가하는 점 11
+  {
+    id: 'point11',
+    x: 96.8,
+    y: 58,
+    radius: 3,
+    color: '#00f6ff',
+    mobileX: 96.8,
+    mobileY: 58,
+    mobileRadius: 4,
+    tabletX: 96.8,
+    tabletY: 58,
+    tabletRadius: 5,
+  },
+  // 새로 추가하는 점 12
+  {
+    id: 'point12',
+    x: 88.5,
+    y: 58,
+    radius: 3,
+    color: '#00f6ff',
+    mobileX: 88.5,
+    mobileY: 58,
+    mobileRadius: 4,
+    tabletX: 88.5,
+    tabletY: 58,
+    tabletRadius: 5,
+  },
+  // 새로 추가하는 점 13
+  {
+    id: 'point13',
+    x: 88.5,
+    y: 75,
+    radius: 3,
+    color: '#00f6ff',
+    mobileX: 88.5,
+    mobileY: 75,
+    mobileRadius: 4,
+    tabletX: 88.5,
     tabletY: 75,
-    tabletRadius: 6,
+    tabletRadius: 5,
+  },
+  // 새로 추가하는 점 14
+  {
+    id: 'point14',
+    x: 68,
+    y: 75,
+    radius: 3,
+    color: '#00f6ff',
+    mobileX: 68,
+    mobileY: 75,
+    mobileRadius: 4,
+    tabletX: 68,
+    tabletY: 75,
+    tabletRadius: 5,
   },
 ];
 
@@ -327,6 +456,18 @@ const TubeTrailerPage = () => {
             background-position: -100% 0%;
           }
         }
+
+        @media (max-width: 768px) {
+          :root {
+            --scale-ratio: 0.7;
+          }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+          :root {
+            --scale-ratio: 0.85;
+          }
+        }
       `}</style>
       <TopBanner
         params={params}
@@ -362,6 +503,7 @@ const TubeTrailerPage = () => {
                 alignItems: 'center',
                 padding: 0,
                 overflow: 'hidden',
+                transformOrigin: 'center center',
               }}
             >
               <img
@@ -420,9 +562,16 @@ const TubeTrailerPage = () => {
                         pointerEvents: 'auto',
                         zIndex: 2,
                         transform: 'translate(-50%, -50%)',
+                        transformOrigin: 'center center',
                         filter:
                           'drop-shadow(0 0 12px #00f6ff) drop-shadow(0 0 24px #00f6ff)',
                         animation: 'icon-glow 1.2s ease-in-out infinite',
+                        maxWidth: isMobile
+                          ? '40px'
+                          : isTablet
+                          ? '50px'
+                          : '60px',
+                        objectFit: 'contain',
                       }}
                     />
                     <style>{`
@@ -517,9 +666,12 @@ const TubeTrailerPage = () => {
                       borderRadius: '50%',
                       backgroundColor: point.color,
                       transform: 'translate(-50%, -50%)',
+                      transformOrigin: 'center center',
                       zIndex: 5,
                       boxShadow: `0 0 10px ${point.color}, 0 0 20px ${point.color}`,
                       animation: 'point-pulse 1.5s ease-in-out infinite',
+                      minWidth: isMobile ? '4px' : '5px',
+                      minHeight: isMobile ? '4px' : '5px',
                     }}
                   />
                 );
@@ -527,8 +679,8 @@ const TubeTrailerPage = () => {
 
               {/* 새 전류 효과 구현 - 직접 div로 */}
               <div
+                className="current-line"
                 style={{
-                  position: 'absolute',
                   left: `${
                     isMobile
                       ? TUBE_TRAILER_POINTS[1].mobileX
@@ -554,7 +706,7 @@ const TubeTrailerPage = () => {
                   )}%`,
                   height: 3,
                   background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
-                  borderRadius: '2px',
+                  borderRadius: '1.5px',
                   transformOrigin: 'left center',
                   transform: `translateY(-50%) rotate(${
                     (Math.atan2(
@@ -577,7 +729,7 @@ const TubeTrailerPage = () => {
                     Math.PI
                   }deg)`,
                   zIndex: 4,
-                  boxShadow: '0 0 8px #00f6ff, 0 0 16px #00f6ff',
+                  boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
                   backgroundSize: '30px 3px',
                   backgroundImage:
                     'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
@@ -604,18 +756,34 @@ const TubeTrailerPage = () => {
                       ? TUBE_TRAILER_POINTS[2].tabletY
                       : TUBE_TRAILER_POINTS[2].y
                   }%`,
-                  width: `${Math.abs(
-                    isMobile
-                      ? TUBE_TRAILER_POINTS[3].mobileX -
-                          TUBE_TRAILER_POINTS[2].mobileX
-                      : isTablet
-                      ? TUBE_TRAILER_POINTS[3].tabletX -
-                        TUBE_TRAILER_POINTS[2].tabletX
-                      : TUBE_TRAILER_POINTS[3].x - TUBE_TRAILER_POINTS[2].x
-                  )}%`,
-                  height: 2,
+                  width: `${
+                    Math.sqrt(
+                      Math.pow(
+                        isMobile
+                          ? TUBE_TRAILER_POINTS[3].mobileX -
+                              TUBE_TRAILER_POINTS[2].mobileX
+                          : isTablet
+                          ? TUBE_TRAILER_POINTS[3].tabletX -
+                            TUBE_TRAILER_POINTS[2].tabletX
+                          : TUBE_TRAILER_POINTS[3].x - TUBE_TRAILER_POINTS[2].x,
+                        2
+                      ) +
+                        Math.pow(
+                          isMobile
+                            ? TUBE_TRAILER_POINTS[3].mobileY -
+                                TUBE_TRAILER_POINTS[2].mobileY
+                            : isTablet
+                            ? TUBE_TRAILER_POINTS[3].tabletY -
+                              TUBE_TRAILER_POINTS[2].tabletY
+                            : TUBE_TRAILER_POINTS[3].y -
+                              TUBE_TRAILER_POINTS[2].y,
+                          2
+                        )
+                    ) * 0.4
+                  }%`,
+                  height: 3,
                   background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
-                  borderRadius: '2px',
+                  borderRadius: '1.5px',
                   transformOrigin: 'left center',
                   transform: `translateY(-50%) rotate(${
                     (Math.atan2(
@@ -638,12 +806,13 @@ const TubeTrailerPage = () => {
                     Math.PI
                   }deg)`,
                   zIndex: 4,
-                  boxShadow: '0 0 8px #00f6ff, 0 0 16px #00f6ff',
-                  backgroundSize: '20px 2px',
+                  boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
+                  backgroundSize: isMobile ? '20px 2px' : '30px 3px',
                   backgroundImage:
                     'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
                   backgroundRepeat: 'repeat-x',
-                  animation: 'current-flow 1.2s linear infinite',
+                  animation: 'current-flow 1s linear infinite',
+                  minWidth: isMobile ? '5px' : '10px',
                 }}
               />
 
@@ -687,9 +856,9 @@ const TubeTrailerPage = () => {
                         2
                       )
                   )}%`,
-                  height: 2,
+                  height: 3,
                   background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
-                  borderRadius: '2px',
+                  borderRadius: '1.5px',
                   transformOrigin: 'left center',
                   transform: `translateY(-50%) rotate(${
                     (Math.atan2(
@@ -712,128 +881,536 @@ const TubeTrailerPage = () => {
                     Math.PI
                   }deg)`,
                   zIndex: 4,
-                  boxShadow: '0 0 8px #00f6ff, 0 0 16px #00f6ff',
-                  backgroundSize: '20px 2px',
+                  boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
+                  backgroundSize: '30px 3px',
                   backgroundImage:
                     'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
                   backgroundRepeat: 'repeat-x',
-                  animation: 'current-flow 1.2s linear infinite',
+                  animation: 'current-flow 1s linear infinite',
                 }}
               />
 
-              {/* 전류 파티클 1 */}
+              {/* 점6-7 전류선 */}
               <div
                 style={{
                   position: 'absolute',
                   left: `${
                     isMobile
-                      ? TUBE_TRAILER_POINTS[1].mobileX
+                      ? TUBE_TRAILER_POINTS[5].mobileX
                       : isTablet
-                      ? TUBE_TRAILER_POINTS[1].tabletX
-                      : TUBE_TRAILER_POINTS[1].x
+                      ? TUBE_TRAILER_POINTS[5].tabletX
+                      : TUBE_TRAILER_POINTS[5].x
                   }%`,
                   top: `${
                     isMobile
-                      ? TUBE_TRAILER_POINTS[1].mobileY
+                      ? TUBE_TRAILER_POINTS[5].mobileY
                       : isTablet
-                      ? TUBE_TRAILER_POINTS[1].tabletY
-                      : TUBE_TRAILER_POINTS[1].y
+                      ? TUBE_TRAILER_POINTS[5].tabletY
+                      : TUBE_TRAILER_POINTS[5].y
                   }%`,
-                  width: '8px',
-                  height: '8px',
-                  borderRadius: '50%',
-                  backgroundColor: '#FFFFFF',
+                  width: `${Math.abs(
+                    isMobile
+                      ? TUBE_TRAILER_POINTS[6].mobileX -
+                          TUBE_TRAILER_POINTS[5].mobileX
+                      : isTablet
+                      ? TUBE_TRAILER_POINTS[6].tabletX -
+                        TUBE_TRAILER_POINTS[5].tabletX
+                      : TUBE_TRAILER_POINTS[6].x - TUBE_TRAILER_POINTS[5].x
+                  )}%`,
+                  height: 3,
+                  background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
+                  borderRadius: '1.5px',
+                  transformOrigin: 'left center',
+                  transform: `translateY(-50%) rotate(${
+                    (Math.atan2(
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[6].mobileY -
+                            TUBE_TRAILER_POINTS[5].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[6].tabletY -
+                          TUBE_TRAILER_POINTS[5].tabletY
+                        : TUBE_TRAILER_POINTS[6].y - TUBE_TRAILER_POINTS[5].y,
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[6].mobileX -
+                            TUBE_TRAILER_POINTS[5].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[6].tabletX -
+                          TUBE_TRAILER_POINTS[5].tabletX
+                        : TUBE_TRAILER_POINTS[6].x - TUBE_TRAILER_POINTS[5].x
+                    ) *
+                      180) /
+                    Math.PI
+                  }deg)`,
+                  zIndex: 4,
                   boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
-                  transform: 'translate(-50%, -50%)',
-                  zIndex: 6,
-                  animation: 'particle-move 2s linear infinite',
+                  backgroundSize: '30px 3px',
+                  backgroundImage:
+                    'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
+                  backgroundRepeat: 'repeat-x',
+                  animation: 'current-flow 1s linear infinite',
                 }}
               />
 
-              {/* 전류 파티클 2 */}
+              {/* 점7-8 전류선 */}
               <div
                 style={{
                   position: 'absolute',
                   left: `${
                     isMobile
-                      ? TUBE_TRAILER_POINTS[1].mobileX
+                      ? TUBE_TRAILER_POINTS[6].mobileX
                       : isTablet
-                      ? TUBE_TRAILER_POINTS[1].tabletX
-                      : TUBE_TRAILER_POINTS[1].x
+                      ? TUBE_TRAILER_POINTS[6].tabletX
+                      : TUBE_TRAILER_POINTS[6].x
                   }%`,
                   top: `${
                     isMobile
-                      ? TUBE_TRAILER_POINTS[1].mobileY
+                      ? TUBE_TRAILER_POINTS[6].mobileY
                       : isTablet
-                      ? TUBE_TRAILER_POINTS[1].tabletY
-                      : TUBE_TRAILER_POINTS[1].y
+                      ? TUBE_TRAILER_POINTS[6].tabletY
+                      : TUBE_TRAILER_POINTS[6].y
                   }%`,
-                  width: '6px',
-                  height: '6px',
-                  borderRadius: '50%',
-                  backgroundColor: '#FFFFFF',
-                  boxShadow: '0 0 8px #00f6ff, 0 0 16px #00f6ff',
-                  transform: 'translate(-50%, -50%)',
-                  zIndex: 6,
-                  animation: 'particle-move 2s linear 1s infinite',
-                }}
-              />
-
-              {/* 점3-4-5 연결 파티클 */}
-              <div
-                style={{
-                  position: 'absolute',
-                  left: `${
-                    isMobile
-                      ? TUBE_TRAILER_POINTS[2].mobileX
-                      : isTablet
-                      ? TUBE_TRAILER_POINTS[2].tabletX
-                      : TUBE_TRAILER_POINTS[2].x
+                  width: `${
+                    Math.sqrt(
+                      Math.pow(
+                        isMobile
+                          ? TUBE_TRAILER_POINTS[7].mobileX -
+                              TUBE_TRAILER_POINTS[6].mobileX
+                          : isTablet
+                          ? TUBE_TRAILER_POINTS[7].tabletX -
+                            TUBE_TRAILER_POINTS[6].tabletX
+                          : TUBE_TRAILER_POINTS[7].x - TUBE_TRAILER_POINTS[6].x,
+                        2
+                      ) +
+                        Math.pow(
+                          isMobile
+                            ? TUBE_TRAILER_POINTS[7].mobileY -
+                                TUBE_TRAILER_POINTS[6].mobileY
+                            : isTablet
+                            ? TUBE_TRAILER_POINTS[7].tabletY -
+                              TUBE_TRAILER_POINTS[6].tabletY
+                            : TUBE_TRAILER_POINTS[7].y -
+                              TUBE_TRAILER_POINTS[6].y,
+                          2
+                        )
+                    ) * 0.4
                   }%`,
-                  top: `${
-                    isMobile
-                      ? TUBE_TRAILER_POINTS[2].mobileY
-                      : isTablet
-                      ? TUBE_TRAILER_POINTS[2].tabletY
-                      : TUBE_TRAILER_POINTS[2].y
-                  }%`,
-                  width: '6px',
-                  height: '6px',
-                  borderRadius: '50%',
-                  backgroundColor: '#FFFFFF',
+                  height: 3,
+                  background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
+                  borderRadius: '1.5px',
+                  transformOrigin: 'left center',
+                  transform: `translateY(-50%) rotate(${
+                    (Math.atan2(
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[7].mobileY -
+                            TUBE_TRAILER_POINTS[6].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[7].tabletY -
+                          TUBE_TRAILER_POINTS[6].tabletY
+                        : TUBE_TRAILER_POINTS[7].y - TUBE_TRAILER_POINTS[6].y,
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[7].mobileX -
+                            TUBE_TRAILER_POINTS[6].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[7].tabletX -
+                          TUBE_TRAILER_POINTS[6].tabletX
+                        : TUBE_TRAILER_POINTS[7].x - TUBE_TRAILER_POINTS[6].x
+                    ) *
+                      180) /
+                    Math.PI
+                  }deg)`,
+                  zIndex: 4,
                   boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
-                  transform: 'translate(-50%, -50%)',
-                  zIndex: 6,
-                  animation: 'particle-move-345 3.5s linear infinite',
+                  backgroundSize: '30px 3px',
+                  backgroundImage:
+                    'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
+                  backgroundRepeat: 'repeat-x',
+                  animation: 'current-flow 1s linear infinite',
                 }}
               />
 
-              {/* 추가 파티클 - 시차 효과 */}
+              {/* 점8-9 전류선 */}
               <div
                 style={{
                   position: 'absolute',
                   left: `${
                     isMobile
-                      ? TUBE_TRAILER_POINTS[2].mobileX
+                      ? TUBE_TRAILER_POINTS[7].mobileX
                       : isTablet
-                      ? TUBE_TRAILER_POINTS[2].tabletX
-                      : TUBE_TRAILER_POINTS[2].x
+                      ? TUBE_TRAILER_POINTS[7].tabletX
+                      : TUBE_TRAILER_POINTS[7].x
                   }%`,
                   top: `${
                     isMobile
-                      ? TUBE_TRAILER_POINTS[2].mobileY
+                      ? TUBE_TRAILER_POINTS[7].mobileY
                       : isTablet
-                      ? TUBE_TRAILER_POINTS[2].tabletY
-                      : TUBE_TRAILER_POINTS[2].y
+                      ? TUBE_TRAILER_POINTS[7].tabletY
+                      : TUBE_TRAILER_POINTS[7].y
                   }%`,
-                  width: '4px',
-                  height: '4px',
-                  borderRadius: '50%',
-                  backgroundColor: '#FFFFFF',
-                  boxShadow: '0 0 8px #00f6ff, 0 0 16px #00f6ff',
-                  transform: 'translate(-50%, -50%)',
-                  zIndex: 6,
-                  animation: 'particle-move-345 3.5s linear 1.5s infinite',
+                  width: `${Math.sqrt(
+                    Math.pow(
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[8].mobileX -
+                            TUBE_TRAILER_POINTS[7].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[8].tabletX -
+                          TUBE_TRAILER_POINTS[7].tabletX
+                        : TUBE_TRAILER_POINTS[8].x - TUBE_TRAILER_POINTS[7].x,
+                      2
+                    ) +
+                      Math.pow(
+                        isMobile
+                          ? TUBE_TRAILER_POINTS[8].mobileY -
+                              TUBE_TRAILER_POINTS[7].mobileY
+                          : isTablet
+                          ? TUBE_TRAILER_POINTS[8].tabletY -
+                            TUBE_TRAILER_POINTS[7].tabletY
+                          : TUBE_TRAILER_POINTS[8].y - TUBE_TRAILER_POINTS[7].y,
+                        2
+                      )
+                  )}%`,
+                  height: 3,
+                  background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
+                  borderRadius: '1.5px',
+                  transformOrigin: 'left center',
+                  transform: `translateY(-50%) rotate(${
+                    (Math.atan2(
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[8].mobileY -
+                            TUBE_TRAILER_POINTS[7].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[8].tabletY -
+                          TUBE_TRAILER_POINTS[7].tabletY
+                        : TUBE_TRAILER_POINTS[8].y - TUBE_TRAILER_POINTS[7].y,
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[8].mobileX -
+                            TUBE_TRAILER_POINTS[7].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[8].tabletX -
+                          TUBE_TRAILER_POINTS[7].tabletX
+                        : TUBE_TRAILER_POINTS[8].x - TUBE_TRAILER_POINTS[7].x
+                    ) *
+                      180) /
+                    Math.PI
+                  }deg)`,
+                  zIndex: 4,
+                  boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
+                  backgroundSize: '30px 3px',
+                  backgroundImage:
+                    'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
+                  backgroundRepeat: 'repeat-x',
+                  animation: 'current-flow 1s linear infinite',
+                }}
+              />
+
+              {/* 점10-11 전류선 */}
+              <div
+                style={{
+                  position: 'absolute',
+                  left: `${
+                    isMobile
+                      ? TUBE_TRAILER_POINTS[9].mobileX
+                      : isTablet
+                      ? TUBE_TRAILER_POINTS[9].tabletX
+                      : TUBE_TRAILER_POINTS[9].x
+                  }%`,
+                  top: `${
+                    isMobile
+                      ? TUBE_TRAILER_POINTS[9].mobileY
+                      : isTablet
+                      ? TUBE_TRAILER_POINTS[9].tabletY
+                      : TUBE_TRAILER_POINTS[9].y
+                  }%`,
+                  width: `${
+                    Math.sqrt(
+                      Math.pow(
+                        isMobile
+                          ? TUBE_TRAILER_POINTS[10].mobileX -
+                              TUBE_TRAILER_POINTS[9].mobileX
+                          : isTablet
+                          ? TUBE_TRAILER_POINTS[10].tabletX -
+                            TUBE_TRAILER_POINTS[9].tabletX
+                          : TUBE_TRAILER_POINTS[10].x -
+                            TUBE_TRAILER_POINTS[9].x,
+                        2
+                      ) +
+                        Math.pow(
+                          isMobile
+                            ? TUBE_TRAILER_POINTS[10].mobileY -
+                                TUBE_TRAILER_POINTS[9].mobileY
+                            : isTablet
+                            ? TUBE_TRAILER_POINTS[10].tabletY -
+                              TUBE_TRAILER_POINTS[9].tabletY
+                            : TUBE_TRAILER_POINTS[10].y -
+                              TUBE_TRAILER_POINTS[9].y,
+                          2
+                        )
+                    ) * 0.35
+                  }%`,
+                  height: 3,
+                  background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
+                  borderRadius: '1.5px',
+                  transformOrigin: 'left center',
+                  transform: `translateY(-50%) rotate(${
+                    (Math.atan2(
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[10].mobileY -
+                            TUBE_TRAILER_POINTS[9].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[10].tabletY -
+                          TUBE_TRAILER_POINTS[9].tabletY
+                        : TUBE_TRAILER_POINTS[10].y - TUBE_TRAILER_POINTS[9].y,
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[10].mobileX -
+                            TUBE_TRAILER_POINTS[9].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[10].tabletX -
+                          TUBE_TRAILER_POINTS[9].tabletX
+                        : TUBE_TRAILER_POINTS[10].x - TUBE_TRAILER_POINTS[9].x
+                    ) *
+                      180) /
+                    Math.PI
+                  }deg)`,
+                  zIndex: 4,
+                  boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
+                  backgroundSize: '30px 3px',
+                  backgroundImage:
+                    'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
+                  backgroundRepeat: 'repeat-x',
+                  animation: 'current-flow 1s linear infinite',
+                }}
+              />
+
+              {/* 점11-12 전류선 */}
+              <div
+                style={{
+                  position: 'absolute',
+                  left: `${
+                    isMobile
+                      ? TUBE_TRAILER_POINTS[10].mobileX
+                      : isTablet
+                      ? TUBE_TRAILER_POINTS[10].tabletX
+                      : TUBE_TRAILER_POINTS[10].x
+                  }%`,
+                  top: `${
+                    isMobile
+                      ? TUBE_TRAILER_POINTS[10].mobileY
+                      : isTablet
+                      ? TUBE_TRAILER_POINTS[10].tabletY
+                      : TUBE_TRAILER_POINTS[10].y
+                  }%`,
+                  width: `${
+                    Math.sqrt(
+                      Math.pow(
+                        isMobile
+                          ? TUBE_TRAILER_POINTS[11].mobileX -
+                              TUBE_TRAILER_POINTS[10].mobileX
+                          : isTablet
+                          ? TUBE_TRAILER_POINTS[11].tabletX -
+                            TUBE_TRAILER_POINTS[10].tabletX
+                          : TUBE_TRAILER_POINTS[11].x -
+                            TUBE_TRAILER_POINTS[10].x,
+                        2
+                      ) +
+                        Math.pow(
+                          isMobile
+                            ? TUBE_TRAILER_POINTS[11].mobileY -
+                                TUBE_TRAILER_POINTS[10].mobileY
+                            : isTablet
+                            ? TUBE_TRAILER_POINTS[11].tabletY -
+                              TUBE_TRAILER_POINTS[10].tabletY
+                            : TUBE_TRAILER_POINTS[11].y -
+                              TUBE_TRAILER_POINTS[10].y,
+                          2
+                        )
+                    ) * 0.95
+                  }%`,
+                  height: 3,
+                  background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
+                  borderRadius: '1.5px',
+                  transformOrigin: 'left center',
+                  transform: `translateY(-50%) rotate(${
+                    (Math.atan2(
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[11].mobileY -
+                            TUBE_TRAILER_POINTS[10].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[11].tabletY -
+                          TUBE_TRAILER_POINTS[10].tabletY
+                        : TUBE_TRAILER_POINTS[11].y - TUBE_TRAILER_POINTS[10].y,
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[11].mobileX -
+                            TUBE_TRAILER_POINTS[10].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[11].tabletX -
+                          TUBE_TRAILER_POINTS[10].tabletX
+                        : TUBE_TRAILER_POINTS[11].x - TUBE_TRAILER_POINTS[10].x
+                    ) *
+                      180) /
+                    Math.PI
+                  }deg)`,
+                  zIndex: 4,
+                  boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
+                  backgroundSize: '30px 3px',
+                  backgroundImage:
+                    'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
+                  backgroundRepeat: 'repeat-x',
+                  animation: 'current-flow 1s linear infinite',
+                }}
+              />
+
+              {/* 점12-13 전류선 */}
+              <div
+                style={{
+                  position: 'absolute',
+                  left: `${
+                    isMobile
+                      ? TUBE_TRAILER_POINTS[11].mobileX
+                      : isTablet
+                      ? TUBE_TRAILER_POINTS[11].tabletX
+                      : TUBE_TRAILER_POINTS[11].x
+                  }%`,
+                  top: `${
+                    isMobile
+                      ? TUBE_TRAILER_POINTS[11].mobileY
+                      : isTablet
+                      ? TUBE_TRAILER_POINTS[11].tabletY
+                      : TUBE_TRAILER_POINTS[11].y
+                  }%`,
+                  width: `${
+                    Math.sqrt(
+                      Math.pow(
+                        isMobile
+                          ? TUBE_TRAILER_POINTS[12].mobileX -
+                              TUBE_TRAILER_POINTS[11].mobileX
+                          : isTablet
+                          ? TUBE_TRAILER_POINTS[12].tabletX -
+                            TUBE_TRAILER_POINTS[11].tabletX
+                          : TUBE_TRAILER_POINTS[12].x -
+                            TUBE_TRAILER_POINTS[11].x,
+                        2
+                      ) +
+                        Math.pow(
+                          isMobile
+                            ? TUBE_TRAILER_POINTS[12].mobileY -
+                                TUBE_TRAILER_POINTS[11].mobileY
+                            : isTablet
+                            ? TUBE_TRAILER_POINTS[12].tabletY -
+                              TUBE_TRAILER_POINTS[11].tabletY
+                            : TUBE_TRAILER_POINTS[12].y -
+                              TUBE_TRAILER_POINTS[11].y,
+                          2
+                        )
+                    ) * 0.35
+                  }%`,
+                  height: 3,
+                  background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
+                  borderRadius: '1.5px',
+                  transformOrigin: 'left center',
+                  transform: `translateY(-50%) rotate(${
+                    (Math.atan2(
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[12].mobileY -
+                            TUBE_TRAILER_POINTS[11].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[12].tabletY -
+                          TUBE_TRAILER_POINTS[11].tabletY
+                        : TUBE_TRAILER_POINTS[12].y - TUBE_TRAILER_POINTS[11].y,
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[12].mobileX -
+                            TUBE_TRAILER_POINTS[11].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[12].tabletX -
+                          TUBE_TRAILER_POINTS[11].tabletX
+                        : TUBE_TRAILER_POINTS[12].x - TUBE_TRAILER_POINTS[11].x
+                    ) *
+                      180) /
+                    Math.PI
+                  }deg)`,
+                  zIndex: 4,
+                  boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
+                  backgroundSize: '30px 3px',
+                  backgroundImage:
+                    'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
+                  backgroundRepeat: 'repeat-x',
+                  animation: 'current-flow 1s linear infinite',
+                }}
+              />
+
+              {/* 점13-14 전류선 */}
+              <div
+                style={{
+                  position: 'absolute',
+                  left: `${
+                    isMobile
+                      ? TUBE_TRAILER_POINTS[12].mobileX
+                      : isTablet
+                      ? TUBE_TRAILER_POINTS[12].tabletX
+                      : TUBE_TRAILER_POINTS[12].x
+                  }%`,
+                  top: `${
+                    isMobile
+                      ? TUBE_TRAILER_POINTS[12].mobileY
+                      : isTablet
+                      ? TUBE_TRAILER_POINTS[12].tabletY
+                      : TUBE_TRAILER_POINTS[12].y
+                  }%`,
+                  width: `${
+                    Math.sqrt(
+                      Math.pow(
+                        isMobile
+                          ? TUBE_TRAILER_POINTS[13].mobileX -
+                              TUBE_TRAILER_POINTS[12].mobileX
+                          : isTablet
+                          ? TUBE_TRAILER_POINTS[13].tabletX -
+                            TUBE_TRAILER_POINTS[12].tabletX
+                          : TUBE_TRAILER_POINTS[13].x -
+                            TUBE_TRAILER_POINTS[12].x,
+                        2
+                      ) +
+                        Math.pow(
+                          isMobile
+                            ? TUBE_TRAILER_POINTS[13].mobileY -
+                                TUBE_TRAILER_POINTS[12].mobileY
+                            : isTablet
+                            ? TUBE_TRAILER_POINTS[13].tabletY -
+                              TUBE_TRAILER_POINTS[12].tabletY
+                            : TUBE_TRAILER_POINTS[13].y -
+                              TUBE_TRAILER_POINTS[12].y,
+                          2
+                        )
+                    ) * 1.0
+                  }%`,
+                  height: 3,
+                  background: `linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%)`,
+                  borderRadius: '1.5px',
+                  transformOrigin: 'left center',
+                  transform: `translateY(-50%) rotate(${
+                    (Math.atan2(
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[13].mobileY -
+                            TUBE_TRAILER_POINTS[12].mobileY
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[13].tabletY -
+                          TUBE_TRAILER_POINTS[12].tabletY
+                        : TUBE_TRAILER_POINTS[13].y - TUBE_TRAILER_POINTS[12].y,
+                      isMobile
+                        ? TUBE_TRAILER_POINTS[13].mobileX -
+                            TUBE_TRAILER_POINTS[12].mobileX
+                        : isTablet
+                        ? TUBE_TRAILER_POINTS[13].tabletX -
+                          TUBE_TRAILER_POINTS[12].tabletX
+                        : TUBE_TRAILER_POINTS[13].x - TUBE_TRAILER_POINTS[12].x
+                    ) *
+                      180) /
+                    Math.PI
+                  }deg)`,
+                  zIndex: 4,
+                  boxShadow: '0 0 10px #00f6ff, 0 0 20px #00f6ff',
+                  backgroundSize: '30px 3px',
+                  backgroundImage:
+                    'linear-gradient(90deg, #00f6ff 50%, transparent 50%)',
+                  backgroundRepeat: 'repeat-x',
+                  animation: 'current-flow 1s linear infinite',
                 }}
               />
 
@@ -847,150 +1424,38 @@ const TubeTrailerPage = () => {
                   0% { background-position: 0 0; }
                   100% { background-position: 30px 0; }
                 }
-                @keyframes particle-move {
-                  0% {
-                    left: ${
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[1].mobileX
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[1].tabletX
-                        : TUBE_TRAILER_POINTS[1].x
-                    }%;
-                    top: ${
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[1].mobileY
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[1].tabletY
-                        : TUBE_TRAILER_POINTS[1].y
-                    }%;
-                  }
-                  100% {
-                    left: ${
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[0].mobileX
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[0].tabletX
-                        : TUBE_TRAILER_POINTS[0].x
-                    }%;
-                    top: ${
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[0].mobileY
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[0].tabletY
-                        : TUBE_TRAILER_POINTS[0].y
-                    }%;
+                
+                @media (max-width: 768px) {
+                  @keyframes current-flow {
+                    0% { background-position: 0 0; }
+                    100% { background-position: 20px 0; }
                   }
                 }
-                @keyframes particle-move-345 {
-                  0% {
-                    left: ${
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[2].mobileX
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[2].tabletX
-                        : TUBE_TRAILER_POINTS[2].x
-                    }%;
-                    top: ${
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[2].mobileY
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[2].tabletY
-                        : TUBE_TRAILER_POINTS[2].y
-                    }%;
-                    opacity: 1;
-                  }
-                  39% {
-                    left: ${
-                      (isMobile
-                        ? TUBE_TRAILER_POINTS[3].mobileX
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[3].tabletX
-                        : TUBE_TRAILER_POINTS[3].x) - 0.5
-                    }%;
-                    top: ${
-                      (isMobile
-                        ? TUBE_TRAILER_POINTS[3].mobileY
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[3].tabletY
-                        : TUBE_TRAILER_POINTS[3].y) - 0.5
-                    }%;
-                    opacity: 0.9;
-                  }
-                  40% {
-                    left: ${
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[3].mobileX
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[3].tabletX
-                        : TUBE_TRAILER_POINTS[3].x
-                    }%;
-                    top: ${
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[3].mobileY
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[3].tabletY
-                        : TUBE_TRAILER_POINTS[3].y
-                    }%;
-                    opacity: 1;
-                  }
-                  41% {
-                    opacity: 0.9;
-                  }
-                  45% {
-                    opacity: 0.8;
-                  }
-                  84% {
-                    left: ${
-                      (isMobile
-                        ? TUBE_TRAILER_POINTS[4].mobileX
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[4].tabletX
-                        : TUBE_TRAILER_POINTS[4].x) - 0.5
-                    }%;
-                    top: ${
-                      (isMobile
-                        ? TUBE_TRAILER_POINTS[4].mobileY
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[4].tabletY
-                        : TUBE_TRAILER_POINTS[4].y) - 0.5
-                    }%;
-                    opacity: 0.9;
-                  }
-                  85% {
-                    left: ${
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[4].mobileX
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[4].tabletX
-                        : TUBE_TRAILER_POINTS[4].x
-                    }%;
-                    top: ${
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[4].mobileY
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[4].tabletY
-                        : TUBE_TRAILER_POINTS[4].y
-                    }%;
-                    opacity: 1;
-                  }
-                  100% {
-                    left: ${
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[4].mobileX
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[4].tabletX
-                        : TUBE_TRAILER_POINTS[4].x
-                    }%;
-                    top: ${
-                      isMobile
-                        ? TUBE_TRAILER_POINTS[4].mobileY
-                        : isTablet
-                        ? TUBE_TRAILER_POINTS[4].tabletY
-                        : TUBE_TRAILER_POINTS[4].y
-                    }%;
-                    opacity: 0;
+                
+                .current-line {
+                  position: absolute;
+                  height: 3px;
+                  background: linear-gradient(90deg, rgba(0, 246, 255, 0.3) 0%, rgba(0, 246, 255, 1) 50%, rgba(0, 246, 255, 0.3) 100%);
+                  border-radius: 1.5px;
+                  transform-origin: left center;
+                  z-index: 4;
+                  box-shadow: 0 0 10px #00f6ff, 0 0 20px #00f6ff;
+                  background-size: 30px 3px;
+                  background-image: linear-gradient(90deg, #00f6ff 50%, transparent 50%);
+                  background-repeat: repeat-x;
+                  animation: current-flow 1s linear infinite;
+                }
+                
+                @media (max-width: 768px) {
+                  .current-line {
+                    height: 2px;
+                    background-size: 20px 2px;
+                    min-width: 5px;
                   }
                 }
+
+                
+
               `}</style>
 
               {/* 이미지 컨테이너 중앙에 와이파이 데이터 전송 효과 */}

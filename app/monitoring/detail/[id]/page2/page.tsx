@@ -638,26 +638,10 @@ function DetailPageContent({ params }: { params: { id: string } }) {
     } else {
       sensors = vibrationSensors;
     }
-    // 위험 센서가 최상단에 오도록 정렬
+    // 위험 센서가 최상단에 오도록 정렬 (센서 객체 자체로 판정)
     return sensors.slice().sort((a, b) => {
-      const aStatus = getSensorStatus(
-        a.name.startsWith('가스감지기')
-          ? `gas-${a.id}`
-          : a.name.startsWith('화재감지기')
-          ? `fire-${a.id - 15}`
-          : a.name.startsWith('진동감지기')
-          ? `vibration-${a.id - 21}`
-          : ''
-      );
-      const bStatus = getSensorStatus(
-        b.name.startsWith('가스감지기')
-          ? `gas-${b.id}`
-          : b.name.startsWith('화재감지기')
-          ? `fire-${b.id - 15}`
-          : b.name.startsWith('진동감지기')
-          ? `vibration-${b.id - 21}`
-          : ''
-      );
+      const aStatus = getSensorStatus(getFullSensor(a));
+      const bStatus = getSensorStatus(getFullSensor(b));
       if (aStatus === 'danger' && bStatus !== 'danger') return -1;
       if (aStatus !== 'danger' && bStatus === 'danger') return 1;
       return 0;
@@ -2118,7 +2102,6 @@ function DetailPageContent({ params }: { params: { id: string } }) {
                           }`
                         )}
                       </SensorValue>
-                      <span></span>
                     </SensorItem>
                   );
                 })}
@@ -2184,7 +2167,41 @@ function DetailPageContent({ params }: { params: { id: string } }) {
                           })()
                         : '--'}
                     </span>
-                    <span className="status">정상</span>
+                    <span
+                      className="status"
+                      style={{
+                        color:
+                          vibrationSensor.status === 'danger'
+                            ? '#ef4444'
+                            : '#22c55e',
+                        background:
+                          vibrationSensor.status === 'danger'
+                            ? '#fff0f0'
+                            : '#f0fff4',
+                        border:
+                          vibrationSensor.status === 'danger'
+                            ? '1px solid #ef4444'
+                            : '1px solid #22c55e',
+                        borderRadius: 8,
+                        padding: '2px 12px',
+                        fontWeight: 700,
+                        marginLeft: 12,
+                        fontSize: 15,
+                        transition: 'all 0.2s',
+                        minWidth: 48,
+                        textAlign: 'center',
+                        textShadow:
+                          vibrationSensor.status === 'danger'
+                            ? '0 1px 0 #fff, 0 0 2px #ef4444'
+                            : undefined,
+                        animation:
+                          vibrationSensor.status === 'danger'
+                            ? 'danger-blink 1s infinite alternate'
+                            : undefined,
+                      }}
+                    >
+                      {vibrationSensor.status === 'danger' ? '위험' : '정상'}
+                    </span>
                   </h4>
                   <div className="graph-container">
                     <ResponsiveContainer width="100%" height="100%">

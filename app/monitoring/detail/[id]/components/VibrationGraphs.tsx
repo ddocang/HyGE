@@ -21,6 +21,7 @@ import { colors } from '@/app/styles/colors';
 interface VibrationDataPoint {
   time: string;
   value: number;
+  status?: '정상' | '위험';
 }
 
 type ChartColorSet = {
@@ -69,7 +70,9 @@ const VibrationGraphs: React.FC<VibrationGraphsProps> = ({
         >
           <h4>
             {sensor.time}
-            <span className="status">정상</span>
+            <span className="status">
+              {sensor.status === '위험' ? '위험' : '정상'}
+            </span>
           </h4>
           <div className="graph-container">
             <ResponsiveContainer width="100%" height="100%">

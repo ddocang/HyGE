@@ -2219,7 +2219,37 @@ function DetailPageContent({
                         })()
                       : '--'}
                   </span>
-                  <span className="status">정상</span>
+                  <span
+                    className="status"
+                    style={{
+                      color: sensor.status === 'danger' ? '#ef4444' : '#22c55e',
+                      background:
+                        sensor.status === 'danger' ? '#fff0f0' : '#f0fff4',
+                      border:
+                        sensor.status === 'danger'
+                          ? '1px solid #ef4444'
+                          : '1px solid #22c55e',
+                      borderRadius: 8,
+                      padding: '2px 12px',
+                      fontWeight: 700,
+                      marginLeft: 12,
+                      fontSize: 15,
+                      transition: 'all 0.2s',
+                      minWidth: 48,
+                      textAlign: 'center',
+                      // boxShadow: sensor.status === 'danger' ? '0 0 8px #ef4444aa' : undefined, // 발광효과 제거
+                      textShadow:
+                        sensor.status === 'danger'
+                          ? '0 1px 0 #fff, 0 0 2px #ef4444'
+                          : undefined, // 경계 강조
+                      animation:
+                        sensor.status === 'danger'
+                          ? 'danger-blink 1s infinite alternate'
+                          : undefined,
+                    }}
+                  >
+                    {sensor.status === 'danger' ? '위험' : '정상'}
+                  </span>
                 </h4>
                 <div
                   className="graph-container"

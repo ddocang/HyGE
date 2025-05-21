@@ -2166,7 +2166,6 @@ function DetailPageContent({
             {vibrationSensors.map((sensor) => (
               <VibrationGraphCard
                 key={sensor.id}
-                onClick={() => handleGraphClick(sensor)}
                 style={{ cursor: 'pointer', position: 'relative' }}
               >
                 <h4
@@ -2175,6 +2174,31 @@ function DetailPageContent({
                     alignItems: 'center',
                     width: '100%',
                     height: 40,
+                  }}
+                  onClick={() => {
+                    // 지도 아이콘의 실제 DOM 위치를 찾아서 툴팁 위치를 맞춤
+                    const sensorId = getSensorDomId(sensor);
+                    const sensorIcon = document.querySelector(
+                      `[data-sensor-id="${sensorId}"]`
+                    );
+                    const mapContainer =
+                      document.querySelector('.map-container');
+                    if (sensorIcon && mapContainer) {
+                      const rect = sensorIcon.getBoundingClientRect();
+                      const mapRect = mapContainer.getBoundingClientRect();
+                      const x = rect.left - mapRect.left + rect.width / 2;
+                      const y = rect.top - mapRect.top;
+                      setTooltipPosition({ x, y });
+                      setSelectedSensorId(sensorId);
+                      setShowTooltip(true);
+                      const sensorInfo = getSensorInfo(sensorId);
+                      setTooltipSensor({
+                        id: sensorId,
+                        name: sensorInfo.name,
+                        status: sensorInfo.status,
+                        value: sensorInfo.value,
+                      });
+                    }
                   }}
                 >
                   <span style={{ fontWeight: 700 }}>{sensor.name}</span>
@@ -2237,11 +2261,10 @@ function DetailPageContent({
                       transition: 'all 0.2s',
                       minWidth: 48,
                       textAlign: 'center',
-                      // boxShadow: sensor.status === 'danger' ? '0 0 8px #ef4444aa' : undefined, // 발광효과 제거
                       textShadow:
                         sensor.status === 'danger'
                           ? '0 1px 0 #fff, 0 0 2px #ef4444'
-                          : undefined, // 경계 강조
+                          : undefined,
                       animation:
                         sensor.status === 'danger'
                           ? 'danger-blink 1s infinite alternate'
@@ -2254,6 +2277,7 @@ function DetailPageContent({
                 <div
                   className="graph-container"
                   style={{ borderTop: '1px solid #e0e7ef' }}
+                  onClick={() => handleGraphClick(sensor)}
                 >
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart

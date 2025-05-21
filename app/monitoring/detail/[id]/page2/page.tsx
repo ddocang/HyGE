@@ -2116,12 +2116,16 @@ function DetailPageContent({ params }: { params: { id: string } }) {
                 vibrationSensor.value !== null &&
                 vibrationSensor.value !== ''
               ) {
-                realtimeValue = vibrationSensor.value;
+                const plcVal = Number(vibrationSensor.value);
+                const val = plcToMms(plcVal, vibrationSensor.name);
+                const unit =
+                  vibrationSensor.name === '진동감지기1' ? 'm/s²' : 'mm/s';
+                realtimeValue = `${val.toFixed(2)} ${unit}`;
               }
               return (
                 <VibrationGraphCard
                   key={vibrationSensor.id}
-                  onClick={() => handleGraphClick(vibrationSensor)}
+                  style={{ cursor: 'pointer', position: 'relative' }}
                 >
                   <h4
                     style={{
@@ -2130,42 +2134,51 @@ function DetailPageContent({ params }: { params: { id: string } }) {
                       width: '100%',
                       height: 40,
                     }}
+                    onClick={() => {
+                      // 지도 아이콘의 실제 DOM 위치를 찾아서 툴팁 위치를 맞춤
+                      const sensorId = getSensorDomId(vibrationSensor);
+                      const sensorIcon = document.querySelector(
+                        `[data-sensor-id="${sensorId}"]`
+                      );
+                      const mapContainer =
+                        document.querySelector('.map-container');
+                      if (sensorIcon && mapContainer) {
+                        const rect = sensorIcon.getBoundingClientRect();
+                        const mapRect = mapContainer.getBoundingClientRect();
+                        const x = rect.left - mapRect.left + rect.width / 2;
+                        const y = rect.top - mapRect.top;
+                        setTooltipPosition({ x, y });
+                        setSelectedSensorId(sensorId);
+                        setShowTooltip(true);
+                        const sensorInfo = getSensorInfo(sensorId);
+                        setTooltipSensor({
+                          id: sensorId,
+                          name: sensorInfo.name,
+                          status: sensorInfo.status,
+                          value: sensorInfo.value,
+                        });
+                      }
+                    }}
                   >
                     <span style={{ fontWeight: 700 }}>
                       {vibrationSensor.name}
-                      {/* 센서별 범위 표시 */}
                       {vibrationSensor.name === '진동감지기1'
                         ? ' (0~19.6m/s²)'
                         : ' (0~50mm/s)'}
                     </span>
                     <span
+                      className="realtime-value"
                       style={{
                         fontWeight: 700,
-                        color:
-                          colorAssignments[vibrationSensor.id.toString()].line,
-                        fontSize: '1.1em',
-                        lineHeight: 1,
-                        textAlign: 'center',
-                        flex: 1,
-                        marginLeft: 4,
+                        fontSize: 15,
+                        color: '#222',
+                        marginLeft: 12,
+                        letterSpacing: 0.5,
+                        minWidth: 70,
+                        textAlign: 'right',
                       }}
                     >
-                      {vibrationSensor.data.length > 0
-                        ? (() => {
-                            const isVibration1 =
-                              vibrationSensor.name === '진동감지기1';
-                            const val = plcToMms(
-                              vibrationSensor.data[
-                                vibrationSensor.data.length - 1
-                              ].value,
-                              vibrationSensor.name // name 기준으로 변경
-                            );
-                            const unit = isVibration1 ? 'm/s²' : 'mm/s';
-                            return `${
-                              typeof val === 'number' ? val.toFixed(2) : '--'
-                            } ${unit}`;
-                          })()
-                        : '--'}
+                      {realtimeValue}
                     </span>
                     <span
                       className="status"
@@ -2203,10 +2216,17 @@ function DetailPageContent({ params }: { params: { id: string } }) {
                       {vibrationSensor.status === 'danger' ? '위험' : '정상'}
                     </span>
                   </h4>
-                  <div className="graph-container">
+                  <div
+                    className="graph-container"
+                    style={{ borderTop: '1px solid #e0e7ef' }}
+                    onClick={() => handleGraphClick(vibrationSensor)}
+                  >
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart
-                        data={vibrationSensor.data}
+                        data={vibrationSensor.data.map((d) => ({
+                          ...d,
+                          value: plcToMms(d.value, vibrationSensor.id),
+                        }))}
                         margin={{
                           top: 5,
                           right: 10,
@@ -2290,10 +2310,7 @@ function DetailPageContent({ params }: { params: { id: string } }) {
                               payload.length &&
                               payload[0].value !== undefined
                             ) {
-                              const val = plcToMms(
-                                parseFloat(payload[0].value as any),
-                                vibrationSensor.name
-                              );
+                              const val = payload[0].value;
                               const unit =
                                 vibrationSensor.name === '진동감지기1'
                                   ? 'm/s²'

@@ -33,9 +33,9 @@ export const VIBRATION_SENSORS = [
   { id: 'vibration-4', x: 390, y: 313, name: '진동감지기4' },
   { id: 'vibration-5', x: 407, y: 365, name: '진동감지기5' },
   { id: 'vibration-6', x: 427, y: 313, name: '진동감지기6' },
-  { id: 'vibration-7', x: 523, y: 118, name: '진동감지기7' },
-  { id: 'vibration-8', x: 523, y: 193, name: '진동감지기8' },
-  { id: 'vibration-9', x: 559, y: 133, name: '진동감지기9' },
+  { id: 'vibration-7', x: 559, y: 133, name: '진동감지기7' },
+  { id: 'vibration-8', x: 523, y: 118, name: '진동감지기8' },
+  { id: 'vibration-9', x: 523, y: 193, name: '진동감지기9' },
 ];
 
 export const FACILITY_DETAIL = {

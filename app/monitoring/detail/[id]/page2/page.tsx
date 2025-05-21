@@ -434,6 +434,21 @@ function DetailPageContent({ params }: { params: { id: string } }) {
           ? gdet.split(',').map(Number)
           : [];
         setGasStatusArr(gdetArr);
+        // 가스 위험 이벤트 트리거
+        gdetArr.forEach((val, idx) => {
+          if (val === 1) {
+            addLogItem(
+              FACILITY_DETAIL.sensors.gas[idx],
+              'danger',
+              '가스',
+              '위험 감지'
+            );
+            setDangerToast({
+              sensor: FACILITY_DETAIL.sensors.gas[idx].name,
+              value: '위험 감지',
+            });
+          }
+        });
         const fdetArr = Array.isArray(fdet)
           ? fdet
           : typeof fdet === 'string'
@@ -442,6 +457,21 @@ function DetailPageContent({ params }: { params: { id: string } }) {
           ? [fdet]
           : [];
         setFireStatusArr(fdetArr);
+        // 화재 위험 이벤트 트리거
+        fdetArr.forEach((val, idx) => {
+          if (val === 1) {
+            addLogItem(
+              FACILITY_DETAIL.sensors.fire[idx],
+              'danger',
+              '화재',
+              '위험 감지'
+            );
+            setDangerToast({
+              sensor: FACILITY_DETAIL.sensors.fire[idx].name,
+              value: '위험 감지',
+            });
+          }
+        });
         // 한국표준시로 년/월/일 제외하고 시간 포맷팅
         const updateDate = new Date(lastUpdateTime);
         if (!isNaN(updateDate.getTime())) {
@@ -619,7 +649,22 @@ function DetailPageContent({ params }: { params: { id: string } }) {
       }
       return 'normal';
     }
-    // ... 기존 가스/화재 센서 로직 ...
+    // 가스센서
+    if ('name' in sensor && sensor.name.startsWith('가스감지기')) {
+      const gIdx = parseInt(sensor.name.replace('가스감지기', '')) - 1;
+      if (typeof gasStatusArr[gIdx] === 'number') {
+        if (gasStatusArr[gIdx] === 1) return 'danger';
+      }
+      return 'normal';
+    }
+    // 화재센서
+    if ('name' in sensor && sensor.name.startsWith('화재감지기')) {
+      const fIdx = parseInt(sensor.name.replace('화재감지기', '')) - 1;
+      if (typeof fireStatusArr[fIdx] === 'number') {
+        if (fireStatusArr[fIdx] === 1) return 'danger';
+      }
+      return 'normal';
+    }
     return 'normal';
   };
 
@@ -784,8 +829,16 @@ function DetailPageContent({ params }: { params: { id: string } }) {
 
   // hasDanger: 항상 sensor.status 기준
   const hasDanger = useMemo(() => {
-    return vibrationSensors.some((sensor) => sensor.status === 'danger');
-  }, [vibrationSensors]);
+    // 진동센서 위험
+    const vibrationDanger = vibrationSensors.some(
+      (sensor) => sensor.status === 'danger'
+    );
+    // 가스 위험
+    const gasDanger = gasStatusArr.some((val) => val === 1);
+    // 화재 위험
+    const fireDanger = fireStatusArr.some((val) => val === 1);
+    return vibrationDanger || gasDanger || fireDanger;
+  }, [vibrationSensors, gasStatusArr, fireStatusArr]);
 
   // 필터링된 센서 아이콘 계산
   const filteredSensorIcons = useMemo(() => {

@@ -486,25 +486,56 @@ function DetailPageContent({
         const gdet = data.mqtt_data.data.gdet;
         const fdet = data.mqtt_data.data.fdet;
 
-        if (typeof gdet !== 'undefined') setGasStatus(gdet);
-        if (typeof fdet !== 'undefined') setFireStatus(fdet);
-
-        const gdetArr = Array.isArray(gdet)
-          ? gdet
-          : typeof gdet === 'string'
-          ? gdet.split(',').map(Number)
-          : [];
-
-        setGasStatusArr(gdetArr);
-
-        const fdetArr = Array.isArray(fdet)
-          ? fdet
-          : typeof fdet === 'string'
-          ? fdet.split(',').map(Number)
-          : typeof fdet === 'number'
-          ? [fdet]
-          : [];
-        setFireStatusArr(fdetArr);
+        if (typeof gdet !== 'undefined') {
+          setGasStatus(gdet);
+          const gdetArr = Array.isArray(gdet)
+            ? gdet
+            : typeof gdet === 'string'
+            ? gdet.split(',').map(Number)
+            : [];
+          setGasStatusArr(gdetArr);
+          // 가스 위험 이벤트 트리거
+          gdetArr.forEach((val, idx) => {
+            if (val === 1) {
+              addLogItem(
+                FACILITY_DETAIL.sensors.gas[idx],
+                'danger',
+                '가스',
+                '위험 감지'
+              );
+              setDangerToast({
+                sensor: FACILITY_DETAIL.sensors.gas[idx].name,
+                value: '위험 감지',
+              });
+            }
+          });
+        }
+        if (typeof fdet !== 'undefined') {
+          setFireStatus(fdet);
+          const fdetArr = Array.isArray(fdet)
+            ? fdet
+            : typeof fdet === 'string'
+            ? fdet.split(',').map(Number)
+            : typeof fdet === 'number'
+            ? [fdet]
+            : [];
+          setFireStatusArr(fdetArr);
+          // 화재 위험 이벤트 트리거
+          fdetArr.forEach((val, idx) => {
+            if (val === 1) {
+              addLogItem(
+                FACILITY_DETAIL.sensors.fire[idx],
+                'danger',
+                '화재',
+                '위험 감지'
+              );
+              setDangerToast({
+                sensor: FACILITY_DETAIL.sensors.fire[idx].name,
+                value: '위험 감지',
+              });
+            }
+          });
+        }
       }
     },
     [vibrationSensors]
@@ -712,8 +743,19 @@ function DetailPageContent({
         const defaultThreshold =
           VIBRATION_THRESHOLDS[vibrationKey]?.value ?? 45;
         const threshold = Math.min(localThreshold, defaultThreshold);
-
         if (!isNaN(converted) && converted >= threshold) return 'danger';
+      }
+      return 'normal';
+    } else if (type === 'gas') {
+      const idx = parseInt(sensorId.split('-')[1]) - 1;
+      if (typeof gasStatusArr[idx] === 'number') {
+        if (gasStatusArr[idx] === 1) return 'danger';
+      }
+      return 'normal';
+    } else if (type === 'fire') {
+      const idx = parseInt(sensorId.split('-')[1]) - 1;
+      if (typeof fireStatusArr[idx] === 'number') {
+        if (fireStatusArr[idx] === 1) return 'danger';
       }
       return 'normal';
     } else {
@@ -1223,8 +1265,16 @@ function DetailPageContent({
 
   // 위험 센서가 하나라도 있는지 체크
   const hasDanger = useMemo(() => {
-    return vibrationSensors.some((sensor) => sensor.status === 'danger');
-  }, [vibrationSensors]);
+    // 진동센서 위험
+    const vibrationDanger = vibrationSensors.some(
+      (sensor) => sensor.status === 'danger'
+    );
+    // 가스 위험
+    const gasDanger = gasStatusArr.some((val) => val === 1);
+    // 화재 위험
+    const fireDanger = fireStatusArr.some((val) => val === 1);
+    return vibrationDanger || gasDanger || fireDanger;
+  }, [vibrationSensors, gasStatusArr, fireStatusArr]);
 
   // 진동 센서의 임계값을 가져오는 함수
   const getLocalVibrationThreshold = (sensorId: string): number => {

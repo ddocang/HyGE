@@ -281,7 +281,7 @@ const NewsSection: React.FC = () => {
           <NewsCard
             onClick={() =>
               window.open(
-                'https://zdnet.co.kr/view/?no=20250314165552',
+                'https://www.h2news.kr/news/articleView.html?idxno=13383',
                 '_blank'
               )
             }
@@ -301,10 +301,9 @@ const NewsSection: React.FC = () => {
               />
             </ImageWrapper>
             <NewsTitle>
-              정부, '전기안전관리 기본계획' 첫 수립…실시간 원격 전기안전
-              모니터링 시스템 구축
+              강원TP, 안전모니터링 시스템 개발로 수소충전소 안전성 강화
             </NewsTitle>
-            <NewsDate>2025.03.14</NewsDate>
+            <NewsDate>2025.05.08</NewsDate>
           </NewsCard>
         </NewsGrid>
       </Content>

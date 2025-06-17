@@ -580,14 +580,14 @@ function DetailPageContent({ params }: { params: { id: string } }) {
   const plcToMms = (value: number, sensorId?: string | number) => {
     const clamped = Math.max(0, Math.min(4000, Number(value)));
 
-    // 진동감지기1 (0~10 mm/s)
+    // 진동감지기1 (0~19.6 m/s²)
     if (
       sensorId === '진동감지기1' ||
       sensorId === 'vibration2-1' ||
       sensorId === 12 ||
       sensorId === '12'
     ) {
-      return (clamped / 4000) * 10;
+      return (clamped / 4000) * 19.6;
     }
     // 진동감지기2 (0~50 mm/s)
     if (

@@ -25,11 +25,8 @@ export const NavLinkStyle = styled.a<{ active?: boolean }>`
   && {
     font-family: 'Pretendard';
     font-size: 15px;
-    font-weight: 400;
-    color: ${({ active }) =>
-      active
-        ? colors.theme.light.text.primary
-        : colors.theme.light.text.secondary};
+    font-weight: 400 !important;
+    color: #222 !important;
     text-decoration: none;
     position: relative;
     padding: 8px 16px;
@@ -41,15 +38,15 @@ export const NavLinkStyle = styled.a<{ active?: boolean }>`
     cursor: pointer;
     background: ${({ active }) =>
       active ? 'rgba(96, 165, 250, 0.18)' : 'transparent'};
-    border: 1px solid ${colors.theme.light.border};
+    border: 1px solid #e2e8f0;
     backdrop-filter: blur(8px);
 
     &:hover {
-      color: #2563eb;
-      border-color: #2563eb;
-      background: rgba(96, 165, 250, 0.28);
+      color: #222 !important;
+      border-color: #222;
+      background: rgba(96, 165, 250, 0.18);
       svg {
-        color: #2563eb;
+        color: #222 !important;
       }
     }
 
@@ -57,26 +54,21 @@ export const NavLinkStyle = styled.a<{ active?: boolean }>`
       width: 18px;
       height: 18px;
       transition: all 0.2s ease;
-      color: ${({ active }) =>
-        active
-          ? colors.theme.light.text.primary
-          : colors.theme.light.text.secondary};
+      color: #222 !important;
     }
 
     html.dark & {
-      color: ${({ active }) =>
-        active
-          ? colors.theme.dark.text.primary
-          : colors.theme.dark.text.secondary};
+      color: #222 !important;
       background: ${({ active }) =>
-        active ? colors.theme.dark.surface : 'transparent'};
-      border: 1px solid ${colors.theme.dark.border};
+        active ? 'rgba(96, 165, 250, 0.18)' : 'transparent'};
+      border: none;
+      font-weight: 400 !important;
       &:hover {
-        color: #ffffff;
-        border-color: rgba(255, 255, 255, 0.3);
-        background: rgba(255, 255, 255, 0.1);
+        color: #222 !important;
+        border-color: #222;
+        background: rgba(96, 165, 250, 0.18);
         svg {
-          color: #ffffff;
+          color: #222 !important;
         }
       }
     }
@@ -86,24 +78,23 @@ export const NavLinkStyle = styled.a<{ active?: boolean }>`
 export const LogButton = styled(NavLinkStyle)`
   && {
     svg {
-      color: ${({ active }) =>
-        active ? '#2563eb' : colors.theme.light.text.secondary};
+      color: #222 !important;
     }
     &:hover {
       svg {
-        color: #2563eb;
+        color: #222 !important;
       }
     }
     html.dark & {
       svg {
-        color: ${({ active }) =>
-          active ? '#ffffff' : 'rgba(255, 255, 255, 0.7)'};
+        color: #222 !important;
       }
       &:hover {
         svg {
-          color: #ffffff;
+          color: #222 !important;
         }
       }
+      border: none;
     }
   }
 `;
@@ -111,33 +102,33 @@ export const LogButton = styled(NavLinkStyle)`
 export const UpdateTime = styled.div`
   font-family: 'Pretendard';
   font-size: 14px;
-  color: #2563eb;
+  color: #475569 !important;
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #e0ecff;
+  background: transparent !important;
   padding: 8px 16px;
   border-radius: 8px;
   backdrop-filter: blur(8px);
-  border: 1px solid #bae6fd;
+  border: 1px solid #e2e8f0 !important;
 
   &:before {
     content: '';
     display: block;
     width: 6px;
     height: 6px;
-    background: #60a5fa;
+    background: #222 !important;
     border-radius: 50%;
-    box-shadow: 0 0 12px #bae6fd;
+    box-shadow: 0 0 12px #222;
   }
 
   html.dark & {
-    color: rgba(255, 255, 255, 0.9);
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff !important;
+    background: transparent !important;
+    border: none !important;
     &:before {
-      background: #ffffff;
-      box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+      background: #fff !important;
+      box-shadow: 0 0 12px #fff;
     }
   }
 

@@ -269,18 +269,12 @@ export default function MonitoringPage() {
 
   // Supabase에서 초기 센서 데이터 로드 함수
   const fetchInitialSensorData = async () => {
-    console.log('Supabase 초기 센서 데이터 로드 시작');
     try {
-      console.log('API 호출: /api/supabase-sensor-status');
       const res = await fetch('/api/supabase-sensor-status');
       const json = await res.json();
-      console.log('API 응답:', json);
 
       if (res.ok && json.data && json.data.length > 0) {
-        console.log('유효한 데이터 수:', json.data.length);
-        // 가장 최근 데이터 기준으로 상태 설정
         json.data.forEach((record: { topic_id: string; data: any }) => {
-          console.log('처리 중인 레코드:', record.topic_id);
           const topicId = record.topic_id;
           const mqtt = record.data; // 바로 data 객체 사용 (이미 파싱되어 있음)
           const id =
@@ -292,8 +286,6 @@ export default function MonitoringPage() {
               const gdetArr = (mqtt.gdet || '').split(',').map(Number);
               const fdetArr = (mqtt.fdet || '').split(',').map(Number);
               const barrArr = (mqtt.barr || '').split(',').map(Number);
-
-              console.log('파싱된 데이터:', { gdetArr, fdetArr, barrArr });
 
               const gasStatus =
                 gdetArr.length && gdetArr.some((v: number) => v === 1)
@@ -352,12 +344,6 @@ export default function MonitoringPage() {
                 vibrationStatus = 'normal';
               }
 
-              console.log('계산된 상태:', {
-                gasStatus,
-                fireStatus,
-                vibrationStatus,
-              });
-
               // 상태 업데이트
               setFacilityStatusList((prev) =>
                 prev.map((item) =>
@@ -371,19 +357,18 @@ export default function MonitoringPage() {
                     : item
                 )
               );
-              console.log(`ID ${id} 상태 업데이트 완료`);
             } catch (e) {
-              console.error('데이터 파싱 오류:', e);
+              // console.error('데이터 파싱 오류:', e);
             }
           } else {
-            console.log('처리할 수 없는 레코드:', { id, hasData: !!mqtt });
+            // console.log('처리할 수 없는 레코드:', { id, hasData: !!mqtt });
           }
         });
       } else {
-        console.error('API 응답에 유효한 데이터가 없음:', res.status, json);
+        // console.error('API 응답에 유효한 데이터가 없음:', res.status, json);
       }
     } catch (error) {
-      console.error('초기 센서 상태 로딩 오류:', error);
+      // console.error('초기 센서 상태 로딩 오류:', error);
     }
   };
 

@@ -22,7 +22,7 @@ function connectWebSocket() {
   );
 
   ws.on('open', () => {
-    console.log('✅ WebSocket 연결 성공');
+    // console.log('✅ WebSocket 연결 성공');
   });
 
   ws.on('message', async (data) => {
@@ -53,23 +53,23 @@ function connectWebSocket() {
           .from('realtime_data')
           .insert([filtered]);
         if (error) {
-          console.error('Supabase 저장 에러:', error);
+          // console.error('Supabase 저장 에러:', error);
         } else {
-          console.log('Supabase 저장 성공:', filtered);
+          // console.log('Supabase 저장 성공:', filtered);
         }
       }
     } catch (e) {
-      console.error('파싱/저장 에러:', e);
+      // console.error('파싱/저장 에러:', e);
     }
   });
 
   ws.on('close', () => {
-    console.log('🔒 WebSocket 연결 종료, 5초 후 재연결 시도');
+    // console.log('🔒 WebSocket 연결 종료, 5초 후 재연결 시도');
     setTimeout(connectWebSocket, 5000);
   });
 
   ws.on('error', (err) => {
-    console.error('❌ WebSocket 오류:', err);
+    // console.error('❌ WebSocket 오류:', err);
     try {
       ws.close();
     } catch (e) {}
@@ -89,5 +89,5 @@ app.get('/healthz', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`서버가 ${PORT}번 포트에서 실행 중`);
+  // console.log(`서버가 ${PORT}번 포트에서 실행 중`);
 });

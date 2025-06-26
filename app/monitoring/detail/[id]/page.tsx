@@ -24,7 +24,6 @@ import {
   TitleContainer,
   Title,
   Subtitle,
-  UpdateTime,
   ContentSection,
   MapSection,
   LeftColumn,
@@ -83,6 +82,7 @@ import {
 import VibrationThresholdModal from '@/components/VibrationThresholdModal';
 import { VIBRATION_SENSORS } from './constants/sensors';
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+import { UpdateTime } from './styles/MainMenu.styles';
 
 const supabase = createSupabaseClient(
   'https://wxsmvftivxerlchikwpl.supabase.co',
@@ -1708,67 +1708,43 @@ function DetailPageContent({
             <MainMenu>
               <ThemeToggleButton />
               {/* 진동값보기 버튼을 모드전환과 홈버튼 사이에 위치 */}
-              <button
-                style={{
-                  margin: '0 6px',
-                  padding: '8px 16px',
-                  background: 'transparent',
-                  border: 'none',
-                  color: document.documentElement.classList.contains('dark')
-                    ? 'rgba(255,255,255,0.7)'
-                    : '#475569',
-                  fontFamily: 'Pretendard',
-                  fontSize: 15,
-                  fontWeight: 400,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  transition: 'all 0.2s',
-                }}
+              <NavLinkStyle
+                as="button"
                 onClick={() => setShowVibrationThresholdModal(true)}
-                onMouseOver={(e) => {
-                  const isDark =
-                    document.documentElement.classList.contains('dark');
-                  e.currentTarget.style.color = isDark ? '#fff' : '#2563eb';
-                }}
-                onMouseOut={(e) => {
-                  const isDark =
-                    document.documentElement.classList.contains('dark');
-                  e.currentTarget.style.color = isDark
-                    ? 'rgba(255,255,255,0.7)'
-                    : '#475569';
-                }}
+                style={{ display: 'flex', alignItems: 'center', gap: 6 }}
               >
-                {/* 경고+설정 아이콘 */}
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 2L2 20h20L12 2z" fill="#FB8B24" opacity="0.18" />
+                  <path
+                    d="M12 2L2 20h20L12 2z"
+                    fill="currentColor"
+                    opacity="0.18"
+                  />
                   <path
                     d="M12 8v4"
-                    stroke="#FB8B24"
+                    stroke="currentColor"
                     strokeWidth="2"
                     strokeLinecap="round"
                   />
-                  <circle cx="12" cy="16" r="1.2" fill="#FB8B24" />
+                  <circle cx="12" cy="16" r="1.2" fill="currentColor" />
                   <g>
                     <circle
                       cx="18"
                       cy="6"
                       r="2"
                       fill="#fff"
-                      stroke="#FB8B24"
+                      stroke="currentColor"
                       strokeWidth="1.5"
                     />
                     <path
                       d="M18 4.5v3M16.5 6h3"
-                      stroke="#FB8B24"
+                      stroke="currentColor"
                       strokeWidth="1.2"
                       strokeLinecap="round"
                     />
                   </g>
                 </svg>
                 진동값설정
-              </button>
+              </NavLinkStyle>
               {/* 경고 로그 버튼 추가 */}
               <LogButton as="button" onClick={() => setIsLogOpen(true)}>
                 <svg
@@ -1835,6 +1811,61 @@ function DetailPageContent({
                 전단계
               </NavLinkStyle>
               <UpdateTime>업데이트: {lastUpdateTime}</UpdateTime>
+              <NavLinkStyle
+                as="a"
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const popupWidth = 1024;
+                  const popupHeight = 600;
+                  const left =
+                    window.screenX + (window.outerWidth - popupWidth) / 2;
+                  const top =
+                    window.screenY + (window.outerHeight - popupHeight) / 2;
+                  window.open(
+                    '/cctv',
+                    'cctvPopup',
+                    `width=${popupWidth},height=${popupHeight},left=${left},top=${top},menubar=no,toolbar=no,location=no,status=no`
+                  );
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  width="20"
+                  height="20"
+                >
+                  <rect
+                    x="2"
+                    y="7"
+                    width="15"
+                    height="10"
+                    rx="2"
+                    fill="#222"
+                    fillOpacity="0.18"
+                    stroke="#222"
+                    strokeWidth="1.5"
+                  />
+                  <circle cx="9.5" cy="12" r="2.5" fill="#222" />
+                  <rect
+                    x="17"
+                    y="10"
+                    width="4"
+                    height="4"
+                    rx="1"
+                    fill="#222"
+                    stroke="#222"
+                    strokeWidth="1.2"
+                  />
+                </svg>
+                CCTV
+              </NavLinkStyle>
             </MainMenu>
           )}
         </GNB>

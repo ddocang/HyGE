@@ -49,7 +49,6 @@ export default function CCTVPage() {
     >
       <video
         ref={videoRef}
-        controls
         autoPlay
         muted
         style={{

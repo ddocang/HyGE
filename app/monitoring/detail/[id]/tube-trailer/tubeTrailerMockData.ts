@@ -1,12 +1,3 @@
-// 고정된 좌표 데이터
-const fixedLocations = [
-  { lat: 37.459038, lng: 129.173147 }, // 삼척
-  { lat: 37.429459, lng: 129.183383 }, // 삼척
-  { lat: 37.331786, lng: 127.85055 }, // 원주
-  { lat: 38.217643, lng: 128.563388 }, // 속초
-  { lat: 37.459092, lng: 129.173482 }, // 삼척
-];
-
 // 상태값 매핑 함수 (정상, 경고, 비활성만)
 export function getStatusType(value: string) {
   if (value === '정상') return 'normal';
@@ -19,8 +10,8 @@ export const tubeTrailerMockData = [
   {
     id: '1',
     carNo: '7780',
-    lat: 37.459056,
-    lng: 129.173353,
+    lat: 37.459058,
+    lng: 129.173348,
     coupling: '비활성',
     landingGearL: '비활성',
     landingGearR: '비활성',

@@ -1,456 +1,331 @@
-/// <reference path="../../../../../app/types/global.d.ts" />
+'use client';
 
-import { useEffect, useState, useMemo } from 'react';
-import styled, { createGlobalStyle } from 'styled-components';
-import {
-  GoogleMap,
-  useLoadScript,
-  InfoWindow,
-  Libraries,
-  MarkerF,
-} from '@react-google-maps/api';
-import { tubeTrailerMockData } from './tubeTrailerMockData';
-import { Truck, Link2, Anchor, Disc, Gauge, Droplets } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
 
-const libraries: Libraries = ['places', 'marker'];
-
-// InfoWindow 닫기 버튼 숨기기 위한 전역 스타일
-const GlobalStyle = createGlobalStyle`
-  .gm-ui-hover-effect {
-    display: none !important;
-  }
-  
-  .gm-style-iw {
-    padding: 0 !important;
-    border-radius: 8px !important;
-  }
-  
-  .gm-style-iw-d {
-    overflow: hidden !important;
-    padding: 0 !important;
-    border-radius: 8px !important;
-  }
-  
-  .gm-style-iw-c {
-    padding: 0 !important;
-    border-radius: 8px !important;
-  }
-
-  .gm-style-iw-ch {
-    padding: 0 !important;
-    margin: 0 !important;
-  }
-
-  /* InfoWindow 테두리 스타일 수정 */
-  .gm-style .gm-style-iw-tc {
-    display: none !important;
-  }
-`;
-
-const MapContainer = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border-radius: 16px;
-  overflow: hidden;
-
-  @media (max-width: 768px) {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    height: 400px;
-  }
-`;
-
-const MarkerLabel = styled.div`
-  background: #ffffff;
-  padding: 4px 8px;
-  border-radius: 4px;
-  border: 1px solid #e0e0e0;
-  font-size: 12px;
-  font-weight: 500;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-`;
-
-const InfoWindowContent = styled.div`
-  padding: 0;
-  margin: 0;
-  font-family: 'Pretendard', sans-serif;
-  overflow: hidden;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-`;
-
-const InfoTitle = styled.div`
-  font-size: 14px;
-  font-weight: 600;
-  color: #1a1a1a;
-  padding: 8px 12px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(4px);
-  margin: 0;
-`;
-
-const InfoBody = styled.div`
-  padding: 0;
-  margin: 0;
-  font-size: 13px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(8px);
-  border-radius: 8px;
-  overflow: hidden;
-`;
-
-const InfoRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 0;
-  padding: 6px 12px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-
-  &:last-child {
-    margin: 0;
-    border-bottom: none;
-  }
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.02);
-  }
-`;
-
-const InfoLabelWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
-
-const InfoIcon = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #666;
-  width: 16px;
-  height: 16px;
-`;
-
-const InfoLabel = styled.span`
-  color: #333333;
-  margin: 0;
-  font-weight: 500;
-  font-size: 12px;
-`;
-
-const InfoValue = styled.span`
-  color: #000000;
-  font-weight: 600;
-  margin: 0;
-  font-size: 13px;
-`;
-
-const containerStyle = {
-  width: '100%',
-  height: '100%',
-  borderRadius: '12px',
-};
-
-const defaultCenter = {
-  lat: 37.459056,
-  lng: 129.173353,
-};
-
-interface TubeTrailerMapProps {
-  selectedVehicleId?: string;
-  onMarkerClick?: (trailer: (typeof tubeTrailerMockData)[0]) => void;
+interface TubeTrailerMarker {
+  id: string;
+  carNo: string;
+  coupling: string;
+  landingGearL: string;
+  landingGearR: string;
+  tBrake: string;
+  gasSensor: string;
+  lat: number;
+  lng: number;
+  latitude?: number;
+  longitude?: number;
+  backgroundColor?: string;
+  info?: string;
 }
 
-const TubeTrailerMap: React.FC<TubeTrailerMapProps> = ({
+interface TubeTrailerMapProps {
+  center: { latitude: number; longitude: number };
+  markers: TubeTrailerMarker[];
+  selectedVehicleId: string | null;
+  onMarkerClick?: (id: string) => void;
+}
+
+const TubeTrailerMap = ({
+  center,
+  markers,
   selectedVehicleId,
   onMarkerClick,
-}) => {
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
-    libraries,
-  });
+}: TubeTrailerMapProps) => {
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstance = useRef<any>(null);
+  const markerInstances = useRef<any[]>([]);
+  const infoWindowRef = useRef<any>(null);
 
-  const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [selectedTrailer, setSelectedTrailer] = useState<
-    (typeof tubeTrailerMockData)[0] | null
-  >(null);
-  const [isMobile, setIsMobile] = useState(false);
-  const [isTablet, setIsTablet] = useState(false);
-
-  // 반응형 디자인을 위한 화면 크기 감지
   useEffect(() => {
-    const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 768);
-      setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1024);
-    };
+    if (!window.naver?.maps || !mapRef.current) return;
 
-    checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
+    // 지도 생성
+    mapInstance.current = new window.naver.maps.Map(mapRef.current, {
+      center: new window.naver.maps.LatLng(center.latitude, center.longitude),
+      zoom: 14,
+      mapTypeId: window.naver.maps.MapTypeId.SATELLITE,
+    });
 
-    return () => {
-      window.removeEventListener('resize', checkScreenSize);
-    };
-  }, []);
-
-  // 화면 크기에 따른 지도 스타일 조정
-  const mapContainerStyle = useMemo(
-    () => ({
-      width: '100%',
-      height: isMobile ? '400px' : isTablet ? '600px' : '100%',
-      borderRadius: '12px',
-    }),
-    [isMobile, isTablet]
-  );
-
-  // 화면 크기에 따른 초기 줌 레벨 조정
-  const initialZoom = useMemo(() => (isMobile ? 16 : 17), [isMobile]);
-
-  // 지도 초기화 시 모든 마커가 보이도록 설정
-  useEffect(() => {
-    if (map) {
-      const bounds = new google.maps.LatLngBounds();
-      tubeTrailerMockData.forEach((trailer) => {
-        bounds.extend({ lat: trailer.lat, lng: trailer.lng });
+    // 마커 생성
+    markerInstances.current = markers.map((marker) => {
+      // 다이아몬드(회전 사각형) 마커 SVG (테두리 빛 효과 제거)
+      const markerSvg = `
+        <svg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'>
+          <rect x='12' y='12' width='32' height='32' rx='6' fill='${
+            marker.backgroundColor || '#ffd6e0'
+          }' stroke='#111' stroke-width='4' transform='rotate(45 28 28)'/>
+          <text x='50%' y='54%' text-anchor='middle' dominant-baseline='central' font-size='12' font-family='Pretendard,sans-serif' font-weight='bold' fill='#111'>${
+            marker.carNo
+          }</text>
+        </svg>
+      `;
+      const markerIconUrl = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(
+        markerSvg
+      )}`;
+      // 10미터 아래(남쪽) + 3미터 왼쪽(서쪽)으로 이동: 위도(lat) -0.00009, 경도(lng) -0.000034
+      const latOffset = 0.00009;
+      const lngOffset = 0.000034;
+      const nMarker = new window.naver.maps.Marker({
+        position: new window.naver.maps.LatLng(
+          (typeof marker.latitude === 'number'
+            ? marker.latitude
+            : typeof marker.lat === 'number'
+            ? marker.lat
+            : 0) - latOffset,
+          (typeof marker.longitude === 'number'
+            ? marker.longitude
+            : typeof marker.lng === 'number'
+            ? marker.lng
+            : 0) - lngOffset
+        ),
+        map: mapInstance.current!,
+        icon: {
+          url: markerIconUrl,
+          size: new window.naver.maps.Size(56, 56),
+          scaledSize: new window.naver.maps.Size(56, 56),
+        },
       });
-      map.fitBounds(bounds);
 
-      // 줌 레벨 조정 (약간 줌 아웃)
-      setTimeout(() => {
-        map.setZoom(initialZoom);
-      }, 100);
-    }
-  }, [map, initialZoom]);
+      window.naver.maps.Event.addListener(nMarker, 'click', () => {
+        if (onMarkerClick) onMarkerClick(marker.id);
+        if (infoWindowRef.current) {
+          infoWindowRef.current.close();
+        }
+        // 세련된 카드 스타일 InfoWindow
+        const cardHtml = `
+          <div style="
+            font-family:'Pretendard',sans-serif;
+            min-width:200px; max-width:270px;
+            border-radius:40px;
+            padding:14px 0 10px 0;
+          ">
+            <div style="display:flex;align-items:center;gap:8px;padding:0 20px 10px 20px;">
+              <span style="font-size:20px;">🚚</span>
+              <span style="font-size:14px;color:#6b7684;">차량번호</span>
+              <span style="margin-left:auto;background:${
+                marker.backgroundColor ?? '#ffd6e0'
+              };color:#222;font-weight:800;padding:3px 14px;border-radius:9px;font-size:17px;box-shadow:0 1px 6px rgba(0,0,0,0.07);letter-spacing:1px;">${
+          marker.carNo
+        }</span>
+            </div>
+            <div style="border-top:1.5px solid #f1f3f7;margin:0 18px 0 18px;"></div>
+            <div style="padding:8px 0 0 0;">
+              <div style="display:flex;align-items:center;gap:10px;padding:7px 20px;">
+                <span style="font-size:16px;">🔗</span>
+                <span style="font-size:13px;color:#6b7684;">커플링</span>
+                <span style="margin-left:auto;font-size:13px;color:#3b4252;font-weight:600;">${
+                  marker.coupling
+                }</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:7px 20px;">
+                <span style="font-size:16px;">⚓️</span>
+                <span style="font-size:13px;color:#6b7684;">랜딩기어(L)</span>
+                <span style="margin-left:auto;font-size:13px;color:#3b4252;font-weight:600;">${
+                  marker.landingGearL
+                }</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:7px 20px;">
+                <span style="font-size:16px;">⚓️</span>
+                <span style="font-size:13px;color:#6b7684;">랜딩기어(R)</span>
+                <span style="margin-left:auto;font-size:13px;color:#3b4252;font-weight:600;">${
+                  marker.landingGearR
+                }</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:7px 20px;">
+                <span style="font-size:16px;">⭕️</span>
+                <span style="font-size:13px;color:#6b7684;">P/Brake</span>
+                <span style="margin-left:auto;font-size:13px;color:#3b4252;font-weight:600;">${
+                  marker.tBrake
+                }</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:7px 20px;">
+                <span style="font-size:16px;">🔥</span>
+                <span style="font-size:13px;color:#6b7684;">가스감지기</span>
+                <span style="margin-left:auto;font-size:13px;color:#3b4252;font-weight:600;">${
+                  marker.gasSensor
+                }</span>
+              </div>
+            </div>
+          </div>
+        `;
+        infoWindowRef.current = new window.naver.maps.InfoWindow({
+          content: cardHtml,
+          maxWidth: 260,
+        });
+        infoWindowRef.current.open(mapInstance.current, nMarker);
+      });
 
-  // 선택된 차량이 변경될 때 지도 이동
-  useEffect(() => {
-    if (map && selectedVehicleId) {
-      const trailer = tubeTrailerMockData.find(
-        (t) => t.id === selectedVehicleId
+      return nMarker;
+    });
+
+    // 모든 마커가 보이도록 bounds 계산 및 적용
+    if (markers.length > 0) {
+      const first = markers[0];
+      const bounds = new window.naver.maps.LatLngBounds(
+        new window.naver.maps.LatLng(
+          typeof first.latitude === 'number'
+            ? first.latitude
+            : typeof first.lat === 'number'
+            ? first.lat
+            : 0,
+          typeof first.longitude === 'number'
+            ? first.longitude
+            : typeof first.lng === 'number'
+            ? first.lng
+            : 0
+        ),
+        new window.naver.maps.LatLng(
+          typeof first.latitude === 'number'
+            ? first.latitude
+            : typeof first.lat === 'number'
+            ? first.lat
+            : 0,
+          typeof first.longitude === 'number'
+            ? first.longitude
+            : typeof first.lng === 'number'
+            ? first.lng
+            : 0
+        )
       );
-      if (trailer) {
-        map.panTo({ lat: trailer.lat, lng: trailer.lng });
-        map.setZoom(isMobile ? 17 : 18); // 화면 크기에 따른 줌 레벨 조정
-        setSelectedTrailer(trailer);
-      }
-    }
-  }, [selectedVehicleId, map, isMobile]);
-
-  // 지도 클릭 이벤트 핸들러 추가
-  useEffect(() => {
-    if (map) {
-      const clickListener = map.addListener('click', () => {
-        setSelectedTrailer(null);
+      markers.forEach((marker) => {
+        bounds.extend(
+          new window.naver.maps.LatLng(
+            typeof marker.latitude === 'number'
+              ? marker.latitude
+              : typeof marker.lat === 'number'
+              ? marker.lat
+              : 0,
+            typeof marker.longitude === 'number'
+              ? marker.longitude
+              : typeof marker.lng === 'number'
+              ? marker.lng
+              : 0
+          )
+        );
       });
+      mapInstance.current.fitBounds(bounds);
+      // fitBounds 후 2단계 줌 아웃
+      const currentZoom = mapInstance.current.getZoom();
+      mapInstance.current.setZoom(currentZoom - 2);
+    }
+
+    // 지도 클릭 시 말풍선 닫기
+    if (window.naver?.maps && mapInstance.current) {
+      const handleMapClick = () => {
+        if (infoWindowRef.current) infoWindowRef.current.close();
+      };
+      const listener = window.naver.maps.Event.addListener(
+        mapInstance.current,
+        'click',
+        handleMapClick
+      );
+      // cleanup 시 리스너 제거
       return () => {
-        google.maps.event.removeListener(clickListener);
+        try {
+          if (window.naver?.maps && mapInstance.current) {
+            window.naver.maps.Event.removeListener(
+              mapInstance.current,
+              'click',
+              handleMapClick
+            );
+          }
+        } catch (e) {
+          // 이미 destroy된 경우 등 예외 무시
+        }
+        markerInstances.current.forEach((m) => m.setMap(null));
+        if (mapInstance.current) mapInstance.current.destroy();
+        if (infoWindowRef.current) infoWindowRef.current.close();
       };
     }
-  }, [map]);
 
-  if (loadError) {
-    return <div>지도를 불러오는데 실패했습니다.</div>;
-  }
+    // 기존 cleanup
+    return () => {
+      markerInstances.current.forEach((m) => m.setMap(null));
+      mapInstance.current?.destroy();
+      if (infoWindowRef.current) infoWindowRef.current.close();
+    };
+  }, [center, markers, selectedVehicleId, onMarkerClick]);
 
-  if (!isLoaded) {
-    return <div>지도를 불러오는 중...</div>;
-  }
-
-  const handleMarkerClick = (trailer: (typeof tubeTrailerMockData)[0]) => {
-    setSelectedTrailer(trailer);
-    if (onMarkerClick) {
-      onMarkerClick(trailer);
+  useEffect(() => {
+    if (
+      !window.naver?.maps ||
+      !mapInstance.current ||
+      !markerInstances.current.length
+    )
+      return;
+    if (!selectedVehicleId) {
+      if (infoWindowRef.current) infoWindowRef.current.close();
+      return;
     }
-    if (map) {
-      map.panTo({ lat: trailer.lat, lng: trailer.lng });
-      map.setZoom(isMobile ? 17 : 18); // 화면 크기에 따른 줌 레벨 조정
-    }
-  };
+    const idx = markers.findIndex((m) => m.id === selectedVehicleId);
+    if (idx === -1) return;
+    const marker = markers[idx];
+    const nMarker = markerInstances.current[idx];
+    if (infoWindowRef.current) infoWindowRef.current.close();
+    const cardHtml = `
+      <div style="
+        font-family:'Pretendard',sans-serif;
+        min-width:200px; max-width:270px;
+        border-radius:40px;
+        padding:14px 0 10px 0;
+      ">
+        <div style="display:flex;align-items:center;gap:8px;padding:0 20px 10px 20px;">
+          <span style="font-size:20px;">🚚</span>
+          <span style="font-size:14px;color:#6b7684;">차량번호</span>
+          <span style="margin-left:auto;background:${
+            marker.backgroundColor ?? '#ffd6e0'
+          };color:#222;font-weight:800;padding:3px 14px;border-radius:9px;font-size:17px;box-shadow:0 1px 6px rgba(0,0,0,0.07);letter-spacing:1px;">${
+      marker.carNo
+    }</span>
+        </div>
+        <div style="border-top:1.5px solid #f1f3f7;margin:0 18px 0 18px;"></div>
+        <div style="padding:8px 0 0 0;">
+          <div style="display:flex;align-items:center;gap:10px;padding:7px 20px;">
+            <span style="font-size:16px;">🔗</span>
+            <span style="font-size:13px;color:#6b7684;">커플링</span>
+            <span style="margin-left:auto;font-size:13px;color:#3b4252;font-weight:600;">${
+              marker.coupling
+            }</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:7px 20px;">
+            <span style="font-size:16px;">⚓️</span>
+            <span style="font-size:13px;color:#6b7684;">랜딩기어(L)</span>
+            <span style="margin-left:auto;font-size:13px;color:#3b4252;font-weight:600;">${
+              marker.landingGearL
+            }</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:7px 20px;">
+            <span style="font-size:16px;">⚓️</span>
+            <span style="font-size:13px;color:#6b7684;">랜딩기어(R)</span>
+            <span style="margin-left:auto;font-size:13px;color:#3b4252;font-weight:600;">${
+              marker.landingGearR
+            }</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:7px 20px;">
+            <span style="font-size:16px;">⭕️</span>
+            <span style="font-size:13px;color:#6b7684;">P/Brake</span>
+            <span style="margin-left:auto;font-size:13px;color:#3b4252;font-weight:600;">${
+              marker.tBrake
+            }</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:7px 20px;">
+            <span style="font-size:16px;">🔥</span>
+            <span style="font-size:13px;color:#6b7684;">가스감지기</span>
+            <span style="margin-left:auto;font-size:13px;color:#3b4252;font-weight:600;">${
+              marker.gasSensor
+            }</span>
+          </div>
+        </div>
+      </div>
+    `;
+    infoWindowRef.current = new window.naver.maps.InfoWindow({
+      content: cardHtml,
+      maxWidth: 260,
+    });
+    infoWindowRef.current.open(mapInstance.current, nMarker);
+  }, [selectedVehicleId, markers]);
 
-  return (
-    <MapContainer>
-      <GlobalStyle />
-      <GoogleMap
-        mapContainerStyle={mapContainerStyle}
-        center={defaultCenter}
-        zoom={initialZoom}
-        onLoad={setMap}
-        options={{
-          disableDefaultUI: true,
-          zoomControl: !isMobile, // 모바일에서는 줌 컨트롤 숨기기
-          scrollwheel: true,
-          mapTypeId: 'hybrid',
-          styles: [
-            {
-              featureType: 'poi',
-              elementType: 'labels',
-              stylers: [{ visibility: 'off' }],
-            },
-          ],
-        }}
-      >
-        {tubeTrailerMockData.map((trailer) => (
-          <MarkerF
-            key={trailer.id}
-            position={{ lat: trailer.lat, lng: trailer.lng }}
-            onClick={() => handleMarkerClick(trailer)}
-            label={{
-              text: trailer.carNo,
-              className: 'marker-label',
-              color: '#000000',
-              fontSize: '16px',
-              fontWeight: '600',
-            }}
-            icon={{
-              path: 'M 0,-20 L 20,0 L 0,20 L -20,0 Z',
-              fillColor: trailer.backgroundColor,
-              fillOpacity: 1,
-              strokeWeight: 3,
-              strokeColor: '#000000',
-              scale: 1.5,
-            }}
-          />
-        ))}
-
-        {selectedTrailer && (
-          <InfoWindow
-            position={{ lat: selectedTrailer.lat, lng: selectedTrailer.lng }}
-            options={{
-              pixelOffset: new window.google.maps.Size(0, -20),
-              disableAutoPan: false,
-              maxWidth: 240,
-              minWidth: 200,
-            }}
-          >
-            <InfoWindowContent>
-              <InfoBody>
-                <InfoRow>
-                  <InfoLabelWrapper>
-                    <InfoIcon>
-                      <Truck size={16} />
-                    </InfoIcon>
-                    <InfoLabel>차량번호</InfoLabel>
-                  </InfoLabelWrapper>
-                  <InfoValue
-                    style={{
-                      background: selectedTrailer.backgroundColor,
-                      padding: '2px 8px',
-                      borderRadius: '4px',
-                      boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
-                    }}
-                  >
-                    {selectedTrailer.carNo}
-                  </InfoValue>
-                </InfoRow>
-                <InfoRow>
-                  <InfoLabelWrapper>
-                    <InfoIcon>
-                      <Link2 size={16} />
-                    </InfoIcon>
-                    <InfoLabel>커플링</InfoLabel>
-                  </InfoLabelWrapper>
-                  <InfoValue
-                    style={{
-                      color:
-                        selectedTrailer.coupling === '비활성'
-                          ? '#999999'
-                          : '#000000',
-                      fontWeight:
-                        selectedTrailer.coupling === '비활성' ? 400 : 600,
-                    }}
-                  >
-                    {selectedTrailer.coupling}
-                  </InfoValue>
-                </InfoRow>
-                <InfoRow>
-                  <InfoLabelWrapper>
-                    <InfoIcon>
-                      <Anchor size={16} />
-                    </InfoIcon>
-                    <InfoLabel>랜딩기어(L)</InfoLabel>
-                  </InfoLabelWrapper>
-                  <InfoValue
-                    style={{
-                      color:
-                        selectedTrailer.landingGearL === '비활성'
-                          ? '#999999'
-                          : '#000000',
-                      fontWeight:
-                        selectedTrailer.landingGearL === '비활성' ? 400 : 600,
-                    }}
-                  >
-                    {selectedTrailer.landingGearL}
-                  </InfoValue>
-                </InfoRow>
-                <InfoRow>
-                  <InfoLabelWrapper>
-                    <InfoIcon>
-                      <Anchor size={16} />
-                    </InfoIcon>
-                    <InfoLabel>랜딩기어(R)</InfoLabel>
-                  </InfoLabelWrapper>
-                  <InfoValue
-                    style={{
-                      color:
-                        selectedTrailer.landingGearR === '비활성'
-                          ? '#999999'
-                          : '#000000',
-                      fontWeight:
-                        selectedTrailer.landingGearR === '비활성' ? 400 : 600,
-                    }}
-                  >
-                    {selectedTrailer.landingGearR}
-                  </InfoValue>
-                </InfoRow>
-                <InfoRow>
-                  <InfoLabelWrapper>
-                    <InfoIcon>
-                      <Disc size={16} />
-                    </InfoIcon>
-                    <InfoLabel>P/Brake</InfoLabel>
-                  </InfoLabelWrapper>
-                  <InfoValue
-                    style={{
-                      color:
-                        selectedTrailer.tBrake === '비활성'
-                          ? '#999999'
-                          : '#000000',
-                      fontWeight:
-                        selectedTrailer.tBrake === '비활성' ? 400 : 600,
-                    }}
-                  >
-                    {selectedTrailer.tBrake}
-                  </InfoValue>
-                </InfoRow>
-                <InfoRow>
-                  <InfoLabelWrapper>
-                    <InfoIcon>
-                      <Droplets size={16} />
-                    </InfoIcon>
-                    <InfoLabel>가스감지기</InfoLabel>
-                  </InfoLabelWrapper>
-                  <InfoValue
-                    style={{
-                      color:
-                        selectedTrailer.gasSensor === '비활성'
-                          ? '#999999'
-                          : '#000000',
-                      fontWeight:
-                        selectedTrailer.gasSensor === '비활성' ? 400 : 600,
-                    }}
-                  >
-                    {selectedTrailer.gasSensor}
-                  </InfoValue>
-                </InfoRow>
-              </InfoBody>
-            </InfoWindowContent>
-          </InfoWindow>
-        )}
-      </GoogleMap>
-    </MapContainer>
-  );
+  return <div ref={mapRef} style={{ width: '100%', height: '100%' }} />;
 };
 
 export default TubeTrailerMap;

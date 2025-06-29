@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Image from 'next/image';
 import Link from 'next/link';
-import { BiShieldAlt2, BiGasPump, BiLogIn, BiUserPlus } from 'react-icons/bi';
+import { BiShieldAlt2, BiGasPump, BiLogIn } from 'react-icons/bi';
 
 const BannerContainer = styled.section`
   position: relative;
@@ -384,6 +384,7 @@ const TopBanner: React.FC = () => {
   const totalPages = 3;
   const [currentBgIndex, setCurrentBgIndex] = useState(0);
   const [isAutoplay, setIsAutoplay] = useState(true);
+  const [loginId, setLoginId] = useState<string | null>(null);
 
   const backgroundImages = [
     '/images/main1.png',
@@ -401,6 +402,10 @@ const TopBanner: React.FC = () => {
       }, 6000);
     }
 
+    if (typeof window !== 'undefined') {
+      setLoginId(localStorage.getItem('loginId'));
+    }
+
     return () => clearInterval(interval);
   }, [isAutoplay]);
 
@@ -414,6 +419,13 @@ const TopBanner: React.FC = () => {
     } else {
       setCurrentBgIndex((prev) => (prev + 1) % backgroundImages.length);
       setCurrentPage((prev) => (prev % totalPages) + 1);
+    }
+  };
+
+  const handleLogout = () => {
+    if (window.confirm('로그아웃하시겠습니까?')) {
+      localStorage.removeItem('loginId');
+      window.location.reload();
     }
   };
 
@@ -455,18 +467,24 @@ const TopBanner: React.FC = () => {
           <span>HyGE</span>
         </Logo>
         <NavButtons>
-          <StyledLink href="/login">
-            <NavigationButton>
+          {loginId ? (
+            <NavigationButton
+              as="div"
+              style={{ cursor: 'pointer', background: 'rgba(255,255,255,0.1)' }}
+              onClick={handleLogout}
+              title="로그아웃"
+            >
               <BiLogIn />
-              로그인
+              로그인: {loginId.toUpperCase()}
             </NavigationButton>
-          </StyledLink>
-          <StyledLink href="/signup">
-            <NavigationButton>
-              <BiUserPlus />
-              회원가입
-            </NavigationButton>
-          </StyledLink>
+          ) : (
+            <StyledLink href="/login">
+              <NavigationButton>
+                <BiLogIn />
+                로그인
+              </NavigationButton>
+            </StyledLink>
+          )}
           <StyledLink href="/monitoring">
             <NavigationButton>
               <BiShieldAlt2 />

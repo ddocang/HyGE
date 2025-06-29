@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import TopBanner from './TopBanner';
 import TubeTrailerList from './TubeTrailerList';
-import TubeTrailerMap from './TubeTrailerMap';
 import styled from 'styled-components';
 import { colors } from '@/app/styles/colors';
 import { useParams, usePathname, useRouter } from 'next/navigation';
@@ -14,6 +13,8 @@ import {
   CloseButton,
   PopupButton,
 } from '../styles';
+import TubeTrailerMap from './TubeTrailerMap';
+import { tubeTrailerMockData } from './tubeTrailerMockData';
 
 const PageContainer = styled.div`
   display: flex;
@@ -1673,8 +1674,28 @@ const TubeTrailerPage = () => {
         </ColumnContainer>
         <TubeTrailerInfoContainer>
           <TubeTrailerMap
-            selectedVehicleId={selectedVehicleId ?? undefined}
-            onMarkerClick={(trailer) => setSelectedVehicleId(trailer.id)}
+            center={(() => {
+              if (tubeTrailerMockData.length > 0) {
+                return {
+                  latitude: tubeTrailerMockData[0].lat,
+                  longitude: tubeTrailerMockData[0].lng,
+                };
+              }
+              return { latitude: 37.5665, longitude: 126.978 };
+            })()}
+            markers={tubeTrailerMockData.map((t) => ({
+              id: t.id,
+              carNo: t.carNo,
+              coupling: t.coupling,
+              landingGearL: t.landingGearL,
+              landingGearR: t.landingGearR,
+              tBrake: t.tBrake,
+              gasSensor: t.gasSensor,
+              lat: t.lat,
+              lng: t.lng,
+              backgroundColor: t.backgroundColor,
+            }))}
+            selectedVehicleId={selectedVehicleId}
           />
         </TubeTrailerInfoContainer>
       </LayoutContainer>

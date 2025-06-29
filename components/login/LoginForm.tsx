@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { BiEnvelope, BiLock } from 'react-icons/bi';
+import { BiUserPlus } from 'react-icons/bi';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const LoginContainer = styled.div`
   width: 100%;
@@ -115,22 +117,6 @@ const LoginButton = styled.button`
   }
 `;
 
-const SignupLink = styled.p`
-  text-align: center;
-  margin-top: 1.5rem;
-  color: #666;
-
-  a {
-    color: #4a90e2;
-    text-decoration: none;
-    font-weight: 600;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-`;
-
 const ForgotPassword = styled.div`
   text-align: right;
   margin-top: -0.5rem;
@@ -149,9 +135,10 @@ const ForgotPassword = styled.div`
 
 const LoginForm: React.FC = () => {
   const [formData, setFormData] = useState({
-    email: '',
+    id: '',
     password: '',
   });
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -160,22 +147,45 @@ const LoginForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: 로그인 API 연동
-    console.log('Form submitted:', formData);
+    // 허용된 아이디 목록
+    const allowedIds = ['ge', 'kwtp', 'kd', 'ob'];
+    if (!allowedIds.includes(formData.id.trim())) {
+      alert('존재하지 않는 아이디입니다');
+      return;
+    }
+    if (formData.password !== '0000') {
+      alert('비밀번호가 올바르지 않습니다');
+      return;
+    }
+    localStorage.setItem('loginId', formData.id.trim());
+    router.push('/');
   };
 
   return (
     <LoginContainer>
       <LoginBox>
         <h1>로그인</h1>
+        <div
+          style={{
+            textAlign: 'center',
+            color: '#666',
+            fontSize: '1rem',
+            marginBottom: '1.2rem',
+            marginTop: '-1rem',
+            fontFamily: 'Pretendard',
+            fontWeight: 500,
+          }}
+        >
+          로그인하기 위해서는 관리자 아이디를 부여받아야 합니다
+        </div>
         <Form onSubmit={handleSubmit}>
           <InputGroup>
-            <BiEnvelope />
+            <BiUserPlus />
             <input
-              type="email"
-              name="email"
-              placeholder="이메일 주소"
-              value={formData.email}
+              type="text"
+              name="id"
+              placeholder="아이디"
+              value={formData.id}
               onChange={handleChange}
               required
             />
@@ -189,16 +199,11 @@ const LoginForm: React.FC = () => {
               value={formData.password}
               onChange={handleChange}
               required
+              autoComplete="current-password"
             />
           </InputGroup>
-          <ForgotPassword>
-            <Link href="/forgot-password">비밀번호를 잊으셨나요?</Link>
-          </ForgotPassword>
           <LoginButton type="submit">로그인</LoginButton>
         </Form>
-        <SignupLink>
-          계정이 없으신가요? <Link href="/signup">회원가입</Link>
-        </SignupLink>
       </LoginBox>
     </LoginContainer>
   );

@@ -13,8 +13,14 @@ export default function useWebSocket(
 
     ws.current = new WebSocket(url);
 
+    let heartbeatInterval: NodeJS.Timeout | null = null;
+
     ws.current.onopen = () => {
       // 필요한 경우 여기에서 subscribe 메시지 보낼 수 있음
+      // 하트비트 시작
+      heartbeatInterval = setInterval(() => {
+        console.log('💓 heartbeat:', new Date().toISOString());
+      }, 30000);
     };
 
     ws.current.onmessage = (event) => {
@@ -38,14 +44,17 @@ export default function useWebSocket(
 
     ws.current.onerror = (err) => {
       // 🔒 WebSocket 오류 로그 제거
+      if (heartbeatInterval) clearInterval(heartbeatInterval);
     };
 
     ws.current.onclose = () => {
       // 🔒 WebSocket 연결 종료 로그 제거
+      if (heartbeatInterval) clearInterval(heartbeatInterval);
     };
 
     return () => {
       ws.current?.close();
+      if (heartbeatInterval) clearInterval(heartbeatInterval);
     };
   }, [url, onMessage]);
 }

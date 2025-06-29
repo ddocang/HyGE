@@ -13,6 +13,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@heroicons/react": "^2.2.0",
+    "@r2don/react-naver-map": "^0.0.21",
     "@react-google-maps/api": "^2.20.6",
     "@supabase/supabase-js": "^2.49.4",
     "axios": "^1.9.0",
@@ -28,7 +29,8 @@
     "react-naver-maps": "^0.1.4",
     "recharts": "^2.15.3",
     "styled-components": "^6.1.8",
-    "ws": "^8.13.0"
+    "ws": "^8.13.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@emotion/types": "^0.7.0",

@@ -20,9 +20,11 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@lib/*": ["app/lib/*"]
     },
-    "typeRoots": ["./node_modules/@types", "./app/types"]
+    "typeRoots": ["./node_modules/@types", "./app/types"],
+    "baseUrl": "."
   },
   "include": [
     "next-env.d.ts",

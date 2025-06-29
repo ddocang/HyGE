@@ -50,7 +50,7 @@ export default function CCTVPage() {
     >
       <video
         ref={videoRef}
-        //controls
+        controls
         autoPlay
         muted
         style={{
@@ -70,3 +70,9 @@ export default function CCTVPage() {
 }
 // cctv 명령어
 // ffmpeg -rtsp_transport tcp -i "rtsp://admin:cctv1wsx2edc@175.114.113.233:50554/Streaming/Channels/101" -c:v libx264 -c:a aac -f hls -hls_time 2 -hls_list_size 5 -hls_flags delete_segments -hls_segment_filename public/cctv/stream%d.m2ts public/cctv/stream.m3u8
+// 라즈베리파이 명령어
+// python3 cors_server.py
+// while true; do
+//  /usr/local/bin/ffmpeg -rtsp_transport tcp -i "rtsp://admin:cctv1wsx2edc@175.114.113.233:50554/Streaming/Channels/101" -c:v libx264 -c:a aac -f hls -hls_time 2 -hls_list_size 5 -hls_flags delete_segments -hls_segment_filename ~/hyge-cctv/public/cctv/stream%d.m2ts ~/hyge-cctv/public/cctv/stream.m3u8
+// sleep 2
+// done

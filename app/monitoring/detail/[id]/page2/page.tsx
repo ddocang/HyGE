@@ -83,12 +83,8 @@ import {
   getVibrationSensorKey,
 } from '@/hooks/useVibrationThresholds';
 import VibrationThresholdModal from '@/components/VibrationThresholdModal';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  'https://wxsmvftivxerlchikwpl.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4c212ZnRpdnhlcmxjaGlrd3BsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE0MTQ2MzUsImV4cCI6MjA1Njk5MDYzNX0.uv3ZYHgjppKya4V79xfaSUd0C91ehOj5gnzoWznLw7M'
-);
+import { supabase } from '@lib/supabaseClient';
+import * as XLSX from 'xlsx';
 
 // 진동 그래프 세로 배치용 컨테이너
 const VibrationGraphContainerColumn = styled(VibrationGraphContainer)`
@@ -1478,6 +1474,110 @@ function DetailPageContent({ params }: { params: { id: string } }) {
     fetchInitialVibrationData();
   }, []);
 
+  // MainMenu 내부에 다운로드 버튼 및 모달 상태 추가
+  const [downloadModalOpen, setDownloadModalOpen] = useState(false);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // 엑셀 다운로드 함수 (topic_id: BASE/P003)
+  const handleExcelDownload = async () => {
+    if (!startDate || !endDate) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const from = startDate + ' 00:00:00';
+      const to = endDate + ' 23:59:59';
+      const pad = (n: number) => n.toString().padStart(2, '0');
+      const columnOrder = [
+        'last_update_time',
+        'vibration1',
+        'vibration2',
+        'vibration3',
+        'vibration4',
+        'vibration5',
+        'vibration6',
+        'vibration7',
+        'vibration8',
+        'vibration9',
+      ];
+      let offset = 0;
+      let allData: any[] = [];
+      while (true) {
+        const { data, error } = await supabase
+          .from('realtime_data')
+          .select('*')
+          .gte('last_update_time', from)
+          .lte('last_update_time', to)
+          .eq('topic_id', 'BASE/P003')
+          .order('last_update_time', { ascending: true })
+          .range(offset, offset + 999);
+        if (error) throw error;
+        if (!data || data.length === 0) {
+          if (offset === 0) setError('다운로드할 데이터가 없습니다.');
+          break;
+        }
+        allData = allData.concat(data);
+        if (data.length < 1000) break;
+        offset += 1000;
+      }
+      if (allData.length === 0) return;
+      const dataWithKST = allData.map((row) => {
+        const newRow = { ...row };
+        if (row.last_update_time) {
+          const utcDate = new Date(row.last_update_time);
+          if (!isNaN(utcDate.getTime())) {
+            const kstDate = new Date(
+              utcDate.toLocaleString('en-US', { timeZone: 'Asia/Seoul' })
+            );
+            const yyyy = kstDate.getFullYear();
+            const mm = pad(kstDate.getMonth() + 1);
+            const dd = pad(kstDate.getDate());
+            const HH = pad(kstDate.getHours());
+            const min = pad(kstDate.getMinutes());
+            const sec = pad(kstDate.getSeconds());
+            newRow.last_update_time = `'${yyyy}-${mm}-${dd} ${HH}:${min}:${sec}`;
+          }
+        }
+        delete newRow.id;
+        delete newRow.topic_id;
+        if (newRow.barr) {
+          const arr = String(newRow.barr).split(',');
+          for (let i = 0; i < 9; i++) {
+            newRow[`vibration${i + 1}`] = arr[i] ?? '';
+          }
+          delete newRow.barr;
+        }
+        return newRow;
+      });
+      const ws_data = [
+        columnOrder,
+        ...dataWithKST.map((row) => columnOrder.map((col) => row[col] ?? '')),
+      ];
+      const ws = XLSX.utils.aoa_to_sheet(ws_data);
+      const range = XLSX.utils.decode_range(ws['!ref']!);
+      for (let R = 1; R <= range.e.r; ++R) {
+        const cell = ws[XLSX.utils.encode_cell({ r: R, c: 0 })];
+        if (cell) cell.z = 'yyyy-mm-dd hh:mm:ss';
+      }
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Data');
+      XLSX.writeFile(wb, `Vibration_data_${startDate}_${endDate}.xlsx`);
+    } catch (e: any) {
+      setError(e.message || '다운로드 중 오류 발생');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const [loginId, setLoginId] = useState<string | null>(null);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setLoginId(localStorage.getItem('loginId'));
+    }
+  }, []);
+
   return (
     <div>
       {/* 경보음 듣기 허용 팝업 */}
@@ -1506,7 +1606,7 @@ function DetailPageContent({ params }: { params: { id: string } }) {
               minWidth: 320,
             }}
           >
-            <div style={{ fontSize: 22, fontWeight: 700, marginBottom: 16 }}>
+            <div style={{ fontSize: 22, fontWeight: 'bold', marginBottom: 16 }}>
               경보음 듣기 허용
             </div>
             <div style={{ fontSize: 16, color: '#555', marginBottom: 28 }}>
@@ -1516,7 +1616,7 @@ function DetailPageContent({ params }: { params: { id: string } }) {
               style={{
                 background: '#ef4444',
                 color: '#fff',
-                fontWeight: 600,
+                fontWeight: 'bold',
                 fontSize: 16,
                 border: 'none',
                 borderRadius: 8,
@@ -1555,68 +1655,90 @@ function DetailPageContent({ params }: { params: { id: string } }) {
           {!isMobile && (
             <MainMenu>
               <ThemeToggleButton />
-              {/* 진동 위험값 설정 버튼 - 상단배너 다른 버튼들과 동일한 색상/스타일 */}
-              <button
-                style={{
-                  margin: '0 6px',
-                  padding: '8px 16px',
-                  background: 'transparent',
-                  border: 'none',
-                  color: document.documentElement.classList.contains('dark')
-                    ? 'rgba(255,255,255,0.7)'
-                    : '#475569',
-                  fontFamily: 'Pretendard',
-                  fontSize: 15,
-                  fontWeight: 400,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  transition: 'all 0.2s',
-                }}
-                onClick={() => setShowVibrationThresholdModal(true)}
-                onMouseOver={(e) => {
-                  const isDark =
-                    document.documentElement.classList.contains('dark');
-                  e.currentTarget.style.color = isDark ? '#fff' : '#2563eb';
-                }}
-                onMouseOut={(e) => {
-                  const isDark =
-                    document.documentElement.classList.contains('dark');
-                  e.currentTarget.style.color = isDark
-                    ? 'rgba(255,255,255,0.7)'
-                    : '#475569';
-                }}
-              >
-                {/* 경고+설정 아이콘 */}
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 2L2 20h20L12 2z" fill="#FB8B24" opacity="0.18" />
-                  <path
-                    d="M12 8v4"
-                    stroke="#FB8B24"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                  <circle cx="12" cy="16" r="1.2" fill="#FB8B24" />
-                  <g>
-                    <circle
-                      cx="18"
-                      cy="6"
-                      r="2"
-                      fill="#fff"
-                      stroke="#FB8B24"
-                      strokeWidth="1.5"
-                    />
-                    <path
-                      d="M18 4.5v3M16.5 6h3"
-                      stroke="#FB8B24"
-                      strokeWidth="1.2"
-                      strokeLinecap="round"
-                    />
-                  </g>
-                </svg>
-                진동값설정
-              </button>
+              {loginId && (
+                <>
+                  <NavLinkStyle
+                    as="button"
+                    onClick={() => setDownloadModalOpen(true)}
+                    style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+                  >
+                    <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
+                      <path
+                        d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"
+                        stroke="#222"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    다운로드
+                  </NavLinkStyle>
+                  <button
+                    style={{
+                      margin: '0 6px',
+                      padding: '8px 16px',
+                      background: 'transparent',
+                      border: 'none',
+                      color: document.documentElement.classList.contains('dark')
+                        ? 'rgba(255,255,255,0.7)'
+                        : '#475569',
+                      fontFamily: 'Pretendard',
+                      fontSize: 15,
+                      fontWeight: 'bold',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 6,
+                      transition: 'all 0.2s',
+                    }}
+                    onClick={() => setShowVibrationThresholdModal(true)}
+                    onMouseOver={(e) => {
+                      const isDark =
+                        document.documentElement.classList.contains('dark');
+                      e.currentTarget.style.color = isDark ? '#fff' : '#2563eb';
+                    }}
+                    onMouseOut={(e) => {
+                      const isDark =
+                        document.documentElement.classList.contains('dark');
+                      e.currentTarget.style.color = isDark
+                        ? 'rgba(255,255,255,0.7)'
+                        : '#475569';
+                    }}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M12 2L2 20h20L12 2z"
+                        fill="#222"
+                        opacity="0.18"
+                      />
+                      <path
+                        d="M12 8v4"
+                        stroke="#222"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                      <circle cx="12" cy="16" r="1.2" fill="#222" />
+                      <g>
+                        <circle
+                          cx="18"
+                          cy="6"
+                          r="2"
+                          fill="#fff"
+                          stroke="#222"
+                          strokeWidth="1.5"
+                        />
+                        <path
+                          d="M18 4.5v3M16.5 6h3"
+                          stroke="#222"
+                          strokeWidth="1.2"
+                          strokeLinecap="round"
+                        />
+                      </g>
+                    </svg>
+                    진동값설정
+                  </button>
+                </>
+              )}
               <Link href="/" passHref legacyBehavior>
                 <NavLinkStyle active={pathname === '/'}>
                   <svg
@@ -1650,6 +1772,22 @@ function DetailPageContent({ params }: { params: { id: string } }) {
                   튜브트레일러
                 </NavLinkStyle>
               </Link>
+              <NavLinkStyle
+                as="button"
+                onClick={() => setDownloadModalOpen(true)}
+                style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+              >
+                <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
+                  <path
+                    d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"
+                    stroke="#222"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                다운로드
+              </NavLinkStyle>
               <LogButton as="button" onClick={() => setIsLogOpen(true)}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -2119,7 +2257,7 @@ function DetailPageContent({ params }: { params: { id: string } }) {
                               : sensor.name.startsWith('진동감지기')
                               ? '#FB8B24'
                               : undefined,
-                            fontWeight: 700,
+                            fontWeight: 'bold',
                           }}
                         />
                       </SensorType>
@@ -2213,7 +2351,7 @@ function DetailPageContent({ params }: { params: { id: string } }) {
                       }
                     }}
                   >
-                    <span style={{ fontWeight: 700 }}>
+                    <span style={{ fontWeight: 'bold' }}>
                       {vibrationSensor.name}
                       {vibrationSensor.name === '진동감지기1'
                         ? ' (0~19.6m/s²)'
@@ -2222,7 +2360,7 @@ function DetailPageContent({ params }: { params: { id: string } }) {
                     <span
                       className="realtime-value"
                       style={{
-                        fontWeight: 700,
+                        fontWeight: 'bold',
                         fontSize: 15,
                         color: '#222',
                         marginLeft: 12,
@@ -2250,7 +2388,7 @@ function DetailPageContent({ params }: { params: { id: string } }) {
                             : '1px solid #22c55e',
                         borderRadius: 8,
                         padding: '2px 12px',
-                        fontWeight: 700,
+                        fontWeight: 'bold',
                         marginLeft: 12,
                         fontSize: 15,
                         transition: 'all 0.2s',
@@ -2711,7 +2849,7 @@ function DetailPageContent({ params }: { params: { id: string } }) {
                     const unitPart = match[2] || '';
                     return (
                       <span className="value">
-                        <span style={{ color: '#ef4444', fontWeight: 700 }}>
+                        <span style={{ color: '#ef4444', fontWeight: 'bold' }}>
                           {valuePart}
                         </span>
                         {unitPart ? (
@@ -2762,7 +2900,7 @@ function DetailPageContent({ params }: { params: { id: string } }) {
             transform: 'translate(-50%, -50%)',
             fontSize: 64,
             color: 'rgba(255,0,0,0.7)',
-            fontWeight: 900,
+            fontWeight: 'bold',
             zIndex: 9999,
             pointerEvents: 'none',
             textShadow: '0 0 16px #fff, 0 0 32px #f00',
@@ -2796,7 +2934,7 @@ function DetailPageContent({ params }: { params: { id: string } }) {
             transform: 'translate(-50%, 0)',
             background: 'linear-gradient(90deg, #ff2d55 0%, #ffb347 100%)',
             color: '#fff',
-            fontWeight: 700,
+            fontWeight: 'bold',
             fontSize: 18,
             padding: '18px 36px',
             borderRadius: 16,
@@ -2819,7 +2957,7 @@ function DetailPageContent({ params }: { params: { id: string } }) {
               border: 'none',
               color: '#fff',
               fontSize: 24,
-              fontWeight: 900,
+              fontWeight: 'bold',
               marginLeft: 16,
               cursor: 'pointer',
               lineHeight: 1,
@@ -2829,6 +2967,173 @@ function DetailPageContent({ params }: { params: { id: string } }) {
           >
             ×
           </button>
+        </div>
+      )}
+      {/* 다운로드 모달 */}
+      {downloadModalOpen && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            background: 'rgba(30,40,60,0.32)',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontFamily: 'Pretendard',
+          }}
+        >
+          <div
+            style={{
+              background: 'linear-gradient(135deg, #fafdff 60%, #e0e7ef 100%)',
+              borderRadius: 24,
+              padding: '40px 32px 32px 32px',
+              boxShadow:
+                '0 8px 32px 0 rgba(37,99,235,0.13), 0 1.5px 8px 0 rgba(0,0,0,0.08)',
+              minWidth: 340,
+              maxWidth: 420,
+              width: '90vw',
+              textAlign: 'center',
+              position: 'relative',
+              fontFamily: 'Pretendard',
+              border: '1.5px solid #e0e7ef',
+              transition: 'all 0.2s',
+              overflow: 'visible',
+            }}
+          >
+            {/* 닫기(X) 버튼 */}
+            <button
+              onClick={() => setDownloadModalOpen(false)}
+              style={{
+                position: 'absolute',
+                top: 18,
+                right: 18,
+                background: 'none',
+                border: 'none',
+                fontSize: 22,
+                color: '#64748b',
+                cursor: 'pointer',
+                fontFamily: 'Pretendard',
+                padding: 0,
+                zIndex: 2,
+                transition: 'color 0.2s',
+              }}
+              aria-label="닫기"
+            >
+              ×
+            </button>
+            {/* 타이틀 */}
+            <div
+              style={{
+                fontSize: 22,
+                fontWeight: 800,
+                marginBottom: 8,
+                letterSpacing: '-0.5px',
+                color: '#222',
+                fontFamily: 'Pretendard',
+              }}
+            >
+              진동데이터 다운로드
+            </div>
+            {/* 입력 영역 */}
+            <div
+              style={{
+                marginBottom: 24,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 12,
+              }}
+            >
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                style={{
+                  fontSize: 16,
+                  padding: '10px 16px',
+                  border: '1.5px solid #2563eb',
+                  borderRadius: 8,
+                  fontFamily: 'Pretendard',
+                  background: '#f8fafc',
+                  color: '#222',
+                  outline: 'none',
+                  boxShadow: '0 1.5px 8px 0 rgba(37,99,235,0.04)',
+                  transition: 'border 0.2s',
+                  minWidth: 120,
+                }}
+              />
+              <span
+                style={{
+                  fontWeight: 700,
+                  color: '#2563eb',
+                  fontFamily: 'Pretendard',
+                  fontSize: 18,
+                }}
+              >
+                ~
+              </span>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                style={{
+                  fontSize: 16,
+                  padding: '10px 16px',
+                  border: '1.5px solid #2563eb',
+                  borderRadius: 8,
+                  fontFamily: 'Pretendard',
+                  background: '#f8fafc',
+                  color: '#222',
+                  outline: 'none',
+                  boxShadow: '0 1.5px 8px 0 rgba(37,99,235,0.04)',
+                  transition: 'border 0.2s',
+                  minWidth: 120,
+                }}
+              />
+            </div>
+            {/* 다운로드 버튼 */}
+            <button
+              style={{
+                width: '100%',
+                background: 'linear-gradient(90deg, #2563eb 0%, #60a5fa 100%)',
+                color: '#fff',
+                fontWeight: 700,
+                fontSize: 17,
+                border: 'none',
+                borderRadius: 10,
+                padding: '14px 0',
+                cursor: loading ? 'wait' : 'pointer',
+                fontFamily: 'Pretendard',
+                boxShadow: '0 2px 8px 0 rgba(37,99,235,0.10)',
+                transition: 'background 0.2s',
+                opacity: !startDate || !endDate || loading ? 0.6 : 1,
+                marginBottom: 6,
+                marginTop: 2,
+                letterSpacing: '-0.5px',
+              }}
+              onClick={handleExcelDownload}
+              disabled={!startDate || !endDate || loading}
+            >
+              {loading ? '다운로드 중...' : '엑셀 다운로드'}
+            </button>
+            {error && (
+              <div
+                style={{
+                  color: '#ef4444',
+                  fontSize: 15,
+                  marginTop: 10,
+                  fontFamily: 'Pretendard',
+                  fontWeight: 600,
+                }}
+              >
+                {error}
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

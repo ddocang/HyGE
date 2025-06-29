@@ -266,6 +266,14 @@ export default function MonitoringPage() {
   const [currentTime, setCurrentTime] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [isAutoCompleteVisible, setIsAutoCompleteVisible] = useState(false);
+  const [loginId, setLoginId] = useState<string | null>(null);
+
+  const handleLogout = () => {
+    if (window.confirm('로그아웃하시겠습니까?')) {
+      localStorage.removeItem('loginId');
+      window.location.reload();
+    }
+  };
 
   // Supabase에서 초기 센서 데이터 로드 함수
   const fetchInitialSensorData = async () => {
@@ -385,6 +393,12 @@ export default function MonitoringPage() {
     }, 1000);
 
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setLoginId(localStorage.getItem('loginId'));
+    }
   }, []);
 
   const formatTime = (date: Date) => {
@@ -594,14 +608,21 @@ export default function MonitoringPage() {
               </Link>
             </MainMenu>
             <UserMenu>
-              <button>
-                <BiLogIn />
-                로그인
-              </button>
-              <button>
-                <BiUserPlus />
-                회원가입
-              </button>
+              {loginId ? (
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  style={{ fontWeight: 500 }}
+                >
+                  <BiLogIn />
+                  로그인: {loginId.toUpperCase()}
+                </button>
+              ) : (
+                <button>
+                  <BiLogIn />
+                  로그인
+                </button>
+              )}
             </UserMenu>
           </MenuContainer>
         </GNB>

@@ -134,7 +134,7 @@ export default function VibrationThresholdModal({
           }}
           onMouseDown={handleMouseDown}
         >
-          진동 위험값(임계값) 설정
+          진동 경보 설정
         </div>
         <div
           style={{

@@ -12,17 +12,16 @@ export default function CCTVPage() {
     document.body.appendChild(script);
 
     script.onload = () => {
-      if (videoRef.current && (window as any).Hls) {
-        const Hls = (window as any).Hls;
-        if (Hls.isSupported()) {
-          const hls = new Hls();
-          hls.loadSource('/cctv/stream.m3u8');
-          hls.attachMedia(videoRef.current);
-        } else if (
-          videoRef.current.canPlayType('application/vnd.apple.mpegurl')
-        ) {
-          videoRef.current.src = '/cctv/stream.m3u8';
-        }
+      const Hls = (window as any).Hls;
+      if (videoRef.current && Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource('http://192.168.219.45:8080/cctv/stream.m3u8');
+        hls.attachMedia(videoRef.current);
+      } else if (
+        videoRef.current &&
+        videoRef.current.canPlayType('application/vnd.apple.mpegurl')
+      ) {
+        videoRef.current.src = 'http://192.168.219.45:8080/cctv/stream.m3u8';
       }
     };
 
@@ -76,3 +75,5 @@ export default function CCTVPage() {
 //  /usr/local/bin/ffmpeg -rtsp_transport tcp -i "rtsp://admin:cctv1wsx2edc@175.114.113.233:50554/Streaming/Channels/101" -c:v libx264 -c:a aac -f hls -hls_time 2 -hls_list_size 5 -hls_flags delete_segments -hls_segment_filename ~/hyge-cctv/public/cctv/stream%d.m2ts ~/hyge-cctv/public/cctv/stream.m3u8
 // sleep 2
 // done
+//   sudo systemctl stop hyge-hls.service
+//   sudo systemctl restart hyge-hls.service

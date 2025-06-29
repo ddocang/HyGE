@@ -147,9 +147,10 @@ const LoginForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // 허용된 아이디 목록
+    // 허용된 아이디 목록 (소문자)
     const allowedIds = ['ge', 'kwtp', 'kd', 'ob'];
-    if (!allowedIds.includes(formData.id.trim())) {
+    const inputId = formData.id.trim().toLowerCase();
+    if (!allowedIds.includes(inputId)) {
       alert('존재하지 않는 아이디입니다');
       return;
     }
@@ -157,7 +158,7 @@ const LoginForm: React.FC = () => {
       alert('비밀번호가 올바르지 않습니다');
       return;
     }
-    localStorage.setItem('loginId', formData.id.trim());
+    localStorage.setItem('loginId', inputId);
     router.push('/');
   };
 

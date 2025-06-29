@@ -15,13 +15,13 @@ export default function CCTVPage() {
       const Hls = (window as any).Hls;
       if (videoRef.current && Hls.isSupported()) {
         const hls = new Hls();
-        hls.loadSource('http://192.168.219.45:8080/cctv/stream.m3u8');
+        hls.loadSource('/api/proxy?path=/cctv/stream.m3u8');
         hls.attachMedia(videoRef.current);
       } else if (
         videoRef.current &&
         videoRef.current.canPlayType('application/vnd.apple.mpegurl')
       ) {
-        videoRef.current.src = 'http://192.168.219.45:8080/cctv/stream.m3u8';
+        videoRef.current.src = '/api/proxy?path=/cctv/stream.m3u8';
       }
     };
 
@@ -77,3 +77,4 @@ export default function CCTVPage() {
 // done
 //   sudo systemctl stop hyge-hls.service
 //   sudo systemctl restart hyge-hls.service
+
